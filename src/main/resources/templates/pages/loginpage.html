@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>9jaForum</title>
+        <link rel="shortcut icon" type="image/x-icon" th:href="@{/files/system_img/logo.jpg}" href=""/>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+        <link rel="stylesheet" th:href="@{/css/app_style.css}" href=""/>
+    </head>
+    
+    <body class="container" style="background-color: rgba(249,251,250, 0.2);">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+            <div class="row">
+                <h1>
+                    <a><img src="" th:src="@{/files/system_img/logo.jpg}" width="50" height="50" alt="onenaijalogo" style="border-radius: 50%;"/> 9jaForum</a>
+                </h1>
+            </div>
+        
+            <div class="row">
+                <nav class="navbar navbar-inverse container-fluid">
+                    <ul class="nav navbar-nav">
+                        <li><a th:href="@{/}">Home</a></li>
+                        <li><a>Opinions</a></li>
+                        <li><a>Memelogic</a></li>
+                        <li><a>Poetic Justice</a></li>
+                        <li><a>Battle Of The Sexes</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a th:href="@{/user/login}"><span class="glyphicon glyphicon-user"></span> Login</a></li>
+                        <li><a th:href="@{/signup}"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                    </ul>
+                </nav>
+            </div>
+            
+            <div class="row" style="background-color: white"><br/></div>
+            
+            <p class="row"></p>
+            
+            <div class="row">
+                <h2 style="text-align: center; color: blue;">Login</h2><br/>
+            </div>
+        
+            <div class="row">
+                <div class="col-sm-3"></div>
+                <div class="col-sm-6">
+                    <p id="login_error" th:text="${error}"></p>
+                                
+                    <form id="form_login" th:action="@{/j_spring_security_check}" method="POST">
+                        <div class="form-group">
+                            <input class="form-control" type="text" name="user" placeholder="Username" required=""/><br/>
+                            <input class="form-control" type="password" name="pswd" placeholder="Password" required=""/><br/>
+                            <input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
+                            <input class="btn btn-success" type="submit" value="Login"/>
+                        </div>
+                        <a>Forgot username/password?</a><br/><br/>
+                    </form>
+                </div>
+                <div class="col-sm-3"></div>
+            </div>
+            
+            <div class="row" style="background-color: white"><br/></div>
+            
+            <div class="row">
+                <div style="background-color: rgb(0,88,52); height: 100px;"></div>
+            </div>
+        </div>
+        <div class="col-sm-1"></div>
+    </body>
+</html>
