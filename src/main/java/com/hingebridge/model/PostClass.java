@@ -60,6 +60,9 @@ public class PostClass implements Serializable
     @OneToMany(mappedBy = "postclassone", fetch = FetchType.EAGER)
     private List<CommentClass> comments;
     
+    @OneToMany(mappedBy = "postlikeclass", fetch = FetchType.EAGER)
+    private List<PostLikeClass> plc;
+    
     public PostClass(){}
     
     public PostClass(UserClass uc, String title, String content, String category, String coverImage, String date)
@@ -236,5 +239,15 @@ public class PostClass implements Serializable
     public String getDuration()
     {
         return new DurationCalculator().calculateDuration(date);
+    }
+    
+    public void setPlc(List<PostLikeClass> plc)
+    {
+        this.plc = plc;
+    }
+	
+    public List<PostLikeClass> getPlc()
+    {
+    	return plc;
     }
 }
