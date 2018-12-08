@@ -60,8 +60,13 @@ public class PostClass implements Serializable
     @OneToMany(mappedBy = "postclassone", fetch = FetchType.EAGER)
     private List<CommentClass> comments;
     
+    // PostClass ---> PostLikeClass Relationship
     @OneToMany(mappedBy = "postlikeclass")
     private List<PostLikeClass> plc;
+    
+    // PostClass ---> MessageObject Relationship
+    @OneToMany(mappedBy = "postmessageobject")
+    private List<MessageObject> mobj;
     
     public PostClass(){}
     
@@ -249,5 +254,15 @@ public class PostClass implements Serializable
     public List<PostLikeClass> getPlc()
     {
     	return plc;
+    }
+    
+    public void setMobj(List<MessageObject> mobj)
+    {
+        this.mobj = mobj;
+    }
+	
+    public List<MessageObject> getMobj()
+    {
+    	return mobj;
     }
 }

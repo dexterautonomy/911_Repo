@@ -4,31 +4,31 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "postlikeclass")
-public class PostLikeClass implements Serializable
+@Table(name = "messageobject")
+public class MessageObject implements Serializable
 {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
-    @Column(name = "postid")
+    @Column(name = "post_id")
     private Long post_id;
-    @Column(name = "userid")
+    @Column(name = "user_id")
     private Long user_id;
     @Column(name = "flag")
     private int flag = 1;
     
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "postid", insertable = false, updatable = false, nullable = false)
-    private PostClass postlikeclass;
+    @JoinColumn(name = "post_id", updatable = false, insertable = false, nullable = false)
+    private PostClass postmessageobject;
     
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "userid", insertable = false, updatable = false, nullable = false)
-    private UserClass userlikeclass;
+    @JoinColumn(name = "user_id", updatable = false, insertable = false, nullable = false)
+    private UserClass usermessageobject;
     
-    public PostLikeClass(){}
+    public MessageObject(){}
     
-    public PostLikeClass(Long post_id, Long user_id)
+    public MessageObject(Long post_id, Long user_id)
     {
         this.post_id = post_id;
         this.user_id = user_id;
@@ -37,6 +37,16 @@ public class PostLikeClass implements Serializable
     public Long getId()
     {
         return id;
+    }
+    
+    public void setFlag(int flag)
+    {
+        this.flag = flag;
+    }
+    
+    public int getFlag()
+    {
+        return flag;
     }
     
     public void setPost_id(Long value)
@@ -59,33 +69,23 @@ public class PostLikeClass implements Serializable
         return user_id;
     }
     
-    public void setFlag(int value)
+    public void setPostmessageobject(PostClass pc)
     {
-        flag = value;
+        postmessageobject = pc;
     }
     
-    public int getFlag()
+    public PostClass getPostmessageobject()
     {
-        return flag;
+        return postmessageobject;
     }
     
-    public void setPostlikeclass(PostClass pc)
+    public void setUsermessageobject(UserClass uc)
     {
-        postlikeclass = pc;
+        usermessageobject = uc;
     }
     
-    public PostClass getPostlikeclass()
+    public UserClass getUsermessageobject()
     {
-        return postlikeclass;
-    }
-    
-    public void setUserlikeclass(UserClass uc)
-    {
-        userlikeclass = uc;
-    }
-    
-    public UserClass getUserlikeclass()
-    {
-        return userlikeclass;
+        return usermessageobject;
     }
 }

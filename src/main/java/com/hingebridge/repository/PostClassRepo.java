@@ -15,8 +15,8 @@ public interface PostClassRepo extends JpaRepository<PostClass, Long>
     //@Query(value="SELECT pc FROM PostClass pc WHERE LOWER(pc.category) = :category AND pc.approved = 0 ORDER BY pc.id DESC")
     //public List<PostClass> getApprovedPost(@Param("category")String category);
     
-    //@Query("SELECT pc FROM PostClass pc WHERE LOWER(pc.username) = :username AND pc.date = :date")
-    //public PostClass getPost(@Param("username")String username, @Param("date")String date);
+    @Query("SELECT pc FROM PostClass pc WHERE pc.user_id = :user_id AND LOWER(pc.date) LIKE LOWER(CONCAT('%', :date, '%')) AND LOWER(pc.title) LIKE LOWER(CONCAT('%', :title, '%'))")
+    public PostClass getOnePost(@Param("user_id")Long user_id, @Param("date")String date, @Param("title")String title);
 
     //change the approved in the @Query to 1 later.
     @Query("SELECT pc FROM PostClass pc WHERE LOWER(pc.category) = :category AND pc.approved = 0 ORDER BY pc.id DESC")

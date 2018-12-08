@@ -1,9 +1,10 @@
 package com.hingebridge.web.usercontrollers;
 
 import com.hingebridge.model.CommentClass;
+import com.hingebridge.model.MessageObject;
 import com.hingebridge.model.PostClass;
-import com.hingebridge.model.PostLikeClass;
 import com.hingebridge.repository.CommentClassRepo;
+import com.hingebridge.repository.MessageObjectRepo;
 import com.hingebridge.repository.PostClassRepo;
 import com.hingebridge.repository.PostLikeClassRepo;
 import com.hingebridge.utility.UtilityClass;
@@ -40,6 +41,8 @@ public class UserController
     private CommentClassRepo ccr;
     @Autowired
     private PostLikeClassRepo plcr;
+    @Autowired
+    private MessageObjectRepo mor;
     
     @GetMapping("/login")
     public String userHomePage(Authentication auth, HttpServletRequest req, HttpSession session, ModelMap model)
@@ -47,11 +50,10 @@ public class UserController
         session = req.getSession();
         session.setAttribute("username", utc.getUser().getUsername());
         
-        String[] blocks = {"secondblock", "thirdblock", "fourthblock", "fifthblock", "sixthblock"};
+        final String[] blocks = {"secondblock", "thirdblock", "fourthblock", "fifthblock", "sixthblock"};
         utc.dispBlock(session, "firstblock", blocks);
         
         model.addAttribute("postclass", new PostClass());
-        
         return "pages/userpage";
     }
     
@@ -127,6 +129,9 @@ public class UserController
                 pc.setContent(content);
                 pc.setCategory(category);
                 
+                PostClass postClass = null;
+                Long user_id = utc.getUser().getId();
+                
                 content=content.replaceAll("<_", "<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
                 content=content.replaceAll("_>", "'/><br/><br/>");
                 
@@ -157,8 +162,7 @@ public class UserController
                                                     model.addAttribute("alert", "Content must be more than 1500 characters [" + pc.getContent().length() +"]");
                                                     return "pages/userpage";
                                                 }
-                                                //pcr.save(new PostClass(title, content, category, username, coverFileName, date));
-                                                pcr.save(new PostClass(utc.getUser(), title, content, category, coverFileName, date));
+                                                postClass = new PostClass(utc.getUser(), title, content, category, coverFileName, date);
                                             }
                                             break;
                                     
@@ -169,8 +173,7 @@ public class UserController
                                                     model.addAttribute("alert", "Content must be more than 1500 characters [" + pc.getContent().length() +"]");
                                                     return "pages/userpage";
                                                 }
-                                                //pcr.save(new PostClass(title, content, category, username, coverFileName, date));
-                                                pcr.save(new PostClass(utc.getUser(), title, content, category, coverFileName, date));
+                                                postClass = new PostClass(utc.getUser(), title, content, category, coverFileName, date);
                                             }
                                             break;
                                     
@@ -178,8 +181,7 @@ public class UserController
                                             {
                                                 if(pc.getContent().contains("<_") && pc.getContent().contains("_>"))
                                                 {
-                                                    //pcr.save(new PostClass(title, content, category, username, coverFileName, date));
-                                                    pcr.save(new PostClass(utc.getUser(), title, content, category, coverFileName, date));
+                                                    postClass = new PostClass(utc.getUser(), title, content, category, coverFileName, date);
                                                 }
                                                 else
                                                 {
@@ -196,8 +198,7 @@ public class UserController
                                                     model.addAttribute("alert", "Content must be more than 1500 characters [" + pc.getContent().length() +"]");
                                                     return "pages/userpage";
                                                 }
-                                                //pcr.save(new PostClass(title, content, category, username, coverFileName, date));
-                                                pcr.save(new PostClass(utc.getUser(), title, content, category, coverFileName, date));
+                                                postClass = new PostClass(utc.getUser(), title, content, category, coverFileName, date);
                                             }
                                             break;
                                     
@@ -208,14 +209,18 @@ public class UserController
                                                     model.addAttribute("alert", "Content must be more than 1500 characters [" + pc.getContent().length() +"]");
                                                     return "pages/userpage";
                                                 }
-                                                //pcr.save(new PostClass(title, content, category, username, coverFileName, date));
-                                                pcr.save(new PostClass(utc.getUser(), title, content, category, coverFileName, date));
+                                                postClass = new PostClass(utc.getUser(), title, content, category, coverFileName, date);
                                             }
+                                            break;
                                         }
-                                
+                                        
+                                        pcr.save(postClass);
                                         File pathToFile=new File(path, coverFileName);
                                         coverFile.transferTo(pathToFile);
-                            
+                                        
+                                        PostClass postklass = pcr.getOnePost(user_id, date, title);
+                                        mor.save(new MessageObject(postklass.getId(), user_id));    //for followers seeing ur posts
+                                        
                                         ra.addFlashAttribute("alert", "Posted");
                                         return "redirect:/user/login";
                                     }
@@ -229,7 +234,7 @@ public class UserController
                                     model.addAttribute("alert", "Cover Image name too long (less than 50 characters)");
                                 }
                             }
-                            else if(coverFile.getSize() == 0)
+                            else if(coverFile.getSize() == 0)   //why not use coverFile.isEmpty()
                             {
                                 String coverFileName = "empty.png";
                     
@@ -242,8 +247,7 @@ public class UserController
                                             model.addAttribute("alert", "Content must be more than 1500 characters [" + pc.getContent().length() +"]");
                                             return "pages/userpage";
                                         }
-                                        //pcr.save(new PostClass(title, content, category, username, coverFileName, date));
-                                        pcr.save(new PostClass(utc.getUser(), title, content, category, coverFileName, date));
+                                        postClass = new PostClass(utc.getUser(), title, content, category, coverFileName, date);
                                     }
                                     break;
                                     
@@ -254,8 +258,7 @@ public class UserController
                                             model.addAttribute("alert", "Content must be more than 1500 characters [" + pc.getContent().length() +"]");
                                             return "pages/userpage";
                                         }
-                                        //pcr.save(new PostClass(title, content, category, username, coverFileName, date));
-                                        pcr.save(new PostClass(utc.getUser(), title, content, category, coverFileName, date));
+                                        postClass = new PostClass(utc.getUser(), title, content, category, coverFileName, date);
                                     }
                                     break;
                             
@@ -272,8 +275,7 @@ public class UserController
                                             model.addAttribute("alert", "Content must be more than 1500 characters [" + pc.getContent().length() +"]");
                                             return "pages/userpage";
                                         }
-                                        //pcr.save(new PostClass(title, content, category, username, coverFileName, date));
-                                        pcr.save(new PostClass(utc.getUser(), title, content, category, coverFileName, date));
+                                        postClass = new PostClass(utc.getUser(), title, content, category, coverFileName, date);
                                     }
                                     break;
                                     
@@ -284,11 +286,14 @@ public class UserController
                                             model.addAttribute("alert", "Content must be more than 1500 characters [" + pc.getContent().length() +"]");
                                             return "pages/userpage";
                                         }
-                                        //pcr.save(new PostClass(title, content, category, username, coverFileName, date));
-                                        pcr.save(new PostClass(utc.getUser(), title, content, category, coverFileName, date));
+                                        postClass = new PostClass(utc.getUser(), title, content, category, coverFileName, date);
                                     }
                                 }
                     
+                                pcr.save(postClass);
+                                PostClass postklass = pcr.getOnePost(user_id, date, title);
+                                mor.save(new MessageObject(postklass.getId(), user_id));
+                                
                                 ra.addFlashAttribute("alert", "Posted");
                                 return "redirect:/user/login";
                             }
@@ -490,7 +495,7 @@ public class UserController
     public String getInbox(HttpServletRequest req, HttpSession session, ModelMap model)
     {
         session = req.getSession();
-        String[] blocks = {"firstblock", "thirdblock", "fourthblock", "fifthblock", "sixthblock"};
+        final String[] blocks = {"firstblock", "thirdblock", "fourthblock", "fifthblock", "sixthblock"};
         utc.dispBlock(session, "secondblock", blocks);
         
         model.addAttribute("postclass", new PostClass());
@@ -501,7 +506,7 @@ public class UserController
     public String getRecord(HttpServletRequest req, HttpSession session, ModelMap model)
     {
         session = req.getSession();
-        String[] blocks = {"firstblock", "secondblock", "fourthblock", "fifthblock", "sixthblock"};
+        final String[] blocks = {"firstblock", "secondblock", "fourthblock", "fifthblock", "sixthblock"};
         utc.dispBlock(session, "thirdblock", blocks);
         
         model.addAttribute("postclass", new PostClass());
@@ -512,7 +517,7 @@ public class UserController
     public String editProfile(HttpServletRequest req, HttpSession session, ModelMap model)
     {
         session = req.getSession();
-        String[] blocks = {"firstblock", "secondblock", "thirdblock", "fifthblock", "sixthblock"};
+        final String[] blocks = {"firstblock", "secondblock", "thirdblock", "fifthblock", "sixthblock"};
         utc.dispBlock(session, "fourthblock", blocks);
         
         model.addAttribute("postclass", new PostClass());
@@ -523,7 +528,7 @@ public class UserController
     public String creatAds(HttpServletRequest req, HttpSession session, ModelMap model)
     {
         session = req.getSession();
-        String[] blocks = {"firstblock", "secondblock", "thirdblock", "fourthblock", "sixthblock"};
+        final String[] blocks = {"firstblock", "secondblock", "thirdblock", "fourthblock", "sixthblock"};
         utc.dispBlock(session, "fifthblock", blocks);
         
         model.addAttribute("postclass", new PostClass());
@@ -534,7 +539,7 @@ public class UserController
     public String manageAds(HttpServletRequest req, HttpSession session, ModelMap model)
     {
         session = req.getSession();
-        String[] blocks = {"firstblock", "secondblock", "thirdblock", "fourthblock", "fifthblock"};
+        final String[] blocks = {"firstblock", "secondblock", "thirdblock", "fourthblock", "fifthblock"};
         utc.dispBlock(session, "sixthblock", blocks);
         
         model.addAttribute("postclass", new PostClass());

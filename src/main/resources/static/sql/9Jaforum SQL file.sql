@@ -63,4 +63,15 @@ create table postlikeclass
     constraint `fk_post_like_id` foreign key (`postid`) references `postclass` (`id`),
     constraint `fk_user_like_id` foreign key (`userid`) references `userclass` (`id`)
 );
+
+create table messageobject
+(
+    id int unsigned not null auto_increment primary key,
+    post_id int unsigned not null,
+    user_id int unsigned not null,
+    flag int not null,
+    constraint `fk_post_message_id` foreign key (`post_id`) references `postclass` (`id`),
+    constraint `fk_user_message_id` foreign key (`user_id`) references `userclass` (`id`)
+)
+
 */

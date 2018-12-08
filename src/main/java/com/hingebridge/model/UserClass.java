@@ -63,8 +63,13 @@ public class UserClass implements Serializable
     @OneToMany(mappedBy = "userthree")
     private List<SubCommentClass> quotes;
     
+    // UserClass ---> PostLikeClass Relationship
     @OneToMany(mappedBy = "userlikeclass")
     private List<PostLikeClass> plc;
+    
+    // UserClass ---> MessageObject Relationship
+    @OneToMany(mappedBy = "usermessageobject")
+    private List<MessageObject> mobj;
     
     public UserClass(){}
 	
@@ -272,5 +277,15 @@ public class UserClass implements Serializable
     public List<PostLikeClass> getPlc()
     {
     	return plc;
+    }
+    
+    public void setMobj(List<MessageObject> mobj)
+    {
+        this.mobj = mobj;
+    }
+	
+    public List<MessageObject> getMobj()
+    {
+    	return mobj;
     }
 }
