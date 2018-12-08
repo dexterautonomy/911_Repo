@@ -15,17 +15,26 @@ public interface PostLikeClassRepo extends JpaRepository<PostLikeClass, Long>
 
     public default String likedBefore(Long post_id, Long user_id)
     {
-        String likedBeforeVar = null;
-        Optional<PostLikeClass> plc = checkLikedBefore(post_id, user_id);
+        String likedBeforeVar;
+        Optional<PostLikeClass> plc = checkLikedBefore(post_id, user_id);   //gets the postlike object
         
-        if(plc.get() != null)
+        if(plc.orElse(null) == null)
+        {
+            save(new PostLikeClass(post_id, user_id));  //save the new like
+            likedBeforeVar = "";
+        }
+        else
         {
             if(plc.get().getFlag() == 1)
             {
+                plc.get().setFlag(0);   //updates the previous like/unlike
+                save(plc.get());
                 likedBeforeVar = "liked";
             }
             else
             {
+                plc.get().setFlag(1);   //updates the previous like/unlike
+                save(plc.get());
                 likedBeforeVar = "unliked";
             }
         }

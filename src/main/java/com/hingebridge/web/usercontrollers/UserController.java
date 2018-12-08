@@ -335,39 +335,32 @@ public class UserController
             
             case "lk":
             {
-                Optional<PostClass> pc = pcr.findById(post_id.get());
-                String check = plcr.likedBefore(post_id.get(), utc.getUser().getId());
-                Optional<PostLikeClass> plc = plcr.checkLikedBefore(post_id.get(), utc.getUser().getId());
-                        
+                Optional<PostClass> pc = pcr.findById(post_id.get());   //gets the post object
+                String check = plcr.likedBefore(post_id.get(), utc.getUser().getId());  //has this user liked this post before now?
+                
                 switch(check)
                 {
+                    case "":
+                    {
+                        Long likes = pc.get().getLikes();
+                        likes = likes + 1;
+                        pc.get().setLikes(likes);
+                        pcr.save(pc.get());
+                        ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                    }
+                    break;
+                    
                     case "liked":
                     {
                         Long likes = pc.get().getLikes();
                         likes = likes - 1;
                         pc.get().setLikes(likes);
                         pcr.save(pc.get());
-                        
-                        plc.get().setFlag(0);
-                        plcr.save(plc.get());
-                        
                         ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
                     }
                     break;
+                    
                     case "unliked":
-                    {
-                        Long likes = pc.get().getLikes();
-                        likes = likes + 1;
-                        pc.get().setLikes(likes);
-                        pcr.save(pc.get());
-                        
-                        plc.get().setFlag(1);
-                        plcr.save(plc.get());
-                        
-                        ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
-                    }
-                    break;
-                    default:
                     {
                         Long likes = pc.get().getLikes();
                         likes = likes + 1;
