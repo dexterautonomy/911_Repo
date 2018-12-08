@@ -20,7 +20,11 @@ public class PostLikeClass implements Serializable
     
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "postid", insertable = false, updatable = false, nullable = false)
-    private PostClass pc;
+    private PostClass postlikeclass;
+    
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "userid", insertable = false, updatable = false, nullable = false)
+    private UserClass userlikeclass;
     
     public PostLikeClass(){}
     
@@ -65,13 +69,23 @@ public class PostLikeClass implements Serializable
         return flag;
     }
     
-    public void setPc(PostClass pc)
+    public void setPostlikeclass(PostClass pc)
     {
-        this.pc = pc;
+        this.postlikeclass = pc;
     }
     
-    public PostClass getPc()
+    public PostClass getPostlikeclass()
     {
-        return pc;
+        return postlikeclass;
+    }
+    
+    public void setUserlikeclass(UserClass uc)
+    {
+        this.userlikeclass = uc;
+    }
+    
+    public UserClass getUserlikeclass()
+    {
+        return userlikeclass;
     }
 }
