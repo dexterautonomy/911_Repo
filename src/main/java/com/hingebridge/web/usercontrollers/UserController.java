@@ -46,6 +46,10 @@ public class UserController
     {
         session = req.getSession();
         session.setAttribute("username", utc.getUser().getUsername());
+        
+        String[] blocks = {"secondblock", "thirdblock", "fourthblock", "fifthblock", "sixthblock"};
+        utc.dispBlock(session, "firstblock", blocks);
+        
         model.addAttribute("postclass", new PostClass());
         
         return "pages/userpage";
@@ -481,4 +485,61 @@ public class UserController
         
         return "pages/commentpage";
     }
+    
+    @GetMapping("/inbox")
+    public String getInbox(HttpServletRequest req, HttpSession session, ModelMap model)
+    {
+        session = req.getSession();
+        String[] blocks = {"firstblock", "thirdblock", "fourthblock", "fifthblock", "sixthblock"};
+        utc.dispBlock(session, "secondblock", blocks);
+        
+        model.addAttribute("postclass", new PostClass());
+        return "pages/userpage";
+    }
+    
+    @GetMapping("/rcd")
+    public String getRecord(HttpServletRequest req, HttpSession session, ModelMap model)
+    {
+        session = req.getSession();
+        String[] blocks = {"firstblock", "secondblock", "fourthblock", "fifthblock", "sixthblock"};
+        utc.dispBlock(session, "thirdblock", blocks);
+        
+        model.addAttribute("postclass", new PostClass());
+        return "pages/userpage";
+    }
+    
+    @GetMapping("/prf")
+    public String editProfile(HttpServletRequest req, HttpSession session, ModelMap model)
+    {
+        session = req.getSession();
+        String[] blocks = {"firstblock", "secondblock", "thirdblock", "fifthblock", "sixthblock"};
+        utc.dispBlock(session, "fourthblock", blocks);
+        
+        model.addAttribute("postclass", new PostClass());
+        return "pages/userpage";
+    }
+    
+    @GetMapping("/ads")
+    public String creatAds(HttpServletRequest req, HttpSession session, ModelMap model)
+    {
+        session = req.getSession();
+        String[] blocks = {"firstblock", "secondblock", "thirdblock", "fourthblock", "sixthblock"};
+        utc.dispBlock(session, "fifthblock", blocks);
+        
+        model.addAttribute("postclass", new PostClass());
+        return "pages/userpage";
+    }
+    
+    @GetMapping("/adm")
+    public String manageAds(HttpServletRequest req, HttpSession session, ModelMap model)
+    {
+        session = req.getSession();
+        String[] blocks = {"firstblock", "secondblock", "thirdblock", "fourthblock", "fifthblock"};
+        utc.dispBlock(session, "sixthblock", blocks);
+        
+        model.addAttribute("postclass", new PostClass());
+        return "pages/userpage";
+    }
+    
+    
 }

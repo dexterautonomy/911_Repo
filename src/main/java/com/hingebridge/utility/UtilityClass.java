@@ -17,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import com.hingebridge.repository.SubCommentClassRepo;
+import javax.servlet.http.HttpSession;
 
 @Component
 @PropertySource("classpath:application.properties")
@@ -116,5 +117,14 @@ public class UtilityClass
             }
         }
         return titleCase;
+    }
+    
+    public void dispBlock(HttpSession session, String showBlock, String[] hideBlocks)
+    {
+        session.setAttribute(showBlock, "");
+        for(String s: hideBlocks)
+        {
+            session.setAttribute(s, "hidden");
+        }
     }
 }

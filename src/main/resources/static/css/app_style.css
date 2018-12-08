@@ -63,6 +63,17 @@ div.col-sm-10
     font-size: 11px;
 }
 
+.smallfont2
+{
+    font-size: 13px;
+}
+
+.smallfont2:hover
+{
+    font-weight: bold;
+    text-decoration: none;
+}
+
 .roundimg
 {
     border-radius: 50%;
