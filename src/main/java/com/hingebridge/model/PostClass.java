@@ -60,7 +60,7 @@ public class PostClass implements Serializable
     @OneToMany(mappedBy = "postclassone", fetch = FetchType.EAGER)
     private List<CommentClass> comments;
     
-    @OneToMany(mappedBy = "postlikeclass", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "postlikeclass")
     private List<PostLikeClass> plc;
     
     public PostClass(){}

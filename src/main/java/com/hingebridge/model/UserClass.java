@@ -63,7 +63,7 @@ public class UserClass implements Serializable
     @OneToMany(mappedBy = "userthree")
     private List<SubCommentClass> quotes;
     
-    @OneToMany(mappedBy = "userlikeclass", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "userlikeclass")
     private List<PostLikeClass> plc;
     
     public UserClass(){}

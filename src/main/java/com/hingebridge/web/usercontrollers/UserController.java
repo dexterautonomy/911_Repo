@@ -2,8 +2,10 @@ package com.hingebridge.web.usercontrollers;
 
 import com.hingebridge.model.CommentClass;
 import com.hingebridge.model.PostClass;
+import com.hingebridge.model.PostLikeClass;
 import com.hingebridge.repository.CommentClassRepo;
 import com.hingebridge.repository.PostClassRepo;
+import com.hingebridge.repository.PostLikeClassRepo;
 import com.hingebridge.utility.UtilityClass;
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +38,8 @@ public class UserController
     private PostClassRepo pcr;
     @Autowired
     private CommentClassRepo ccr;
+    @Autowired
+    private PostLikeClassRepo plcr;
     
     @GetMapping("/login")
     public String userHomePage(Authentication auth, HttpServletRequest req, HttpSession session, ModelMap model)
@@ -332,14 +336,49 @@ public class UserController
             case "lk":
             {
                 Optional<PostClass> pc = pcr.findById(post_id.get());
-                Long likes = pc.get().getLikes();
-                likes = likes + 1;
-                pc.get().setLikes(likes);
-                pcr.save(pc.get());
-                ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                String check = plcr.likedBefore(post_id.get(), utc.getUser().getId());
+                Optional<PostLikeClass> plc = plcr.checkLikedBefore(post_id.get(), utc.getUser().getId());
+                        
+                switch(check)
+                {
+                    case "liked":
+                    {
+                        Long likes = pc.get().getLikes();
+                        likes = likes - 1;
+                        pc.get().setLikes(likes);
+                        pcr.save(pc.get());
+                        
+                        plc.get().setFlag(0);
+                        plcr.save(plc.get());
+                        
+                        ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                    }
+                    break;
+                    case "unliked":
+                    {
+                        Long likes = pc.get().getLikes();
+                        likes = likes + 1;
+                        pc.get().setLikes(likes);
+                        pcr.save(pc.get());
+                        
+                        plc.get().setFlag(1);
+                        plcr.save(plc.get());
+                        
+                        ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                    }
+                    break;
+                    default:
+                    {
+                        Long likes = pc.get().getLikes();
+                        likes = likes + 1;
+                        pc.get().setLikes(likes);
+                        pcr.save(pc.get());
+                        ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                    }
+                    break;
+                }
             }
             break;
-            
         }
         return ret;
     }
