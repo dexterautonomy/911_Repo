@@ -514,6 +514,7 @@ public class UserController
         utc.dispBlock(session, "secondblock", blocks);
         */
         
+        
         List<FollowerObject> followedObj = fobjr.getSelectedFollow(utc.getUser().getId()); //Are you following people? Oya get their ids
         
         if(!followedObj.isEmpty())  //If you really are following someone
