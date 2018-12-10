@@ -1,3 +1,4 @@
+/*
 package com.hingebridge.repository;
 
 import com.hingebridge.model.MessageObject;
@@ -9,3 +10,4 @@ public interface MessageObjectRepo extends JpaRepository<MessageObject, Long>
 {
     
 }
+*/

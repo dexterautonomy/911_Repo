@@ -119,6 +119,7 @@ public class UtilityClass
         return titleCase;
     }
     
+    /*
     public void dispBlock(HttpSession session, String showBlock, String[] hideBlocks)
     {
         session.setAttribute(showBlock, "");
@@ -127,4 +128,5 @@ public class UtilityClass
             session.setAttribute(s, "hidden");
         }
     }
+    */
 }

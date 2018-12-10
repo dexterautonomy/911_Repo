@@ -1,3 +1,4 @@
+/*
 package com.hingebridge.model;
 
 import java.io.Serializable;
@@ -89,3 +90,4 @@ public class MessageObject implements Serializable
         return usermessageobject;
     }
 }
+*/

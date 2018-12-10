@@ -57,7 +57,8 @@
                         
                     <div>
                         <a class="smallfont2" th:href="@{/user/login}">Compose</a><hr/>
-                        <a class="smallfont2" th:href="@{/user/inbox}">Inbox <span class="badge">1025</span></a><hr/>
+                        <a class="smallfont2" th:href="@{/user/inbox(page=1)}">Inbox <span class="badge">102</span></a><hr/>
+                        <a class="smallfont2" th:href="@{/user/flpost(page=1)}">Followed Posts <span class="badge">105</span></a><hr/>
                         <a class="smallfont2" th:href="@{/user/rcd}">Record <span class="badge">1025</span></a><hr/>
                         <a class="smallfont2" th:href="@{/user/prf}">Edit Profile</a><hr/>
                         <a class="smallfont2" th:href="@{/user/ads}">Create Ad</a><hr/>
@@ -70,7 +71,7 @@
                     </div>
                 </div>
             
-                <div class="col-sm-9" th:classappend="${session.firstblock}">
+                <div class="col-sm-9"> <!--th:classappend="${session.firstblock}"-->
                     First Block (Home/Compose)
                     <p style="text-align: center; color: blue;" th:text="${alert}"></p>
                     
@@ -114,48 +115,39 @@
                     </div><br/>	
                 </div>
                 
+                <!--
                 <div class="col-sm-9" th:classappend="${session.secondblock}">
                     Second Block (Inbox)
                     <p style="text-align: center; color: blue;" th:text="${alert}"></p>
                     
+                    <div class="centertinz" th:text="${message}"></div>
+                    
                     <div>
-                        <form th:action="@{/user/postcontrol}" method="post" th:object="${postclass}" enctype="multipart/form-data">
-                            <div class="form-group">
-                                <input class="form-control" th:field="*{title}" type="text" placeholder="Title" required="" maxlength="100"/><br/>
-                                <textarea class="form-control" th:field="*{content}" placeholder="Compose" cols="20" rows="10" required="" maxlength="10000"></textarea><br/>
-                            </div>
-                            
-                            <div class="form-group">
-                                <input id="addimg" class="btn btn-sm btn-default" th:field="*{contentFile}" type="file" style="display: inline"/>
-                                <button class="btn btn-sm btn-info" name="actionButton" value="add_img"><span class="glyphicon glyphicon-user" style="display: inline"></span> Upload</button>
-                            </div>
-                            
-                            <div class="form-group">
-                                <input id="coverimg" class="btn btn-sm btn-default" th:field="*{coverFile}" type="file" style="display: inline"/>
-                                <label for="coverimg" style="display: inline">Cover Image (Optional)</label>
-                            </div><br/>
-                            
-                            <div class="form-group" style="text-align: center;">
-                                <div class="radio-inline">
-                                    <label><input type="radio" th:field="*{category}" value="mypost" checked=""/> Post</label>
-                                </div>
-                                <div class="radio-inline">
-                                    <label><input type="radio" th:field="*{category}" value="opinion"/> Opinion</label>
-                                </div>
-                                <div class="radio-inline">
-                                    <label><input type="radio" th:field="*{category}" value="memelogic"/> Memelogic</label>
-                                </div>
-                                <div class="radio-inline">
-                                    <label><input type="radio" th:field="*{category}" value="poetic_justice"/> Poetic Justice</label>
-                                </div>
-                                <div class="radio-inline">
-                                    <label><input type="radio" th:field="*{category}" value="zex_battle"/> Battle of the sexes</label>
-                                </div><br/><br/>
-            			    
-                                <button class="btn btn-success btn-block" name="actionButton" value="post"><span class="glyphicon glyphicon-user"></span> Post</button>    
-                            </div>
-                        </form>
-                    </div><br/>	
+                    <div class="centertinz">
+                        <ul class="pagination pagination-sm">
+                            <li th:style="'display:'+@{${disp1}}+';'">
+                                <a class="btn" th:href="@{/user/inbox(page=1)}"> « </a>
+                            </li>
+                            <li th:style="'display:'+@{${disp1}}+';'">
+                                <a class="btn" th:href="@{/user/inbox(page= ${followpost.number})}"> ← </a>
+                            </li>
+                    
+                    
+                            <li th:each="page : ${#numbers.sequence(pgn.startPage, pgn.endPage)}" 
+                                th:class="${followpost.number == (page - 1)} ? 'active pointerx'">
+                                <a class="btn" th:href="@{/user/inbox(page=${page})}" th:text="${page}"></a>
+                            </li>
+                    
+                    
+                            <li th:style="'display:'+@{${disp2}}+';'">
+                                <a class="btn" th:href="@{/user/inbox(page=${followpost.number + 2})}"> → </a>
+                            </li>
+                            <li th:style="'display:'+@{${disp2}}+';'">
+                                <a class="btn" th:href="@{/user/inbox(page=${followpost.totalPages})}"> » </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div><br/>	
                 </div>
                 
                 <div class="col-sm-9" th:classappend="${session.thirdblock}">
@@ -333,6 +325,7 @@
                         </form>
                     </div><br/>	
                 </div>
+                -->
             </div>
             
             

@@ -67,9 +67,15 @@ public class UserClass implements Serializable
     @OneToMany(mappedBy = "userlikeclass")
     private List<PostLikeClass> plc;
     
-    // UserClass ---> MessageObject Relationship
+    /* UserClass ---> MessageObject Relationship
     @OneToMany(mappedBy = "usermessageobject")
     private List<MessageObject> mobj;
+    */
+    
+    /* UserClass ---> FollowerObject Relationship
+    @OneToMany(mappedBy = "userfollowobject")
+    private List<FollowerObject> fobj;
+    */
     
     public UserClass(){}
 	
@@ -279,6 +285,7 @@ public class UserClass implements Serializable
     	return plc;
     }
     
+    /*
     public void setMobj(List<MessageObject> mobj)
     {
         this.mobj = mobj;
@@ -288,4 +295,17 @@ public class UserClass implements Serializable
     {
     	return mobj;
     }
+    */
+    
+    /*
+    public void setFobj(List<FollowerObject> fobj)
+    {
+        this.fobj = fobj;
+    }
+	
+    public List<FollowerObject> getFobj()
+    {
+    	return fobj;
+    }
+    */
 }

@@ -1,21 +1,28 @@
 package com.hingebridge.web.usercontrollers;
 
 import com.hingebridge.model.CommentClass;
-import com.hingebridge.model.MessageObject;
+import com.hingebridge.model.FollowerObject;
+import com.hingebridge.model.PagerModel;
+//import com.hingebridge.model.MessageObject;
 import com.hingebridge.model.PostClass;
 import com.hingebridge.repository.CommentClassRepo;
-import com.hingebridge.repository.MessageObjectRepo;
+import com.hingebridge.repository.FollowerObjectRepo;
+//import com.hingebridge.repository.MessageObjectRepo;
 import com.hingebridge.repository.PostClassRepo;
 import com.hingebridge.repository.PostLikeClassRepo;
 import com.hingebridge.utility.UtilityClass;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -42,7 +49,7 @@ public class UserController
     @Autowired
     private PostLikeClassRepo plcr;
     @Autowired
-    private MessageObjectRepo mor;
+    private FollowerObjectRepo fobjr;
     
     @GetMapping("/login")
     public String userHomePage(Authentication auth, HttpServletRequest req, HttpSession session, ModelMap model)
@@ -50,8 +57,10 @@ public class UserController
         session = req.getSession();
         session.setAttribute("username", utc.getUser().getUsername());
         
+        /*
         final String[] blocks = {"secondblock", "thirdblock", "fourthblock", "fifthblock", "sixthblock"};
         utc.dispBlock(session, "firstblock", blocks);
+        */
         
         model.addAttribute("postclass", new PostClass());
         return "pages/userpage";
@@ -130,7 +139,7 @@ public class UserController
                 pc.setCategory(category);
                 
                 PostClass postClass = null;
-                Long user_id = utc.getUser().getId();
+                //Long user_id = utc.getUser().getId();
                 
                 content=content.replaceAll("<_", "<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
                 content=content.replaceAll("_>", "'/><br/><br/>");
@@ -217,10 +226,10 @@ public class UserController
                                         pcr.save(postClass);
                                         File pathToFile=new File(path, coverFileName);
                                         coverFile.transferTo(pathToFile);
-                                        
+                                        /*
                                         PostClass postklass = pcr.getOnePost(user_id, date, title);
                                         mor.save(new MessageObject(postklass.getId(), user_id));    //for followers seeing ur posts
-                                        
+                                        */
                                         ra.addFlashAttribute("alert", "Posted");
                                         return "redirect:/user/login";
                                     }
@@ -291,9 +300,10 @@ public class UserController
                                 }
                     
                                 pcr.save(postClass);
+                                /*
                                 PostClass postklass = pcr.getOnePost(user_id, date, title);
                                 mor.save(new MessageObject(postklass.getId(), user_id));
-                                
+                                */
                                 ra.addFlashAttribute("alert", "Posted");
                                 return "redirect:/user/login";
                             }
@@ -491,17 +501,65 @@ public class UserController
         return "pages/commentpage";
     }
     
-    @GetMapping("/inbox")
-    public String getInbox(HttpServletRequest req, HttpSession session, ModelMap model)
+    @GetMapping("/flpost")
+    public String getInbox(HttpServletRequest req, HttpSession session, ModelMap model, @RequestParam("pg")Optional<Integer> page)
     {
-        session = req.getSession();
+        //session = req.getSession();
+        final int INITIAL_PAGE = 0;
+        final int INITIAL_PAGE_SIZE = 5;
+        int pagex = (page.orElse(0) < 1 ? INITIAL_PAGE : page.get() - 1);
+        
+        /*
         final String[] blocks = {"firstblock", "thirdblock", "fourthblock", "fifthblock", "sixthblock"};
         utc.dispBlock(session, "secondblock", blocks);
+        */
         
-        model.addAttribute("postclass", new PostClass());
-        return "pages/userpage";
+        List<FollowerObject> followedObj = fobjr.getSelectedFollow(utc.getUser().getId()); //Are you following people? Oya get their ids
+        
+        if(!followedObj.isEmpty())  //If you really are following someone
+        {
+            Page<PostClass> followPost = pcr.followersPost(followedObj, PageRequest.of(pagex, INITIAL_PAGE_SIZE));   //Get all followed posts
+            
+            if(followPost != null)  //If there is really a followed post
+            {
+                PagerModel pgn = new PagerModel(followPost.getTotalPages(), followPost.getNumber());
+        
+                model.addAttribute("followpost", followPost);
+                model.addAttribute("fpn", followPost.getNumber());
+                model.addAttribute("fpn2", followPost.getNumber() + 2);
+                model.addAttribute("fpt", followPost.getTotalPages());
+                
+                model.addAttribute("pgn", pgn);
+                model.addAttribute("pgs", pgn.getStartPage());
+                model.addAttribute("pge", pgn.getEndPage());
+                model.addAttribute("fShow", "");
+        
+                if(followPost.getNumber() == 0)
+                {
+                    model.addAttribute("disp1", "none");
+                }
+                if(followPost.getNumber() + 1 == followPost.getTotalPages())
+                {
+                    model.addAttribute("disp2", "none");
+                }
+            }
+            else    //Yes, I do have followers but they have not posted shiiiit!
+            {
+                model.addAttribute("pgn", new PagerModel(0, 0));    //Random, to satisfy the gods
+                model.addAttribute("fShow", "hidden");
+                model.addAttribute("message", "Followed post is empty");
+            }
+        }
+        else    //if you do not have followers
+        {
+            model.addAttribute("pgn", new PagerModel(0, 0));    //Yes! The gods again
+            model.addAttribute("fShow", "hidden");
+            model.addAttribute("message", "Empty inbox, follow people to see what they post");
+        }
+        return "pages/followedpost";
     }
     
+    /*
     @GetMapping("/rcd")
     public String getRecord(HttpServletRequest req, HttpSession session, ModelMap model)
     {
@@ -545,6 +603,6 @@ public class UserController
         model.addAttribute("postclass", new PostClass());
         return "pages/userpage";
     }
-    
+    */
     
 }
