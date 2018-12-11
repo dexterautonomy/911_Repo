@@ -118,3 +118,18 @@ div.col-sm-10
 {
     background-color: rgb(250,253,250);
 }
+
+.uploadbtnwrapper
+{
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.uploadbtnfile
+{
+    position: absolute;
+    left: 0;
+    right: 0;
+    opacity: 0;
+}

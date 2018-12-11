@@ -24,35 +24,43 @@ public interface PostClassRepo extends JpaRepository<PostClass, Long>
     @Query("SELECT pc FROM PostClass pc WHERE pc.user_id = :user_id AND LOWER(pc.date) LIKE LOWER(CONCAT('%', :date, '%')) AND LOWER(pc.title) LIKE LOWER(CONCAT('%', :title, '%'))")
     public PostClass getOnePost(@Param("user_id")Long user_id, @Param("date")String date, @Param("title")String title);
 
-    //change the approved in the @Query to 1 later.
-    @Query("SELECT pc FROM PostClass pc WHERE LOWER(pc.category) = :category AND pc.approved = 0 ORDER BY pc.id DESC")
+    @Query("SELECT pc FROM PostClass pc WHERE LOWER(pc.category) = :category AND pc.approved = 1 ORDER BY pc.id DESC")
     public Page<PostClass> getApprovedPost(@Param("category")String category, Pageable pageable);
     
     @Query("SELECT pc FROM PostClass pc WHERE pc.id = :id AND LOWER(pc.title) LIKE LOWER(CONCAT('%', :title, '%'))")    //Remember ASC and DESC order
     public Optional<PostClass> getPostReader(@Param("id")Long id, @Param("title")String title);
     
+    //For follower post
+    @Query("SELECT pc FROM PostClass pc ORDER BY pc.id DESC")
+    public Page<PostClass> getFollowerPost(Pageable pageable);
+    
     public default Page<PostClass> followersPost(List<FollowerObject> fObjID, Pageable pageable)
     {
-        List<PostClass> pList = findAll();
-        Page<PostClass> pgb = null;
-        if(!pList.isEmpty())
+        Page<PostClass> page1 = getFollowerPost(pageable);
+        List<PostClass> page2 = new LinkedList<>();
+        
+        if(page1 != null)
         {
-            List<PostClass> pList2 = new LinkedList<>();
-            for(PostClass p : pList)
+            for(PostClass p : page1)
             {
-                for(FollowerObject followID : fObjID)
-                {
-                    if(p.getUser_id().equals(followID.getFollower_id()))
-                    {
-                        pList2.add(p);
-                    }
-                }
+                fObjID.stream().filter((followID) -> (p.getUser_id().equals(followID.getFollower_id()))).forEachOrdered((_item) -> {
+                    page2.add(p);
+                });
             }
-            if(!pList2.isEmpty())
+            
+            if(!page2.isEmpty())
             {
-                pgb = new PageImpl<>(pList2, pageable, pList2.size());
+                page1 = new PageImpl<>(page2, pageable, page1.getTotalElements());
+            }
+            else
+            {
+                page1 = null;
             }
         }
-        return pgb;
+        else
+        {
+            page1 = null;   //No post, work it out
+        }
+        return page1;
     }
 }

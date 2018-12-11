@@ -32,6 +32,7 @@
                 </nav>
             </div>
             
+            <!--
             <div class="row" style="text-align: center;">
                 <div style="background-color: pink; width: 30%; height: 90px; margin-bottom: 10px; display: inline-block;">
                     For normal advert
@@ -45,8 +46,7 @@
                     For normal advert
                 </div>
             </div>
-            
-            <div class="row" style="background-color: white"><br/></div>
+            -->
             
             <div class="row">
                 <div class="col-sm-3" style="padding: 8px; background-color: rgb(248,248,248);">
@@ -58,14 +58,14 @@
                     <div>
                         <a class="smallfont2" th:href="@{/user/login}">Compose</a><hr/>
                         <a class="smallfont2" th:href="@{/user/inbox(page=1)}">Inbox <span class="badge">102</span></a><hr/>
-                        <a class="smallfont2" th:href="@{/user/flpost(page=1)}">Followed Posts <span class="badge">105</span></a><hr/>
+                        <a class="smallfont2" th:href="@{/user/flpost(pg=1)}">Followed Posts <span class="badge">105</span></a><hr/>
                         <a class="smallfont2" th:href="@{/user/rcd}">Record <span class="badge">1025</span></a><hr/>
                         <a class="smallfont2" th:href="@{/user/prf}">Edit Profile</a><hr/>
                         <a class="smallfont2" th:href="@{/user/ads}">Create Ad</a><hr/>
                         <a class="smallfont2" th:href="@{/user/adm}">Manage Ad <span class="badge">125</span></a><hr/>
             	        
                         <form th:action="@{/j_spring_security_logout}" method="POST">
-                            <button class="btn btn-danger btn-xs" name="xx" value="logout"><span class="glyphicon glyphicon-user"></span> Logout</button>
+                            <button class="btn btn-danger btn-sm" name="xx" value="logout"><span class="glyphicon glyphicon-user"></span> Logout</button>
                             <input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
                         </form>
                     </div>
@@ -73,44 +73,67 @@
                 
                 
                 <div class="col-sm-9" th:classappend="${session.secondblock}">
-                    Second Block (Inbox)
                     <p style="text-align: center; color: blue;" th:text="${alert}"></p>
                     
                     <div class="centertinz" th:text="${message}"></div>
                     
-                    <div>
-                    <div class="centertinz" th:classappend="${fShow}">
-                        <ul class="pagination pagination-sm">
-                            <li th:style="'display:'+@{${disp1}}+';'">
-                                <a class="btn" th:href="@{/user/inbox(page=1)}"> « </a>
-                            </li>
-                            <li th:style="'display:'+@{${disp1}}+';'">
-                                <a class="btn" th:href="@{/user/inbox(page= ${fpn})}"> ← </a>
-                            </li>
-                    
-                    
-                            <li th:each="page : ${#numbers.sequence(pgn.startPage, pgn.endPage)}" 
-                                th:class="${fpn == (page - 1)} ? 'active pointerx'">
-                                <a class="btn" th:href="@{/user/inbox(page=${page})}" th:text="${page}"></a>
-                            </li>
-                    
-                    
-                            <li th:style="'display:'+@{${disp2}}+';'">
-                                <a class="btn" th:href="@{/user/inbox(page=${fpn2})}"> → </a>
-                            </li>
-                            <li th:style="'display:'+@{${disp2}}+';'">
-                                <a class="btn" th:href="@{/user/inbox(page=${fpt})}"> » </a>
-                            </li>
-                        </ul>
+                    <div class="panel panel-success">
+                        <div class="panel-heading title centertinz">Followed Posts</div>
                     </div>
-                </div><br/>	
+                    
+                    <div class="list-group centertinz">
+                        <div th:each="post : ${followpost}">
+                            <a class="list-group-item" style="border-right: 2px solid green" th:href="@{/usr_sch(pos=${post.id}, t=${post.title}, p=${pg})}" >
+                                <div class="row">
+                                    <div id="chead" class="list-group-item-text" th:text="${post.title}"></div>
+                                    
+                                    <div class="smallfont">
+                                        <span th:text="${'By @' + post.userone.username}"></span>&nbsp;&nbsp;
+                                        <span th:text="${post.duration}"></span>&nbsp;&nbsp;
+                                        <span style="color: black;" class="glyphicon glyphicon-eye-open"></span>
+                                        <span th:text="${post.views}"></span>&nbsp;&nbsp;
+                                        <span style="color: green;" class="glyphicon glyphicon-thumbs-up"></span>
+                                        <span th:text="${post.likes}"></span>&nbsp;&nbsp;
+                                        <span style="color: red;" class="glyphicon glyphicon-flag"></span>
+                                        <span th:text="${post.likes}"></span>&nbsp;&nbsp;
+                                        <span style="color: yellow;" class="glyphicon glyphicon-star"></span>
+                                        <span th:text="${post.likes}"></span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="centertinz">
+                            <ul class="pagination pagination-sm">
+                                <li th:style="'display:'+@{${disp1}}+';'">
+                                    <a class="btn" th:href="@{/user/flpost(pg=1)}"> « </a>
+                                </li>
+                                <li th:style="'display:'+@{${disp1}}+';'">
+                                    <a class="btn" th:href="@{/user/flpost(pg= ${followpost.number})}"> ← </a>
+                                </li>
+                    
+                    
+                                <li th:each="page : ${#numbers.sequence(pgn.startPage, pgn.endPage)}" 
+                                    th:class="${followpost.number == (page - 1)} ? 'active pointerx'">
+                                    <a class="btn" th:href="@{/user/flpost(pg=${page})}" th:text="${page}"></a>
+                                </li>
+                    
+                    
+                                <li th:style="'display:'+@{${disp2}}+';'">
+                                    <a class="btn" th:href="@{/user/flpost(pg=${followpost.number + 2})}"> → </a>
+                                </li>
+                                <li th:style="'display:'+@{${disp2}}+';'">
+                                    <a class="btn" th:href="@{/user/flpost(pg=${followpost.totalPages})}"> » </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div><br/>	
                 </div>
             </div>
             
-            
-            
-            <div class="row" style="background-color: white"><br/></div>
-            
+            <!--
             <div class="row" style="text-align: center;">
                 <div style="background-color: pink; width: 30%; height: 90px; margin-bottom: 10px; display: inline-block;">
                     For normal advert
@@ -124,6 +147,7 @@
                     For normal advert
                 </div>
             </div><br/><br/>
+            -->
             
             <div class="row">
                 <div style="background-color: rgb(0,88,52); height: 100px;"></div>

@@ -1,38 +1,42 @@
-/*
 package com.hingebridge.model;
 
 import java.io.Serializable;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "messageobject")
+@Table(name = "")
 public class MessageObject implements Serializable
 {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
+    @Column(name = "")
     private Long id;
-    @Column(name = "post_id")
-    private Long post_id;
-    @Column(name = "user_id")
-    private Long user_id;
-    @Column(name = "flag")
+    @Column(name = "")
+    private Long sender_id;
+    @Column(name = "")
+    private Long recipient_id;
+    @Column(name = "")
     private int flag = 1;
+    @Column(name = "")
+    private String postlink;
+    @Column(name = "")
+    private String textone;
+    @Column(name = "")
+    private String texttwo;
     
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "post_id", updatable = false, insertable = false, nullable = false)
-    private PostClass postmessageobject;
-    
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", updatable = false, insertable = false, nullable = false)
+    @JoinColumn(name = "", updatable = false, insertable = false, nullable = false)
     private UserClass usermessageobject;
     
     public MessageObject(){}
     
-    public MessageObject(Long post_id, Long user_id)
+    public MessageObject(Long sender_id, Long recipient_id, String postlink, String textone, String texttwo)
     {
-        this.post_id = post_id;
-        this.user_id = user_id;
+        this.sender_id = sender_id;
+        this.recipient_id = recipient_id;
+        this.postlink = postlink;
+        this.textone = textone;
+        this.texttwo = texttwo;
     }
     
     public Long getId()
@@ -50,6 +54,7 @@ public class MessageObject implements Serializable
         return flag;
     }
     
+    /*
     public void setPost_id(Long value)
     {
         post_id = value;
@@ -89,5 +94,5 @@ public class MessageObject implements Serializable
     {
         return usermessageobject;
     }
+    */
 }
-*/

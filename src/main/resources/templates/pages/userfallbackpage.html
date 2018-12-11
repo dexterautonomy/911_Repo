@@ -3,36 +3,31 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
     <head>
         <title>9jaForum</title>
+        <link rel="shortcut icon" type="image/x-icon" th:href="@{/files/system_img/logo.jpg}" href=""/>
         <meta charset="UTF-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
-        <link rel="shortcut icon" type="image/x-icon" th:href="@{/files/system_img/logo.jpg}" href=""/>
         <link rel="stylesheet" th:href="@{/css/app_style.css}" href=""/>
     </head>
     
     <body class="container">
         <div class="col-sm-1"></div>
-    
         <div class="col-sm-10">
             <div class="row">
                 <h1>
                     <a><img src="" th:src="@{/files/system_img/logo.jpg}" width="50" height="50" alt="onenaijalogo" style="border-radius: 50%;"/> 9jaForum</a>
                 </h1>
             </div>
-            
+        
             <div class="row">
                 <nav class="navbar navbar-inverse container-fluid">
                     <ul class="nav navbar-nav">
-                        <li><a th:href="@{/user/login}">Switch</a></li>
-                        <li><a th:href="@{/}">Home</a></li>
+                        <li><a th:href="@{/}">Switch</a></li>
+                        <li><a th:href="@{/user/login}">Home</a></li>
                         <li><a>Opinions</a></li>
                         <li><a>Memelogic</a></li>
                         <li><a>Poetic Justice</a></li>
                         <li><a>Battle Of The Sexes</a></li>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a th:href="@{/user/login}"><span class="glyphicon glyphicon-user"></span> Login</a></li>
-                        <li><a th:href="@{/signup}"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
                     </ul>
                 </nav>
             </div>
@@ -52,34 +47,34 @@
                 </div>
             </div>
             -->
-        
+            
             <div class="row">
-                <div class="col-sm-1"></div>
-                <div class="col-sm-10">
-                    <form th:action="@{/user/cmtpost(pos=${pos}, t=${t}, p=${p}, pid=${pid}, page=${page})}" method="post" th:object="${postclass}" enctype="multipart/form-data">
-                        <p class="centertinz" th:text="${alert}"></p>
+                <div class="col-sm-3" style="padding: 8px; background-color: rgb(248,248,248);">
+                    <div class="thumbnail" style="text-align: center; background-color: rgb(247,247,247);">
+                        <img src="" th:src="@{/files/system_img/logo.jpg}" width="80" height="80" alt="onenaijalogo" style="border-radius: 50%;"/><br/><br/>
+                        <div class="caption" th:text="${'@ ' + session.username}"></div>
+                    </div><br/>
                         
-                        <div class="form-group">
-                            <textarea class="form-control" th:field="*{content}" placeholder="Compose" cols="20" rows="10" required="" maxlength="10000"></textarea><br/>
-                        </div>
-                            
-                        <div class="form-group">
-                            <input id="addimg" class="btn btn-sm btn-default" th:field="*{contentFile}" type="file" style="display: inline"/>
-                            <button class="btn btn-sm btn-info" name="actionButton" value="add_img"><span class="glyphicon glyphicon-user" style="display: inline"></span> Upload</button>
-                        </div>
-                            
-                        <div class="form-group" style="text-align: center;">
-                            <button class="btn btn-success btn-block" name="actionButton" value="post"><span class="glyphicon glyphicon-user"></span> Post</button>    
-                        </div>
-                    </form>
-                    
-                    <ul class="pager centertinz">
-                        <li>
-                            <a th:href="@{/s_ch(pos=${pos}, t=${t}, p=${p}, pid=${pid}, page=${page})}">Back</a>
-                        </li>
-                    </ul>
+                    <div>
+                        <a class="smallfont2" th:href="@{/user/login}">Compose</a><hr/>
+                        <a class="smallfont2" th:href="@{/user/inbox(page=1)}">Inbox <span class="badge">102</span></a><hr/>
+                        <a class="smallfont2" th:href="@{/user/flpost(pg=1)}">Followed Posts <span class="badge">105</span></a><hr/>
+                        <a class="smallfont2" th:href="@{/user/rcd}">Record <span class="badge">1025</span></a><hr/>
+                        <a class="smallfont2" th:href="@{/user/prf}">Edit Profile</a><hr/>
+                        <a class="smallfont2" th:href="@{/user/ads}">Create Ad</a><hr/>
+                        <a class="smallfont2" th:href="@{/user/adm}">Manage Ad <span class="badge">125</span></a><hr/>
+            	        
+                        <form th:action="@{/j_spring_security_logout}" method="POST">
+                            <button class="btn btn-danger btn-sm" name="xx" value="logout"><span class="glyphicon glyphicon-user"></span> Logout</button>
+                            <input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
+                        </form>
+                    </div>
                 </div>
-                <div class="col-sm-1"></div>
+                
+                
+                <div class="col-sm-9" th:classappend="${session.secondblock}">
+                    <p style="text-align: center; color: blue;" th:text="${alert}"></p>
+                </div>
             </div>
             
             <!--
@@ -95,7 +90,7 @@
                 <div style="background-color: orange; width: 30%; height: 90px; margin-bottom: 10px; display: inline-block;">
                     For normal advert
                 </div>
-            </div>
+            </div><br/><br/>
             -->
             
             <div class="row">
