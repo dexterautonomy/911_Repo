@@ -57,9 +57,9 @@
                         
                     <div>
                         <a class="smallfont2" th:href="@{/user/login}">Compose</a><hr/>
-                        <a class="smallfont2" th:href="@{/user/inbox(page=1)}">Inbox <span class="badge">102</span></a><hr/>
-                        <a class="smallfont2" th:href="@{/user/flpost(pg=1)}">Followed Posts <span class="badge">105</span></a><hr/>
-                        <a class="smallfont2" th:href="@{/user/rcd}">Record <span class="badge">1025</span></a><hr/>
+                        <a class="smallfont2" th:href="@{/user/inbox(pg=1)}">Inbox <span class="badge">102</span></a><hr/>
+                        <a class="smallfont2" th:href="@{/user/flpost(pg=1)}">Followed Posts</a><hr/>
+                        <a class="smallfont2" th:href="@{/user/rcd}">My Trend <span class="badge">1025</span></a><hr/>
                         <a class="smallfont2" th:href="@{/user/prf}">Edit Profile</a><hr/>
                         <a class="smallfont2" th:href="@{/user/ads}">Create Ad</a><hr/>
                         <a class="smallfont2" th:href="@{/user/adm}">Manage Ad <span class="badge">125</span></a><hr/>
@@ -72,7 +72,7 @@
                 </div>
                 
                 
-                <div class="col-sm-9" th:classappend="${session.secondblock}">
+                <div class="col-sm-9">
                     <p style="text-align: center; color: blue;" th:text="${alert}"></p>
                     
                     <div class="centertinz" th:text="${message}"></div>
@@ -80,6 +80,8 @@
                     <div class="panel panel-success">
                         <div class="panel-heading title centertinz">Followed Posts</div>
                     </div>
+                    
+                    <p class="centertinz smallfont" th:text="${clickagain}"></p>
                     
                     <div class="list-group centertinz">
                         <div th:each="post : ${followpost}">
@@ -105,6 +107,16 @@
                     </div>
                     
                     <div>
+                        <ul class="pager centertinz">
+                            <li th:style="'display:'+@{${disp1}}+';'">
+                                <a class="btn" th:href="@{/user/flpost(pg= ${prev})}"> Previous </a>
+                            </li>
+                            <li th:style="'display:'+@{${disp2}}+';'">
+                                <a class="btn" th:href="@{/user/flpost(pg=${next})}"> Next </a>
+                            </li>
+                        </ul>
+                        
+                        <!--
                         <div class="centertinz">
                             <ul class="pagination pagination-sm">
                                 <li th:style="'display:'+@{${disp1}}+';'">
@@ -129,7 +141,8 @@
                                 </li>
                             </ul>
                         </div>
-                    </div><br/>	
+                        -->
+                    </div><br/>
                 </div>
             </div>
             

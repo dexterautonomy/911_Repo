@@ -105,7 +105,7 @@
                                     <div>
                                         <div class="row" th:each="subcom : ${comment.subcomment}">
                                             <div class="col-xs-1">
-                                                <img th:style="'box-shadow: 0px 7px 15px rgb(0,132,82);'" class="roundimg" src="" th:src="@{'/files/profile_img/' + ${subcom.userthree.pix}}" width="35" height="35" th:alt="${subcom.userthree.username + ' pic'}">
+                                                <img th:style="'box-shadow: 0px 7px 15px rgb(0,132,82);'" class="roundimg" src="" th:src="@{'/files/profile_img/' + ${subcom.userthree.pix}}" width="35" height="35" th:alt="${subcom.userthree.username + ' pic'}"/>
                                             </div>
                                             <div class="col-xs-10 justify panel panel-body postsubcomment_body">
                                                 <div style="overflow: auto;">
@@ -122,7 +122,6 @@
                                                     <a><span class="glyphicon glyphicon-share-alt"></span>&nbsp;<span class="smallfont">Quote</span></a>
                                                 </div>
                                             </div>
-                                            
                                         </div>
                                     </div>
                                 </div>

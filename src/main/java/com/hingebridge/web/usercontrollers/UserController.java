@@ -3,17 +3,17 @@ package com.hingebridge.web.usercontrollers;
 import com.hingebridge.model.CommentClass;
 import com.hingebridge.model.FollowerObject;
 import com.hingebridge.model.PagerModel;
-//import com.hingebridge.model.MessageObject;
+import com.hingebridge.model.MessageObject;
 import com.hingebridge.model.PostClass;
 import com.hingebridge.repository.CommentClassRepo;
 import com.hingebridge.repository.FollowerObjectRepo;
-//import com.hingebridge.repository.MessageObjectRepo;
+import com.hingebridge.repository.MessageObjectRepo;
 import com.hingebridge.repository.PostClassRepo;
 import com.hingebridge.repository.PostLikeClassRepo;
 import com.hingebridge.utility.UtilityClass;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -50,18 +50,14 @@ public class UserController
     private PostLikeClassRepo plcr;
     @Autowired
     private FollowerObjectRepo fobjr;
+    @Autowired
+    private MessageObjectRepo mobjr;
     
     @GetMapping("/login")
     public String userHomePage(Authentication auth, HttpServletRequest req, HttpSession session, ModelMap model)
     {
         session = req.getSession();
         session.setAttribute("username", utc.getUser().getUsername());
-        
-        /*
-        final String[] blocks = {"secondblock", "thirdblock", "fourthblock", "fifthblock", "sixthblock"};
-        utc.dispBlock(session, "firstblock", blocks);
-        */
-        
         model.addAttribute("postclass", new PostClass());
         return "pages/userpage";
     }
@@ -137,7 +133,6 @@ public class UserController
                 pc.setTitle(title);
                 pc.setContent(content);
                 pc.setCategory(category);
-                
                 PostClass postClass = null;
                 //Long user_id = utc.getUser().getId();
                 
@@ -507,33 +502,30 @@ public class UserController
         return "pages/userfallbackpage";
     }
     
+    
+    /*
     @GetMapping("/flpost")
     public String getInbox(HttpServletRequest req, HttpSession session, ModelMap model, @RequestParam("pg")Optional<Integer> page,
     RedirectAttributes ra)
     {
-        //session = req.getSession();
         final int INITIAL_PAGE = 0;
-        final int INITIAL_PAGE_SIZE = 10;    //Change to 100 later
+        final int INITIAL_PAGE_SIZE = 1;    //Change to 100 later
         int pagex = (page.orElse(0) < 1 ? INITIAL_PAGE : page.get() - 1);
         
-        /*
-        final String[] blocks = {"firstblock", "thirdblock", "fourthblock", "fifthblock", "sixthblock"};
-        utc.dispBlock(session, "secondblock", blocks);
-        */
-        
         List<FollowerObject> followedObj = fobjr.getSelectedFollow(utc.getUser().getId()); //Are you following people? Oya get their ids
-        
         if(!followedObj.isEmpty())  //If you really are following someone
-        {            
+        {
             Page<PostClass> followPost = pcr.followersPost(followedObj, PageRequest.of(pagex, INITIAL_PAGE_SIZE));   //Get all followed posts
             
             if(followPost != null)  //If there is really a followed post
             {
+                if(followPost.isEmpty())
+                {
+                    model.addAttribute("clickagain", "No followed post within this block, click next/previous");
+                }
                 PagerModel pgn = new PagerModel(followPost.getTotalPages(), followPost.getNumber());
-        
                 model.addAttribute("followpost", followPost);
                 model.addAttribute("pgn", pgn);
-        
                 if(followPost.getNumber() == 0)
                 {
                     model.addAttribute("disp1", "none");
@@ -555,6 +547,103 @@ public class UserController
             return "redirect:/user/fallback";
         }
         return "pages/followedpost";
+    }
+    */
+    
+    @GetMapping("/flpost")
+    public String getInbox(HttpServletRequest req, HttpSession session, ModelMap model, @RequestParam("pg")Optional<Integer> page,
+    RedirectAttributes ra)
+    {
+        int init = 0;
+        int end = 5;
+        List<PostClass> pcList3 = new LinkedList<>();
+        
+        if(page.get() > 1)
+        {
+            init = (page.get() - 1) * end;
+            end = end * page.get();
+        }
+        
+        List<FollowerObject> followedObj = fobjr.getSelectedFollow(utc.getUser().getId()); //Are you following people? Oya get their ids
+        if(!followedObj.isEmpty())  //If you really are following someone
+        {
+            List<PostClass> followPost = pcr.followersPost(followedObj);
+            if(followPost != null)  //If there is really a followed post
+            {
+                if(followPost.size() < end)
+                {
+                    end = followPost.size();
+                }
+                for(int count = init; count < end; count++)
+                {
+                    if(followPost.get(count) != null)
+                    {
+                        pcList3.add(followPost.get(count));
+                    }
+                }
+                
+                model.addAttribute("followpost", pcList3);
+                model.addAttribute("prev", page.get()-1);
+                model.addAttribute("next", page.get()+1);
+                
+                if((page.get()-1) == 0)
+                {
+                    model.addAttribute("disp1", "none");
+                }
+                if(pcList3.isEmpty())
+                {
+                    model.addAttribute("clickagain", "People you followed have no post yet");
+                    model.addAttribute("disp2", "none");
+                }
+            }
+            else    //If there is no followed post
+            {
+                ra.addFlashAttribute("alert", "No followed post available");
+                return "redirect:/user/fallback";
+            }
+        }
+        else    //If you do not have followers
+        {
+            ra.addFlashAttribute("alert", "Empty inbox, follow people to see what they post");
+            return "redirect:/user/fallback";
+        }
+        return "pages/followedpost";
+    }
+    
+    
+    @GetMapping("/inbox")
+    public String getRecord(HttpServletRequest req, HttpSession session, ModelMap model, @RequestParam("pg")Optional<Integer> page,
+    RedirectAttributes ra)
+    {
+        final int INITIAL_PAGE = 0;
+        final int INITIAL_PAGE_SIZE = 1;    //Change to 100 later
+        int pagex = (page.orElse(0) < 1 ? INITIAL_PAGE : page.get() - 1);
+        
+        Page<MessageObject> mo = mobjr.getMyMessage(utc.getUser().getId(), PageRequest.of(pagex, INITIAL_PAGE_SIZE));   //Get all followed posts
+        if(mo != null)  //If there are messages
+        {
+            if(mo.isEmpty())
+            {
+                model.addAttribute("clickagain", "No notifications within this block, click next/previous");
+            }
+            PagerModel pgn = new PagerModel(mo.getTotalPages(), mo.getNumber());
+            model.addAttribute("messageobj", mo);
+            model.addAttribute("pgn", pgn);
+            if(mo.getNumber() == 0)
+            {
+                model.addAttribute("disp1", "none");
+            }
+            if(mo.getNumber() + 1 == mo.getTotalPages())
+            {
+                model.addAttribute("disp2", "none");
+            }
+        }
+        else    //If there are no messages
+        {
+            ra.addFlashAttribute("clickagain", "No notifications");
+            return "redirect:/user/fallback";
+        }
+        return "pages/messagepage";
     }
     
     /*

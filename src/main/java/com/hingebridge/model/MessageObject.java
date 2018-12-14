@@ -4,32 +4,50 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "")
+@Table(name = "messageobject")
 public class MessageObject implements Serializable
 {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "")
+    @Column(name = "id")
     private Long id;
-    @Column(name = "")
-    private Long sender_id;
-    @Column(name = "")
+    //@Column(name = "sender_id")
+    //private Long sender_id;
+    @Column(name = "recipient_id")
     private Long recipient_id;
-    @Column(name = "")
+    @Column(name = "flag")
     private int flag = 1;
-    @Column(name = "")
+    @Column(name = "postlink")
     private String postlink;
-    @Column(name = "")
-    private String textone;
-    @Column(name = "")
-    private String texttwo;
+    @Column(name = "unread")
+    private String unread = "unread";
     
+    /*
+    @Column(name = "textone")
+    private String textone;
+    @Column(name = "texttwo")
+    private String texttwo;
+    */
+    
+    @Column(name = "comment_id")
+    private Long comment_id;
+    
+    
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "comment_id", updatable = false, insertable = false, nullable = false)
+    private CommentClass commentmessage;
+    
+    
+    /*
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "", updatable = false, insertable = false, nullable = false)
-    private UserClass usermessageobject;
+    @JoinColumn(name = "sender_id", updatable = false, insertable = false, nullable = false)
+    private UserClass sender;
+    */
     
     public MessageObject(){}
     
+    
+    /*
     public MessageObject(Long sender_id, Long recipient_id, String postlink, String textone, String texttwo)
     {
         this.sender_id = sender_id;
@@ -38,7 +56,14 @@ public class MessageObject implements Serializable
         this.textone = textone;
         this.texttwo = texttwo;
     }
+    */
     
+    public MessageObject(Long recipient_id, Long comment_id)
+    {
+        this.recipient_id = recipient_id;
+        this.comment_id = comment_id;
+    }
+
     public Long getId()
     {
         return id;
@@ -55,44 +80,95 @@ public class MessageObject implements Serializable
     }
     
     /*
-    public void setPost_id(Long value)
+    public void setSender_id(Long value)
     {
-        post_id = value;
+        sender_id = value;
     }
     
-    public Long getPost_id()
+    public Long getSender_id()
     {
-        return post_id;
-    }
-    
-    public void setUser_id(Long value)
-    {
-        user_id = value;
-    }
-    
-    public Long getUser_id()
-    {
-        return user_id;
-    }
-    
-    public void setPostmessageobject(PostClass pc)
-    {
-        postmessageobject = pc;
-    }
-    
-    public PostClass getPostmessageobject()
-    {
-        return postmessageobject;
-    }
-    
-    public void setUsermessageobject(UserClass uc)
-    {
-        usermessageobject = uc;
-    }
-    
-    public UserClass getUsermessageobject()
-    {
-        return usermessageobject;
+        return sender_id;
     }
     */
+
+    public void setRecipient_id(Long value)
+    {
+        recipient_id = value;
+    }
+    
+    public Long getRecipient_id()
+    {
+        return recipient_id;
+    }
+    
+    public void setPostlink(String value)
+    {
+        postlink = value;
+    }
+    
+    public String getPostlink()
+    {
+        return postlink;
+    }
+    
+    public void setUnread(String value)
+    {
+        unread = value;
+    }
+    
+    public String getUnread()
+    {
+        return unread;
+    }
+    /*
+    public void setTextone(String value)
+    {
+        textone = value;
+    }
+    
+    public String getTextone()
+    {
+        return textone;
+    }
+    
+    public void setTexttwo(String value)
+    {
+        texttwo = value;
+    }
+    
+    public String getTexttwo()
+    {
+        return texttwo;
+    }
+    
+    public void setSender(UserClass uc)
+    {
+        sender = uc;
+    }
+    
+    public UserClass getSender()
+    {
+        return sender;
+    }
+    */
+    
+    public void setComment_id(Long value)
+    {
+        comment_id = value;
+    }
+    
+    public Long getComment_id()
+    {
+        return comment_id;
+    }
+    
+    public void setCommentmessage(CommentClass value)
+    {
+        commentmessage = value;
+    }
+    
+    public CommentClass getCommentmessage()
+    {
+        return commentmessage;
+    }
 }

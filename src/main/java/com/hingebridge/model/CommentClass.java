@@ -42,6 +42,10 @@ public class CommentClass implements Serializable
     @OneToMany(mappedBy = "commentclassone")
     private List<SubCommentClass> subcomment;
     
+    // CommentClass ---> MessageObject Relationship
+    @OneToOne(mappedBy = "commentmessage")
+    private MessageObject mobj;
+    
     @Transient
     private String duration;
     
@@ -164,5 +168,15 @@ public class CommentClass implements Serializable
     public String getDuration()
     {
         return new DurationCalculator().calculateDuration(postdate);
+    }
+    
+    public void setMobj(MessageObject mobj)
+    {
+        this.mobj = mobj;
+    }
+	
+    public MessageObject getMobj()
+    {
+    	return mobj;
     }
 }

@@ -133,3 +133,13 @@ div.col-sm-10
     right: 0;
     opacity: 0;
 }
+
+.unread
+{
+    background-color: rgb(255, 230, 230);
+}
+
+.read
+{
+    background-color: rgb(255, 255, 255);
+}

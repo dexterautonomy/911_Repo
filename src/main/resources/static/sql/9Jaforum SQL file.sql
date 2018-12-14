@@ -67,13 +67,12 @@ create table postlikeclass
 create table messageobject
 (
     id int unsigned not null auto_increment primary key,
-    sender_id int unsigned not null,
     recipient_id int unsigned not null,
     postlink varchar(255) not null,
-    textone text not null,
-    texttwo text not null,
+    comment_id int unsigned not null,
     flag int not null,
-    constraint `fk_user_message_id1` foreign key (`sender_id`) references `userclass` (`id`)
+    unread varchar(10) not null,
+    constraint `fk_comment_message_id1` foreign key (`comment_id`) references `commentclass` (`id`)
 )
 
 create table followerobject
@@ -84,3 +83,4 @@ create table followerobject
     flag int not null
 )
 */
+

@@ -67,8 +67,8 @@ public class UserClass implements Serializable
     @OneToMany(mappedBy = "userlikeclass")
     private List<PostLikeClass> plc;
     
-    /* UserClass ---> MessageObject Relationship
-    @OneToMany(mappedBy = "usermessageobject")
+    /*UserClass ---> MessageObject Relationship
+    @OneToMany(mappedBy = "sender")
     private List<MessageObject> mobj;
     */
     

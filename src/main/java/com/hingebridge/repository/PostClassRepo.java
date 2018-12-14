@@ -34,33 +34,83 @@ public interface PostClassRepo extends JpaRepository<PostClass, Long>
     @Query("SELECT pc FROM PostClass pc ORDER BY pc.id DESC")
     public Page<PostClass> getFollowerPost(Pageable pageable);
     
+    /*
     public default Page<PostClass> followersPost(List<FollowerObject> fObjID, Pageable pageable)
     {
         Page<PostClass> page1 = getFollowerPost(pageable);
         List<PostClass> page2 = new LinkedList<>();
         
-        if(page1 != null)
+        if(!page1.isEmpty())
         {
             for(PostClass p : page1)
             {
-                fObjID.stream().filter((followID) -> (p.getUser_id().equals(followID.getFollower_id()))).forEachOrdered((_item) -> {
-                    page2.add(p);
-                });
+                for(FollowerObject followID : fObjID)
+                {
+                    if(p.getUser_id().equals(followID.getFollower_id()))
+                    {
+                        page2.add(p);
+                    }
+                }
             }
-            
-            if(!page2.isEmpty())
-            {
-                page1 = new PageImpl<>(page2, pageable, page1.getTotalElements());
-            }
-            else
-            {
-                page1 = null;
-            }
+            page1 = new PageImpl<>(page2, pageable, page1.getTotalElements());
         }
         else
         {
-            page1 = null;   //No post, work it out
+            page1 = null;
         }
         return page1;
+    }
+    */
+    
+    //For follower post
+    @Query("SELECT pc FROM PostClass pc ORDER BY pc.id DESC")
+    public List<PostClass> getFollowerPost();
+    
+    public default List<PostClass> followersPost(List<FollowerObject> fObjID)//, int range)
+    {
+        //int init = 0;
+        //int end = 5;
+        List<PostClass> pcList = getFollowerPost();
+        List<PostClass> pcList2 = new LinkedList<>();
+        //List<PostClass> pcList3 = new LinkedList<>();
+        
+        /*
+        if(range > 1)
+        {
+            init = (range - 1) * end;
+            end = end * range;
+        }
+        */
+        
+        if(!pcList.isEmpty())
+        {
+            for(PostClass p : pcList)
+            {
+                for(FollowerObject followID : fObjID)
+                {
+                    if(p.getUser_id().equals(followID.getFollower_id()))
+                    {
+                        pcList2.add(p);
+                        //put it here instead
+                    }
+                }
+            }
+            
+            /*
+            for(int count = init; count < end; count++)
+            {
+                if(pcList2.get(count) != null)
+                {
+                    pcList3.add(pcList2.get(count));
+                }
+            }
+            */
+                    
+            return pcList2;
+        }
+        else
+        {
+            return null;
+        }
     }
 }
