@@ -66,21 +66,10 @@ public interface PostClassRepo extends JpaRepository<PostClass, Long>
     @Query("SELECT pc FROM PostClass pc ORDER BY pc.id DESC")
     public List<PostClass> getFollowerPost();
     
-    public default List<PostClass> followersPost(List<FollowerObject> fObjID)//, int range)
+    public default List<PostClass> followersPost(List<FollowerObject> fObjID)
     {
-        //int init = 0;
-        //int end = 5;
         List<PostClass> pcList = getFollowerPost();
         List<PostClass> pcList2 = new LinkedList<>();
-        //List<PostClass> pcList3 = new LinkedList<>();
-        
-        /*
-        if(range > 1)
-        {
-            init = (range - 1) * end;
-            end = end * range;
-        }
-        */
         
         if(!pcList.isEmpty())
         {
@@ -91,21 +80,9 @@ public interface PostClassRepo extends JpaRepository<PostClass, Long>
                     if(p.getUser_id().equals(followID.getFollower_id()))
                     {
                         pcList2.add(p);
-                        //put it here instead
                     }
                 }
             }
-            
-            /*
-            for(int count = init; count < end; count++)
-            {
-                if(pcList2.get(count) != null)
-                {
-                    pcList3.add(pcList2.get(count));
-                }
-            }
-            */
-                    
             return pcList2;
         }
         else

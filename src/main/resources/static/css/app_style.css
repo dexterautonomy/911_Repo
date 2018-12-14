@@ -143,3 +143,19 @@ div.col-sm-10
 {
     background-color: rgb(255, 255, 255);
 }
+
+.realcentertinz
+{
+    height: 350px;
+    line-height: 350px;
+    text-align: center;
+    font-size: 11px;
+    text-decoration: none;
+}
+
+.realcentertinz span
+{
+    display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
+}

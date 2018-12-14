@@ -81,7 +81,9 @@
                         <div class="panel-heading title centertinz">Inbox</div>
                     </div>
                     
-                    <p class="centertinz smallfont" th:text="${clickagain}"></p>
+                    <div th:classappend="${theclass}">
+                        <span th:text="${clickagain}"></span>
+                    </div>
                     
                     <div class="list-group">
                         <div th:each="mo : ${messageobj}">
@@ -127,10 +129,10 @@
                     <div>
                         <ul class="pager centertinz">
                             <li th:style="'display:'+@{${disp1}}+';'">
-                                <a class="btn" th:href="@{/user/inbox(pg= ${messageobj.number})}"> Previous </a>
+                                <a class="btn" th:href="@{/user/inbox(pg= ${prev})}"> Previous </a>
                             </li>
                             <li th:style="'display:'+@{${disp2}}+';'">
-                                <a class="btn" th:href="@{/user/inbox(pg=${messageobj.number + 2})}"> Next </a>
+                                <a class="btn" th:href="@{/user/inbox(pg=${next})}"> Next </a>
                             </li>
                         </ul>
                     </div><br/>	

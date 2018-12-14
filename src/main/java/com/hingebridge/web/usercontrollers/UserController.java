@@ -551,11 +551,10 @@ public class UserController
     */
     
     @GetMapping("/flpost")
-    public String getInbox(HttpServletRequest req, HttpSession session, ModelMap model, @RequestParam("pg")Optional<Integer> page,
-    RedirectAttributes ra)
+    public String getInbox(@RequestParam("pg")Optional<Integer> page, ModelMap model, RedirectAttributes ra)
     {
         int init = 0;
-        int end = 5;
+        int end = 1;
         List<PostClass> pcList3 = new LinkedList<>();
         
         if(page.get() > 1)
@@ -576,10 +575,7 @@ public class UserController
                 }
                 for(int count = init; count < end; count++)
                 {
-                    if(followPost.get(count) != null)
-                    {
-                        pcList3.add(followPost.get(count));
-                    }
+                    pcList3.add(followPost.get(count));
                 }
                 
                 model.addAttribute("followpost", pcList3);
@@ -592,25 +588,26 @@ public class UserController
                 }
                 if(pcList3.isEmpty())
                 {
-                    model.addAttribute("clickagain", "People you followed have no post yet");
+                    model.addAttribute("clickagain", "No post available");
                     model.addAttribute("disp2", "none");
+                    model.addAttribute("theclass", "realcentertinz");
                 }
             }
             else    //If there is no followed post
             {
-                ra.addFlashAttribute("alert", "No followed post available");
+                ra.addFlashAttribute("alert", "No post available");
                 return "redirect:/user/fallback";
             }
         }
         else    //If you do not have followers
         {
-            ra.addFlashAttribute("alert", "Empty inbox, follow people to see what they post");
+            ra.addFlashAttribute("alert", "You really are not following anyone at the moment");
             return "redirect:/user/fallback";
         }
         return "pages/followedpost";
     }
     
-    
+    /*
     @GetMapping("/inbox")
     public String getRecord(HttpServletRequest req, HttpSession session, ModelMap model, @RequestParam("pg")Optional<Integer> page,
     RedirectAttributes ra)
@@ -636,6 +633,56 @@ public class UserController
             if(mo.getNumber() + 1 == mo.getTotalPages())
             {
                 model.addAttribute("disp2", "none");
+            }
+        }
+        else    //If there are no messages
+        {
+            ra.addFlashAttribute("clickagain", "No notifications");
+            return "redirect:/user/fallback";
+        }
+        return "pages/messagepage";
+    }
+    */
+    
+    @GetMapping("/inbox")
+    public String getRecord(ModelMap model, @RequestParam("pg")Optional<Integer> page,
+    RedirectAttributes ra)
+    {
+        int init = 0;
+        int end = 1;
+        List<MessageObject> mobj = new LinkedList<>();
+        
+        if(page.get() > 1)
+        {
+            init = (page.get() - 1) * end;
+            end = end * page.get();
+        }
+        
+        List<MessageObject> mo = mobjr.getMyMessage(utc.getUser().getId());   //Get all followed posts
+        if(!mo.isEmpty())  //If there are messages
+        {
+            if(mo.size() < end)
+            {
+                end = mo.size();
+            }
+            for(int count = init; count < end; count++)
+            {
+                mobj.add(mo.get(count));
+            }
+            
+            model.addAttribute("messageobj", mobj);
+            model.addAttribute("prev", page.get()-1);
+            model.addAttribute("next", page.get()+1);
+                
+            if(page.get() - 1 == 0)
+            {
+                model.addAttribute("disp1", "none");
+            }
+            if(mobj.isEmpty())
+            {
+                model.addAttribute("clickagain", "No notifications");
+                model.addAttribute("disp2", "none");
+                model.addAttribute("theclass", "realcentertinz");
             }
         }
         else    //If there are no messages
