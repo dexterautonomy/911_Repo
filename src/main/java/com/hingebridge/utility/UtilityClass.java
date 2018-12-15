@@ -22,6 +22,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import com.hingebridge.repository.SubCommentClassRepo;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.springframework.ui.ModelMap;
 
@@ -176,5 +177,25 @@ public class UtilityClass
         model.addAttribute("size", getMessageObjSize());
         model.addAttribute("pize", getFollowedPostSize());
         model.addAttribute("tize", getMyTrendSize());
+    }
+    
+    public long rateCalculator(long red, long yellow, long share, long likes, long views, long followers)
+    {
+        red = 2 * red;
+        long gain = (yellow * 20) + (share * 10) + (likes * 50) + (views * 5) + (followers * 2);
+        long rate = gain/red;
+        
+        return rate;
+    }
+    
+    public void sessionUsername(HttpServletRequest req)
+    {
+        HttpSession session = req.getSession();
+        session.setAttribute("username", getUser().getUsername());
+    }
+    
+    public void modelUsername(ModelMap model)
+    {
+        model.addAttribute("username", getUser().getUsername());
     }
 }

@@ -162,25 +162,50 @@ div.col-sm-10
 
 .user_beginner
 {
-    box-shadow: 0px 7px 15px grey;
+    box-shadow: 0px 5px 15px grey;
 }
 
 .user_low
 {
-    box-shadow: 0px 7px 15px rgb(200, 0, 0);
+    box-shadow: 0px 5px 15px rgb(200, 0, 0);
 }
 
 .user_amateur
 {
-    box-shadow: 0px 7px 15px rgb(0, 0, 150);
+    box-shadow: 0px 5px 15px rgb(0, 143, 222);
 }
 
 .user_high
 {
-    box-shadow: 0px 7px 15px rgb(0,132,82);
+    box-shadow: 0px 5px 15px rgb(0,132,82);
 }
 
 .user_pro
 {
-    box-shadow: 0px 7px 15px white;
+    box-shadow: 0px 5px 15px white;
+}
+.smallfont3A
+{
+    font-size: 13px;
+}
+
+.smallfont3
+{
+    font-size: 12px;
+}
+
+.smallfont3:hover
+{
+    font-style: italic;
+}
+
+.prclass
+{
+    float: right;
+    font-weight: bold;
+    font-size: 10px;
+    padding: 2px;
+    background-color: rgb(0, 165, 255);
+    border: 1px solid rgb(0, 171, 226);
+    border-radius: 5px;
 }

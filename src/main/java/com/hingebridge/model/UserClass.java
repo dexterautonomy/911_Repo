@@ -31,7 +31,7 @@ public class UserClass implements Serializable
     @Column(name="commentban")
     private int commentban = 0;
     @Column(name="active")
-    private int active = 0;
+    private int active = 1;
     
     @Column(name="yellow_star")
     private Long yellowstar = 0L;
@@ -43,8 +43,10 @@ public class UserClass implements Serializable
     private Long greenlike = 0L;
     @Column(name="black_view")
     private Long blackview = 0L;
-    @Column(name="rating")
-    private Long rating = 0L;
+    @Column(name="user_rank")
+    private Long userrank = 0L;
+    @Column(name="followers")
+    private Long followers = 0L;
     @Column(name="color_class")
     private String colorclass = "user_beginner";
 	
@@ -340,14 +342,24 @@ public class UserClass implements Serializable
     	return blackview;
     }
     
-    public void setRating(Long value)
+    public void setUserrank(Long value)
     {
-    	rating = value;
+    	userrank = value;
     }
 	
-    public Long getRating()
+    public Long getUserrank()
     {
-    	return rating;
+    	return userrank;
+    }
+    
+    public void setFollowers(Long value)
+    {
+    	followers = value;
+    }
+	
+    public Long getFollowers()
+    {
+    	return followers;
     }
     
     public void setColorclass(String value)

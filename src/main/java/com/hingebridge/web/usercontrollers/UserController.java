@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -51,25 +52,30 @@ public class UserController
     private MessageObjectRepo mobjr;
     
     @GetMapping("/login")
-    public String userHomePage(Authentication auth, HttpServletRequest req, HttpSession session, ModelMap model)
+    public String userHomePage(Authentication auth, HttpServletRequest req, ModelMap model)//, HttpSession session)
     {
-        session = req.getSession();
-        session.setAttribute("username", utc.getUser().getUsername());
+        //HttpSession session = req.getSession();
+        //session.setAttribute("username", utc.getUser().getUsername());
+        utc.modelUsername(model);
         model.addAttribute("postclass", new PostClass());
         
+        utc.sessionUsername(req);
         utc.modelTransfer(model);
         
         return "pages/userpage";
     }
     
     @PostMapping("/postcontrol")
-    public String userPostControl(@ModelAttribute("postclass")PostClass pc, ModelMap model, RedirectAttributes ra) throws IOException
+    public String userPostControl(@ModelAttribute("postclass")PostClass pc, HttpServletRequest req, 
+    ModelMap model, RedirectAttributes ra) throws IOException
     {
+        utc.modelUsername(model);
         String path = utc.getFilePath()+"dist_img";
         String date = utc.getDate();
         
         String title = utc.toTitleCase(pc.getTitle().trim());
         String content = pc.getContent().trim();
+        String rankMyPost = pc.getRank();
         String category = pc.getCategory();
         utc.modelTransfer(model);
         
@@ -134,6 +140,7 @@ public class UserController
                 pc.setTitle(title);
                 pc.setContent(content);
                 pc.setCategory(category);
+                pc.setRank(rankMyPost);
                 PostClass postClass = null;
                 //Long user_id = utc.getUser().getId();
                 
@@ -148,164 +155,329 @@ public class UserController
                     {
                         if(!content.matches("\\s*"))
                         {
-                            if(coverFile.getSize() > 0 && coverFile.getSize() <= 4000000)
+                            if(rankMyPost != null)
                             {
-                                String coverFileName = coverFile.getOriginalFilename();
-                                if(coverFileName != null && coverFileName.length() <= 50)
+                                if(coverFile.getSize() > 0 && coverFile.getSize() <= 4000000)
                                 {
-                                    if(coverFileName.endsWith(".jpg") || coverFileName.endsWith(".png") || coverFileName.endsWith(".gif") 
-                                    || coverFileName.endsWith(".jpeg") || coverFileName.endsWith(".JPG") || coverFileName.endsWith(".PNG") 
-                                    || coverFileName.endsWith(".GIF") || coverFileName.endsWith(".JPEG") || coverFileName.endsWith(".webp") 
-                                    || coverFileName.endsWith(".WEBP"))
+                                    String coverFileName = coverFile.getOriginalFilename();
+                                    if(coverFileName != null && coverFileName.length() <= 50)
                                     {
-                                        switch(category)
+                                        if(coverFileName.endsWith(".jpg") || coverFileName.endsWith(".png") || coverFileName.endsWith(".gif") 
+                                        || coverFileName.endsWith(".jpeg") || coverFileName.endsWith(".JPG") || coverFileName.endsWith(".PNG") 
+                                        || coverFileName.endsWith(".GIF") || coverFileName.endsWith(".JPEG") || coverFileName.endsWith(".webp") 
+                                        || coverFileName.endsWith(".WEBP"))
                                         {
-                                            case "mypost":
+                                            switch(category)
                                             {
-                                                if(content.length() < 1500)
+                                                case "mypost":
                                                 {
-                                                    model.addAttribute("alert", "Content must be more than 1500 characters [" + pc.getContent().length() +"]");
-                                                    return "pages/userpage";
-                                                }
-                                                postClass = new PostClass(utc.getUser(), title, content, category, coverFileName, date);
-                                            }
-                                            break;
-                                    
-                                            case "opinion":
-                                            {
-                                                if(content.length() < 1500)
-                                                {
-                                                    model.addAttribute("alert", "Content must be more than 1500 characters [" + pc.getContent().length() +"]");
-                                                    return "pages/userpage";
-                                                }
-                                                postClass = new PostClass(utc.getUser(), title, content, category, coverFileName, date);
-                                            }
-                                            break;
-                                    
-                                            case "memelogic":
-                                            {
-                                                if(pc.getContent().contains("<_") && pc.getContent().contains("_>"))
-                                                {
+                                                    if(content.length() < 1500)
+                                                    {
+                                                        model.addAttribute("alert", "Content must be more than 1500 characters [" + pc.getContent().length() +"]");
+                                                        return "pages/userpage";
+                                                    }
                                                     postClass = new PostClass(utc.getUser(), title, content, category, coverFileName, date);
                                                 }
-                                                else
-                                                {
-                                                    model.addAttribute("alert", "Content must have at least one image file");
-                                                    return "pages/userpage";
-                                                }
-                                            }
-                                            break;
+                                                break;
                                     
-                                            case "poetic_justice":
-                                            {
-                                                if(content.length() < 1500)
+                                                case "opinion":
                                                 {
-                                                    model.addAttribute("alert", "Content must be more than 1500 characters [" + pc.getContent().length() +"]");
-                                                    return "pages/userpage";
+                                                    if(content.length() < 1500)
+                                                    {
+                                                        model.addAttribute("alert", "Content must be more than 1500 characters [" + pc.getContent().length() +"]");
+                                                        return "pages/userpage";
+                                                    }
+                                                    postClass = new PostClass(utc.getUser(), title, content, category, coverFileName, date);
                                                 }
-                                                postClass = new PostClass(utc.getUser(), title, content, category, coverFileName, date);
-                                            }
-                                            break;
+                                                break;
                                     
-                                            case "zex_battle":
-                                            {
-                                                if(content.length() < 1500)
+                                                case "memelogic":
                                                 {
-                                                    model.addAttribute("alert", "Content must be more than 1500 characters [" + pc.getContent().length() +"]");
-                                                    return "pages/userpage";
+                                                    if(pc.getContent().contains("<_") && pc.getContent().contains("_>"))
+                                                    {
+                                                        postClass = new PostClass(utc.getUser(), title, content, category, coverFileName, date);
+                                                    }
+                                                    else
+                                                    {
+                                                        model.addAttribute("alert", "Content must have at least one image file");
+                                                        return "pages/userpage";
                                                 }
-                                                postClass = new PostClass(utc.getUser(), title, content, category, coverFileName, date);
+                                                }
+                                                break;
+                                    
+                                                case "poetic_justice":
+                                                {
+                                                    if(content.length() < 1500)
+                                                    {
+                                                        model.addAttribute("alert", "Content must be more than 1500 characters [" + pc.getContent().length() +"]");
+                                                        return "pages/userpage";
+                                                    }
+                                                    postClass = new PostClass(utc.getUser(), title, content, category, coverFileName, date);
+                                                }
+                                                break;
+                                    
+                                                case "zex_battle":
+                                                {
+                                                    if(content.length() < 1500)
+                                                    {
+                                                        model.addAttribute("alert", "Content must be more than 1500 characters [" + pc.getContent().length() +"]");
+                                                        return "pages/userpage";
+                                                    }
+                                                    postClass = new PostClass(utc.getUser(), title, content, category, coverFileName, date);
+                                                }
+                                                break;
                                             }
-                                            break;
-                                        }
                                         
-                                        pcr.save(postClass);
-                                        File pathToFile=new File(path, coverFileName);
-                                        coverFile.transferTo(pathToFile);
-                                        /*
-                                        PostClass postklass = pcr.getOnePost(user_id, date, title);
-                                        mor.save(new MessageObject(postklass.getId(), user_id));    //for followers seeing ur posts
-                                        */
-                                        ra.addFlashAttribute("alert", "Posted");
-                                        return "redirect:/user/login";
+                                            pcr.save(postClass);
+                                            File pathToFile=new File(path, coverFileName);
+                                            coverFile.transferTo(pathToFile);
+                                            /*
+                                            PostClass postklass = pcr.getOnePost(user_id, date, title);
+                                            mor.save(new MessageObject(postklass.getId(), user_id));    //for followers seeing ur posts
+                                            */
+                                            ra.addFlashAttribute("alert", "Posted");
+                                            return "redirect:/user/login";
+                                        }
+                                        else
+                                        {
+                                            model.addAttribute("alert", "Invalid image format (suported: jpg, png, gif, webp)");
+                                        }
                                     }
                                     else
                                     {
-                                        model.addAttribute("alert", "Invalid image format (suported: jpg, png, gif, webp)");
+                                        model.addAttribute("alert", "Cover Image name too long (less than 50 characters)");
                                     }
+                                }
+                                else if(coverFile.getSize() == 0)   //why not use coverFile.isEmpty()
+                                {
+                                    String coverFileName = "empty.png";
+                    
+                                    switch(category)
+                                    {
+                                        case "mypost":
+                                        {
+                                            if(content.length() < 1500)
+                                            {
+                                                model.addAttribute("alert", "Content must be more than 1500 characters [" + pc.getContent().length() +"]");
+                                                return "pages/userpage";
+                                            }
+                                            postClass = new PostClass(utc.getUser(), title, content, category, coverFileName, date);
+                                        }
+                                        break;
+                                    
+                                        case "opinion":
+                                        {
+                                            if(content.length() < 1500)
+                                            {
+                                                model.addAttribute("alert", "Content must be more than 1500 characters [" + pc.getContent().length() +"]");
+                                                return "pages/userpage";
+                                            }
+                                            postClass = new PostClass(utc.getUser(), title, content, category, coverFileName, date);
+                                        }
+                                        break;
+                            
+                                        case "memelogic":
+                                        {
+                                            model.addAttribute("alert", "Memelogic must have a cover image");
+                                            return "pages/userpage";
+                                        }
+                                    
+                                        case "poetic_justice":
+                                        {
+                                            if(content.length() < 1500)
+                                            {
+                                                model.addAttribute("alert", "Content must be more than 1500 characters [" + pc.getContent().length() +"]");
+                                                return "pages/userpage";
+                                            }
+                                            postClass = new PostClass(utc.getUser(), title, content, category, coverFileName, date);
+                                        }
+                                        break;
+                                    
+                                        case "zex_battle":
+                                        {
+                                            if(content.length() < 1500)
+                                            {
+                                                model.addAttribute("alert", "Content must be more than 1500 characters [" + pc.getContent().length() +"]");
+                                                return "pages/userpage";
+                                            }
+                                            postClass = new PostClass(utc.getUser(), title, content, category, coverFileName, date);
+                                        }
+                                    }
+                    
+                                    pcr.save(postClass);
+                                    /*
+                                    PostClass postklass = pcr.getOnePost(user_id, date, title);
+                                    mor.save(new MessageObject(postklass.getId(), user_id));
+                                    */
+                                    ra.addFlashAttribute("alert", "Posted");
+                                    return "redirect:/user/login";
                                 }
                                 else
                                 {
-                                    model.addAttribute("alert", "Cover Image name too long (less than 50 characters)");
+                                    model.addAttribute("alert", "File size exceeded (4MB or less)");
                                 }
-                            }
-                            else if(coverFile.getSize() == 0)   //why not use coverFile.isEmpty()
-                            {
-                                String coverFileName = "empty.png";
-                    
-                                switch(category)
-                                {
-                                    case "mypost":
-                                    {
-                                        if(content.length() < 1500)
-                                        {
-                                            model.addAttribute("alert", "Content must be more than 1500 characters [" + pc.getContent().length() +"]");
-                                            return "pages/userpage";
-                                        }
-                                        postClass = new PostClass(utc.getUser(), title, content, category, coverFileName, date);
-                                    }
-                                    break;
-                                    
-                                    case "opinion":
-                                    {
-                                        if(content.length() < 1500)
-                                        {
-                                            model.addAttribute("alert", "Content must be more than 1500 characters [" + pc.getContent().length() +"]");
-                                            return "pages/userpage";
-                                        }
-                                        postClass = new PostClass(utc.getUser(), title, content, category, coverFileName, date);
-                                    }
-                                    break;
-                            
-                                    case "memelogic":
-                                    {
-                                        model.addAttribute("alert", "Memelogic must have a cover image");
-                                        return "pages/userpage";
-                                    }
-                                    
-                                    case "poetic_justice":
-                                    {
-                                        if(content.length() < 1500)
-                                        {
-                                            model.addAttribute("alert", "Content must be more than 1500 characters [" + pc.getContent().length() +"]");
-                                            return "pages/userpage";
-                                        }
-                                        postClass = new PostClass(utc.getUser(), title, content, category, coverFileName, date);
-                                    }
-                                    break;
-                                    
-                                    case "zex_battle":
-                                    {
-                                        if(content.length() < 1500)
-                                        {
-                                            model.addAttribute("alert", "Content must be more than 1500 characters [" + pc.getContent().length() +"]");
-                                            return "pages/userpage";
-                                        }
-                                        postClass = new PostClass(utc.getUser(), title, content, category, coverFileName, date);
-                                    }
-                                }
-                    
-                                pcr.save(postClass);
-                                /*
-                                PostClass postklass = pcr.getOnePost(user_id, date, title);
-                                mor.save(new MessageObject(postklass.getId(), user_id));
-                                */
-                                ra.addFlashAttribute("alert", "Posted");
-                                return "redirect:/user/login";
                             }
                             else
                             {
-                                model.addAttribute("alert", "File size exceeded (4MB or less)");
+                                if(coverFile.getSize() > 0 && coverFile.getSize() <= 4000000)
+                                {
+                                    String coverFileName = coverFile.getOriginalFilename();
+                                    if(coverFileName != null && coverFileName.length() <= 50)
+                                    {
+                                        if(coverFileName.endsWith(".jpg") || coverFileName.endsWith(".png") || coverFileName.endsWith(".gif") 
+                                        || coverFileName.endsWith(".jpeg") || coverFileName.endsWith(".JPG") || coverFileName.endsWith(".PNG") 
+                                        || coverFileName.endsWith(".GIF") || coverFileName.endsWith(".JPEG") || coverFileName.endsWith(".webp") 
+                                        || coverFileName.endsWith(".WEBP"))
+                                        {
+                                            switch(category)
+                                            {
+                                                case "mypost":
+                                                {
+                                                    if(content.length() < 1500)
+                                                    {
+                                                        model.addAttribute("alert", "Content must be more than 1500 characters [" + pc.getContent().length() +"]");
+                                                        return "pages/userpage";
+                                                    }
+                                                    postClass = new PostClass(utc.getUser(), 0L, title, content, category, coverFileName, date);
+                                                }
+                                                break;
+                                    
+                                                case "opinion":
+                                                {
+                                                    if(content.length() < 1500)
+                                                    {
+                                                        model.addAttribute("alert", "Content must be more than 1500 characters [" + pc.getContent().length() +"]");
+                                                        return "pages/userpage";
+                                                    }
+                                                    postClass = new PostClass(utc.getUser(), 0L, title, content, category, coverFileName, date);
+                                                }
+                                                break;
+                                    
+                                                case "memelogic":
+                                                {
+                                                    if(pc.getContent().contains("<_") && pc.getContent().contains("_>"))
+                                                    {
+                                                        postClass = new PostClass(utc.getUser(), 0L, title, content, category, coverFileName, date);
+                                                    }
+                                                    else
+                                                    {
+                                                        model.addAttribute("alert", "Content must have at least one image file");
+                                                        return "pages/userpage";
+                                                }
+                                                }
+                                                break;
+                                    
+                                                case "poetic_justice":
+                                                {
+                                                    if(content.length() < 1500)
+                                                    {
+                                                        model.addAttribute("alert", "Content must be more than 1500 characters [" + pc.getContent().length() +"]");
+                                                        return "pages/userpage";
+                                                    }
+                                                    postClass = new PostClass(utc.getUser(), 0L, title, content, category, coverFileName, date);
+                                                }
+                                                break;
+                                    
+                                                case "zex_battle":
+                                                {
+                                                    if(content.length() < 1500)
+                                                    {
+                                                        model.addAttribute("alert", "Content must be more than 1500 characters [" + pc.getContent().length() +"]");
+                                                        return "pages/userpage";
+                                                    }
+                                                    postClass = new PostClass(utc.getUser(), 0L, title, content, category, coverFileName, date);
+                                                }
+                                                break;
+                                            }
+                                        
+                                            pcr.save(postClass);
+                                            File pathToFile=new File(path, coverFileName);
+                                            coverFile.transferTo(pathToFile);
+                                            /*
+                                            PostClass postklass = pcr.getOnePost(user_id, date, title);
+                                            mor.save(new MessageObject(postklass.getId(), user_id));    //for followers seeing ur posts
+                                            */
+                                            ra.addFlashAttribute("alert", "Posted");
+                                            return "redirect:/user/login";
+                                        }
+                                        else
+                                        {
+                                            model.addAttribute("alert", "Invalid image format (suported: jpg, png, gif, webp)");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        model.addAttribute("alert", "Cover Image name too long (less than 50 characters)");
+                                    }
+                                }
+                                else if(coverFile.getSize() == 0)   //why not use coverFile.isEmpty()
+                                {
+                                    String coverFileName = "empty.png";
+                    
+                                    switch(category)
+                                    {
+                                        case "mypost":
+                                        {
+                                            if(content.length() < 1500)
+                                            {
+                                                model.addAttribute("alert", "Content must be more than 1500 characters [" + pc.getContent().length() +"]");
+                                                return "pages/userpage";
+                                            }
+                                            postClass = new PostClass(utc.getUser(), 0L, title, content, category, coverFileName, date);
+                                        }
+                                        break;
+                                    
+                                        case "opinion":
+                                        {
+                                            if(content.length() < 1500)
+                                            {
+                                                model.addAttribute("alert", "Content must be more than 1500 characters [" + pc.getContent().length() +"]");
+                                                return "pages/userpage";
+                                            }
+                                            postClass = new PostClass(utc.getUser(), 0L, title, content, category, coverFileName, date);
+                                        }
+                                        break;
+                            
+                                        case "memelogic":
+                                        {
+                                            model.addAttribute("alert", "Memelogic must have a cover image");
+                                            return "pages/userpage";
+                                        }
+                                    
+                                        case "poetic_justice":
+                                        {
+                                            if(content.length() < 1500)
+                                            {
+                                                model.addAttribute("alert", "Content must be more than 1500 characters [" + pc.getContent().length() +"]");
+                                                return "pages/userpage";
+                                            }
+                                            postClass = new PostClass(utc.getUser(), 0L, title, content, category, coverFileName, date);
+                                        }
+                                        break;
+                                    
+                                        case "zex_battle":
+                                        {
+                                            if(content.length() < 1500)
+                                            {
+                                                model.addAttribute("alert", "Content must be more than 1500 characters [" + pc.getContent().length() +"]");
+                                                return "pages/userpage";
+                                            }
+                                            postClass = new PostClass(utc.getUser(), 0L, title, content, category, coverFileName, date);
+                                        }
+                                    }
+                    
+                                    pcr.save(postClass);
+                                    /*
+                                    PostClass postklass = pcr.getOnePost(user_id, date, title);
+                                    mor.save(new MessageObject(postklass.getId(), user_id));
+                                    */
+                                    ra.addFlashAttribute("alert", "Posted");
+                                    return "redirect:/user/login";
+                                }
+                                else
+                                {
+                                    model.addAttribute("alert", "File size exceeded (4MB or less)");
+                                }
                             }
                         }
                         else
@@ -331,9 +503,10 @@ public class UserController
     @GetMapping("cmt")
     public String comment(@RequestParam("pos")Optional<Long> post_id, @RequestParam("t")Optional<String> title, 
     @RequestParam("p") Optional<Integer> pg, ModelMap model, @RequestParam("page")Optional<Integer> commentPaginate, 
-    @RequestParam("akt")Optional<String> action)
+    @RequestParam("akt")Optional<String> action, HttpServletRequest req)
     {
         String ret= null;
+        utc.sessionUsername(req);
         
         switch(action.orElse("cmt"))
         {
@@ -498,15 +671,18 @@ public class UserController
     }
     
     @GetMapping("/fallback")
-    public String getFallbackpage(ModelMap model)
+    public String getFallbackpage(ModelMap model, HttpServletRequest req)
     {
+        utc.modelUsername(model);
         utc.modelTransfer(model);
         return "pages/userfallbackpage";
     }
     
     @GetMapping("/flpost")
-    public String getFollowedPost(@RequestParam("pg")Optional<Integer> page, ModelMap model, RedirectAttributes ra)
+    public String getFollowedPost(@RequestParam("pg")Optional<Integer> page, HttpServletRequest req, 
+    ModelMap model, RedirectAttributes ra)
     {
+        utc.modelUsername(model);
         int init = 0;
         int end = 1;
         List<PostClass> pcList3 = new LinkedList<>();
@@ -564,8 +740,9 @@ public class UserController
     
     @GetMapping("/inbox")
     public String getInbox(ModelMap model, @RequestParam("pg")Optional<Integer> page,
-    RedirectAttributes ra)
+    RedirectAttributes ra, HttpServletRequest req)
     {
+        utc.modelUsername(model);
         int init = 0;
         int end = 1;
         List<MessageObject> mobj = new LinkedList<>();
@@ -616,8 +793,9 @@ public class UserController
     
     @GetMapping("/rcd")
     public String getRecord(ModelMap model, @RequestParam("pg")Optional<Integer> page, 
-    RedirectAttributes ra)
+    RedirectAttributes ra, HttpServletRequest req)
     {
+        utc.modelUsername(model);
         int init = 0;
         int end = 1;
         List<PostClass> tobj = new LinkedList<>();

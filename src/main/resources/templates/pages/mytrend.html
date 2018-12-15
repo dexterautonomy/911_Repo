@@ -52,7 +52,7 @@
                 <div class="col-sm-3" style="padding: 8px; background-color: rgb(248,248,248);">
                     <div class="thumbnail" style="text-align: center; background-color: rgb(247,247,247);">
                         <img src="" th:src="@{/files/system_img/logo.jpg}" width="80" height="80" alt="onenaijalogo" style="border-radius: 50%;"/><br/><br/>
-                        <div class="caption" th:text="${'@ ' + session.username}"></div>
+                        <div class="caption postcomment_username" th:text="${'@' + username}"></div>
                     </div><br/>
                         
                     <div>
@@ -84,12 +84,11 @@
                     
                     <div class="list-group centertinz">
                         <div th:each="trend : ${trendobj}">
-                            <a class="list-group-item" style="border-right: 2px solid green" th:href="@{/}" >
+                            <a class="list-group-item" style="display: inline-block; width:91%;" th:href="@{/}" >
                                 <div class="row">
                                     <div id="chead" class="list-group-item-text" th:text="${trend.title}"></div>
                                     
                                     <div class="smallfont">
-                                        <span>Me</span>&nbsp;&nbsp;
                                         <span th:text="${trend.duration}"></span>&nbsp;&nbsp;
                                         <span style="color: black;" class="glyphicon glyphicon-eye-open"></span>
                                         <span th:text="${trend.views}"></span>&nbsp;&nbsp;
@@ -101,6 +100,10 @@
                                         <span th:text="${trend.likes}"></span>
                                     </div>
                                 </div>
+                            </a>
+                            
+                            <a style="display: inline-block; width: 5%; float: right;" th:href="@{/}">
+                                <span class="glyphicon glyphicon-trash" style="color: red;"></span>
                             </a>
                         </div>
                     </div>

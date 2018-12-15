@@ -13,16 +13,15 @@ public class PostClass implements Serializable
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
-    
+    private Long id;    
     @Column(name = "likes")
-    private Long likes = 0L;
-    
+    private Long likes = 0L;    
     @Column(name = "views")
-    private Long views = 0L;
-    
+    private Long views = 0L;    
     @Column(name = "approved")
-    private int approved = 0;
+    private int approved = 0;    
+    @Column(name = "post_rank")
+    private Long postrank;
     
     // Add flag column so that the owners can delete the post from their trend list
     @Column(name = "flag")
@@ -35,7 +34,7 @@ public class PostClass implements Serializable
     @Column(name = "content")
     private String content;
     @Column(name = "category")
-    private String category = "mypost";
+    private String category = "memelogic";
     
     @Transient
     private String duration;
@@ -49,6 +48,8 @@ public class PostClass implements Serializable
     private MultipartFile contentFile;
     @Transient 
     private MultipartFile coverFile;
+    @Transient
+    private String rank;
     
     // UserClass <--- PostClass Relationship
     @Column(name = "user_id")
@@ -75,6 +76,18 @@ public class PostClass implements Serializable
         this.category = category;
         this.coverImage = coverImage;
         this.date = date;
+        this.postrank = uc.getUserrank();
+    }
+    
+    public PostClass(UserClass uc, Long postrank, String title, String content, String category, String coverImage, String date)
+    {
+        this.user_id = uc.getId();
+        this.title = title;
+        this.content = content;
+        this.category = category;
+        this.coverImage = coverImage;
+        this.date = date;
+        this.postrank = postrank;
     }
     
     public Long getId()
@@ -110,6 +123,16 @@ public class PostClass implements Serializable
     public int getApproved()
     {
         return approved;
+    }
+    
+    public void setPostrank(Long value)
+    {
+        this.postrank = value;
+    }
+    
+    public Long getPostrank()
+    {
+        return postrank;
     }
     
     public void setTitle(String value)
@@ -190,6 +213,16 @@ public class PostClass implements Serializable
     public MultipartFile getCoverFile()
     {
         return coverFile;
+    }
+    
+    public void setRank(String value)
+    {
+        this.rank = value;
+    }
+    
+    public String getRank()
+    {
+        return rank;
     }
     
     // FOR NEW CHANGES

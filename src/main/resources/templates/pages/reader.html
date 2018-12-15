@@ -61,16 +61,20 @@
                     <div class="panel-heading title centertinz" th:text="*{title}"></div>
                         
                     <div class="panel-body">
+                        <div style="overflow: auto;">
+                            <span th:classappend="*{postrank} != 0 ? 'prclass' : 'hidden'" th:text="*{'PR: ' + postrank}"></span>
+                        </div>
+                        
                         <div class="justify" th:utext="*{content}"></div><br/>
 
                         <div>
-                            <a class="postcomment_username smallfont"><span th:text="*{'By: @ ' + userone.username}"></span></a><br/>
+                            <a class="postcomment_username smallfont"><span th:text="*{userone.username} == ${session.username} ? 'By me' : *{'By @' + userone.username}"></span></a><br/>
                         </div>
                         
                         <div class="centertinz">
-                            <a class="btn" th:href="@{user/cmt(akt=cmt, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg})}"><span class="glyphicon glyphicon-comment"></span>&nbsp;<span class="smallfont" th:text="${commentsExt.totalElements}">Comment</span></a>&nbsp;&nbsp;&nbsp;&nbsp;
-                            <a class="btn" th:href="@{user/cmt(akt=lk, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg})}"><span style="color: green;" class="glyphicon glyphicon-thumbs-up"></span>&nbsp;<span class="smallfont" th:text="*{likes}"></span></a>&nbsp;&nbsp;&nbsp;&nbsp;
-                            <a class="btn"><span style="color: red;" class="glyphicon glyphicon-flag"></span>&nbsp;<span class="smallfont" th:text="*{likes}"></span></a>&nbsp;&nbsp;&nbsp;&nbsp;
+                            <a class="btn" th:href="@{user/cmt(akt=cmt, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg})}"><span class="glyphicon glyphicon-comment"></span>&nbsp;<span class="smallfont" th:text="${commentsExt.totalElements}">Comment</span></a>&nbsp;&nbsp;
+                            <a class="btn" th:href="@{user/cmt(akt=lk, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg})}"><span style="color: green;" class="glyphicon glyphicon-thumbs-up"></span>&nbsp;<span class="smallfont" th:text="*{likes}"></span></a>&nbsp;&nbsp;
+                            <a class="btn"><span style="color: red;" class="glyphicon glyphicon-flag"></span>&nbsp;<span class="smallfont" th:text="*{likes}"></span></a>&nbsp;&nbsp;
                             <a class="btn"><span style="color: yellow;" class="glyphicon glyphicon-star"></span>&nbsp;<span class="smallfont" th:text="*{likes}"></span></a><br/>
                         </div>
 
@@ -83,42 +87,47 @@
                         <div th:each="comment : ${commentsExt}">
                             <div class="row">
                                 <div class="col-xs-1">
-                                    <img th:style="'box-shadow: 0px 7px 15px rgb(0,132,82);'" class="roundimg" src="" th:src="@{'/files/profile_img/' + ${comment.usertwo.pix}}" width="50" height="50" th:alt="${comment.usertwo.username + ' pic'}"/>
+                                    <img th:classappend="${comment.usertwo.colorclass}" class="roundimg" src="" th:src="@{'/files/profile_img/' + ${comment.usertwo.pix}}" width="50" height="50" th:alt="${comment.usertwo.username + ' pic'}"/>
                                 </div>
                                 <div class="col-xs-10 justify panel panel-body postcomment_body">
                                     <div style="overflow: auto;">
-                                        <span class="postcomment_username" th:text="${'@' + comment.usertwo.username}"></span>
+                                        <span class="postcomment_username" th:text="${comment.usertwo.username} == ${session.username} ? 'Me' : ${'@' + comment.usertwo.username}"></span>
                                         <span class="postcomment_duration smallfont" th:text="${comment.duration}"></span>
                                     </div>
                                     
                                     <div th:utext="${comment.content}"></div><br/>
                                     <div class="commentBck">
-                                        <a><span class="glyphicon glyphicon-comment"></span>&nbsp;<span class="smallfont">Comments</span></a>&nbsp;&nbsp;
-                                        <a><span style="color: green;" class="glyphicon glyphicon-thumbs-up"></span>&nbsp;<span class="smallfont" th:text="${comment.likes}"></span></a>&nbsp;&nbsp;
-                                        <a class="btn"><span style="color: blue;" class="glyphicon glyphicon-share"></span>&nbsp;<span class="smallfont" th:text="${comment.likes}"></span></a>&nbsp;&nbsp;
-                                        <a><span style="color: red;" class="glyphicon glyphicon-flag"></span>&nbsp;<span class="smallfont" th:text="${comment.likes}"></span></a>&nbsp;&nbsp;
-                                        <a><span style="color: yellow;" class="glyphicon glyphicon-star"></span>&nbsp;<span class="smallfont" th:text="${comment.likes}"></span></a>&nbsp;&nbsp;
-                                        <a><span style="color: pink;" class="glyphicon glyphicon-share-alt"></span>&nbsp;<span class="smallfont">Quote</span></a><hr/>
+                                        <a><span class="glyphicon glyphicon-comment"></span>&nbsp;<span class="smallfont">Comments</span></a>&nbsp;&nbsp;&nbsp;
+                                        <a><span style="color: pink;" class="glyphicon glyphicon-share-alt"></span>&nbsp;<span class="smallfont">Quote</span></a>&nbsp;&nbsp;&nbsp;
+                                        <a><span style="color: green;" class="glyphicon glyphicon-thumbs-up"></span>&nbsp;<span class="smallfont" th:text="${comment.likes}"></span></a>&nbsp;&nbsp;&nbsp;
+                                        <a class="btn"><span style="color: blue;" class="glyphicon glyphicon-share"></span>&nbsp;<span class="smallfont" th:text="${comment.likes}"></span></a>&nbsp;&nbsp;&nbsp;
+                                        <a><span style="color: red;" class="glyphicon glyphicon-flag"></span>&nbsp;<span class="smallfont" th:text="${comment.likes}"></span></a>&nbsp;&nbsp;&nbsp;
+                                        <a><span style="color: yellow;" class="glyphicon glyphicon-star"></span>&nbsp;<span class="smallfont" th:text="${comment.likes}"></span></a>&nbsp;&nbsp;&nbsp;
+                                        <a><span style="color: grey;" class="glyphicon glyphicon-pencil" th:classappend="${comment.usertwo.username} == ${session.username} ? '' : 'hidden'"></span></a>&nbsp;&nbsp;&nbsp;
+                                        <a><span style="color: red;" class="glyphicon glyphicon-trash" th:classappend="${comment.usertwo.username} == ${session.username} ? '' : 'hidden'"></span></a><hr/>
+                                        
                                     </div>
                                     
                                     <div>
                                         <div class="row" th:each="subcom : ${comment.subcomment}">
                                             <div class="col-xs-1">
-                                                <img th:style="'box-shadow: 0px 7px 15px rgb(0,132,82);'" class="roundimg" src="" th:src="@{'/files/profile_img/' + ${subcom.userthree.pix}}" width="35" height="35" th:alt="${subcom.userthree.username + ' pic'}"/>
+                                                <img th:classappend="${subcom.userthree.colorclass}" class="roundimg" src="" th:src="@{'/files/profile_img/' + ${subcom.userthree.pix}}" width="35" height="35" th:alt="${subcom.userthree.username + ' pic'}"/>
                                             </div>
                                             <div class="col-xs-10 justify panel panel-body postsubcomment_body">
                                                 <div style="overflow: auto;">
-                                                    <span class="postcomment_username" th:text="${'@' + subcom.userthree.username}"></span>
+                                                    <span class="postcomment_username" th:text="${subcom.userthree.username} == ${session.username} ? 'Me' : ${'@' + subcom.userthree.username}"></span>
                                                     <span class="postcomment_duration smallfont" th:text="${subcom.duration}"></span>
                                                 </div>
                                                 
                                                 <div th:text="${subcom.content}"></div><br/>
                                                 
                                                 <div>
-                                                    <a><span style="color: green;" class="glyphicon glyphicon-thumbs-up"></span>&nbsp;<span class="smallfont" th:text="${subcom.likes}"></span></a>&nbsp;&nbsp;
-                                                    <a><span style="color: red;" class="glyphicon glyphicon-flag"></span>&nbsp;<span class="smallfont" th:text="${subcom.likes}"></span></a>&nbsp;&nbsp;
-                                                    <a><span style="color: yellow;" class="glyphicon glyphicon-star"></span>&nbsp;<span class="smallfont" th:text="${subcom.likes}"></span></a>&nbsp;&nbsp;
-                                                    <a><span class="glyphicon glyphicon-share-alt"></span>&nbsp;<span class="smallfont">Quote</span></a>
+                                                    <a><span class="glyphicon glyphicon-share-alt"></span>&nbsp;<span class="smallfont">Quote</span></a>&nbsp;&nbsp;&nbsp;
+                                                    <a><span style="color: green;" class="glyphicon glyphicon-thumbs-up"></span>&nbsp;<span class="smallfont" th:text="${subcom.likes}"></span></a>&nbsp;&nbsp;&nbsp;
+                                                    <a><span style="color: red;" class="glyphicon glyphicon-flag"></span>&nbsp;<span class="smallfont" th:text="${subcom.likes}"></span></a>&nbsp;&nbsp;&nbsp;
+                                                    <a><span style="color: yellow;" class="glyphicon glyphicon-star"></span>&nbsp;<span class="smallfont" th:text="${subcom.likes}"></span></a>&nbsp;&nbsp;&nbsp;
+                                                    <a><span style="color: grey;" class="glyphicon glyphicon-pencil" th:classappend="${subcom.userthree.username} == ${session.username} ? '' : 'hidden'"></span></a>&nbsp;&nbsp;&nbsp;
+                                                    <a><span style="color: red;" class="glyphicon glyphicon-trash" th:classappend="${subcom.userthree.username} == ${session.username} ? '' : 'hidden'"></span></a>
                                                 </div>
                                             </div>
                                         </div>

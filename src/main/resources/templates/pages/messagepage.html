@@ -52,7 +52,7 @@
                 <div class="col-sm-3" style="padding: 8px; background-color: rgb(248,248,248);">
                     <div class="thumbnail" style="text-align: center; background-color: rgb(247,247,247);">
                         <img src="" th:src="@{/files/system_img/logo.jpg}" width="80" height="80" alt="onenaijalogo" style="border-radius: 50%;"/><br/><br/>
-                        <div class="caption" th:text="${'@ ' + session.username}"></div>
+                        <div class="caption postcomment_username" th:text="${'@' + username}"></div>
                     </div><br/>
                         
                     <div>
@@ -94,7 +94,7 @@
                                         </a>
                                     </span>
                                 </div>
-                                <div class="list-group-item-text justify" th:text="${mo.commentmessage.content}"></div><br/>
+                                <div class="list-group-item-text justify smallfont3A" th:utext="${mo.commentmessage.content}"></div><br/>
                                 <div>
                                     <span style="color: green;" class="glyphicon glyphicon-thumbs-up"></span>&nbsp;<span class="smallfont" th:text="${mo.commentmessage.likes}"></span>&nbsp;&nbsp;
                                     <span style="color: red;" class="glyphicon glyphicon-flag"></span>&nbsp;<span class="smallfont" th:text="${mo.commentmessage.likes}"></span>&nbsp;&nbsp;
@@ -103,14 +103,14 @@
                                 <a th:href="@{'/' + ${mo.postlink}}">
                                     <div class="row list-group-item-text" th:each="mosubcomment: ${mo.commentmessage.subcomment}">
                                         <div class="col-xs-1">
-                                            <img th:style="'box-shadow: 0px 7px 15px rgb(0,132,82);'" class="roundimg" src="" th:src="@{'/files/profile_img/' + ${mosubcomment.userthree.pix}}" width="35" height="35" alt="" th:alt="${mosubcomment.userthree.username + ' pic'}" />
+                                            <img th:classappend="${mosubcomment.userthree.colorclass}" class="roundimg" src="" th:src="@{'/files/profile_img/' + ${mosubcomment.userthree.pix}}" width="35" height="35" alt="" th:alt="${mosubcomment.userthree.username + ' pic'}" />
                                         </div>
                                         <div class="col-xs-10 justify panel panel-body postsubcomment_body">
                                             <div style="overflow: auto;">
                                                 <span class="postcomment_username" th:text="${mosubcomment.userthree.username} == ${session.username} ? 'Me' : ${'@' + mosubcomment.userthree.username}"></span>
                                                 <span class="postcomment_duration smallfont" th:text="${mosubcomment.duration}"></span>
                                             </div>
-                                            <div th:text="${mosubcomment.content}"></div><br/>
+                                            <div class="smallfont3" th:text="${mosubcomment.content}" style="color: black;"></div><br/>
                                             <div>
                                                 <span style="color: green;" class="glyphicon glyphicon-thumbs-up"></span>&nbsp;<span class="smallfont" th:text="${mosubcomment.likes}"></span>&nbsp;&nbsp;
                                                 <span style="color: red;" class="glyphicon glyphicon-flag"></span>&nbsp;<span class="smallfont" th:text="${mosubcomment.likes}"></span>&nbsp;&nbsp;
