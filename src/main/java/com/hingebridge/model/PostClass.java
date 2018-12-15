@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class PostClass implements Serializable
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
     
@@ -24,6 +24,10 @@ public class PostClass implements Serializable
     @Column(name = "approved")
     private int approved = 0;
     
+    // Add flag column so that the owners can delete the post from their trend list
+    @Column(name = "flag")
+    private int flag = 1;
+    
     @Column(name = "postdate")
     private String date;
     @Column(name = "title")
@@ -35,9 +39,6 @@ public class PostClass implements Serializable
     
     @Transient
     private String duration;
-    
-    //@Column(name = "username")
-    //private String username;
     
     @Column(name = "coverimage")
     private String coverImage;
@@ -63,11 +64,6 @@ public class PostClass implements Serializable
     // PostClass ---> PostLikeClass Relationship
     @OneToMany(mappedBy = "postlikeclass")
     private List<PostLikeClass> plc;
-    
-    /* PostClass ---> MessageObject Relationship
-    @OneToMany(mappedBy = "postmessageobject")
-    private List<MessageObject> mobj;
-    */
     
     public PostClass(){}
     
@@ -146,18 +142,6 @@ public class PostClass implements Serializable
         return category;
     }
     
-    /*
-    public void setUsername(String value)
-    {
-        this.username = value;
-    }
-    
-    public String getUsername()
-    {
-        return username;
-    }
-    */
-    
     public void setCoverImage(String value)
     {
         this.coverImage = value;
@@ -208,9 +192,7 @@ public class PostClass implements Serializable
         return coverFile;
     }
     
-    
     // FOR NEW CHANGES
-    
     public void setUser_id(Long value)
     {
         this.user_id = value;
@@ -257,15 +239,14 @@ public class PostClass implements Serializable
     	return plc;
     }
     
-    /*
-    public void setMobj(List<MessageObject> mobj)
+    // For deletion from trend list
+    public void setFlag(int value)
     {
-        this.mobj = mobj;
+        this.flag = value;
     }
-	
-    public List<MessageObject> getMobj()
+    
+    public int getFlag()
     {
-    	return mobj;
+        return flag;
     }
-    */
 }

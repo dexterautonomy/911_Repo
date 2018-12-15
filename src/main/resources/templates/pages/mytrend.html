@@ -74,9 +74,8 @@
                 
                 <div class="col-sm-9">
                     <p class="centertinz" th:text="${alert}"></p>
-                    
-                    <div class="panel panel-success">
-                        <div class="panel-heading title centertinz">Followed Posts</div>
+                    <div class="panel panel-primary">
+                        <div class="panel-heading title centertinz">My Trends</div>
                     </div>
                     
                     <div th:classappend="${theclass}">
@@ -84,22 +83,22 @@
                     </div>
                     
                     <div class="list-group centertinz">
-                        <div th:each="post : ${followpost}">
-                            <a class="list-group-item" style="border-right: 2px solid green" th:href="@{/usr_sch(pos=${post.id}, t=${post.title}, p=${pg})}" >
+                        <div th:each="trend : ${trendobj}">
+                            <a class="list-group-item" style="border-right: 2px solid green" th:href="@{/}" >
                                 <div class="row">
-                                    <div id="chead" class="list-group-item-text" th:text="${post.title}"></div>
+                                    <div id="chead" class="list-group-item-text" th:text="${trend.title}"></div>
                                     
                                     <div class="smallfont">
-                                        <span th:text="${'@' + post.userone.username}"></span>&nbsp;&nbsp;
-                                        <span th:text="${post.duration}"></span>&nbsp;&nbsp;
+                                        <span>Me</span>&nbsp;&nbsp;
+                                        <span th:text="${trend.duration}"></span>&nbsp;&nbsp;
                                         <span style="color: black;" class="glyphicon glyphicon-eye-open"></span>
-                                        <span th:text="${post.views}"></span>&nbsp;&nbsp;
+                                        <span th:text="${trend.views}"></span>&nbsp;&nbsp;
                                         <span style="color: green;" class="glyphicon glyphicon-thumbs-up"></span>
-                                        <span th:text="${post.likes}"></span>&nbsp;&nbsp;
+                                        <span th:text="${trend.likes}"></span>&nbsp;&nbsp;
                                         <span style="color: red;" class="glyphicon glyphicon-flag"></span>
-                                        <span th:text="${post.likes}"></span>&nbsp;&nbsp;
+                                        <span th:text="${trend.likes}"></span>&nbsp;&nbsp;
                                         <span style="color: yellow;" class="glyphicon glyphicon-star"></span>
-                                        <span th:text="${post.likes}"></span>
+                                        <span th:text="${trend.likes}"></span>
                                     </div>
                                 </div>
                             </a>
@@ -109,10 +108,10 @@
                     <div>
                         <ul class="pager centertinz">
                             <li th:style="'display:'+@{${disp1}}+';'">
-                                <a class="btn" th:href="@{/user/flpost(pg= ${prev})}"> Previous </a>
+                                <a class="btn" th:href="@{/user/rcd(pg= ${prev})}"> Previous </a>
                             </li>
                             <li th:style="'display:'+@{${disp2}}+';'">
-                                <a class="btn" th:href="@{/user/flpost(pg=${next})}"> Next </a>
+                                <a class="btn" th:href="@{/user/rcd(pg=${next})}"> Next </a>
                             </li>
                         </ul>
                     </div><br/>

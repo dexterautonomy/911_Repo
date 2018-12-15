@@ -2,7 +2,6 @@ package com.hingebridge.web.usercontrollers;
 
 import com.hingebridge.model.CommentClass;
 import com.hingebridge.model.FollowerObject;
-import com.hingebridge.model.PagerModel;
 import com.hingebridge.model.MessageObject;
 import com.hingebridge.model.PostClass;
 import com.hingebridge.repository.CommentClassRepo;
@@ -21,8 +20,6 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -59,6 +56,9 @@ public class UserController
         session = req.getSession();
         session.setAttribute("username", utc.getUser().getUsername());
         model.addAttribute("postclass", new PostClass());
+        
+        utc.modelTransfer(model);
+        
         return "pages/userpage";
     }
     
@@ -71,6 +71,7 @@ public class UserController
         String title = utc.toTitleCase(pc.getTitle().trim());
         String content = pc.getContent().trim();
         String category = pc.getCategory();
+        utc.modelTransfer(model);
         
         switch(pc.getActionButton())
         {
@@ -497,65 +498,19 @@ public class UserController
     }
     
     @GetMapping("/fallback")
-    public String getFallbackpage()
+    public String getFallbackpage(ModelMap model)
     {
+        utc.modelTransfer(model);
         return "pages/userfallbackpage";
     }
     
-    
-    /*
     @GetMapping("/flpost")
-    public String getInbox(HttpServletRequest req, HttpSession session, ModelMap model, @RequestParam("pg")Optional<Integer> page,
-    RedirectAttributes ra)
-    {
-        final int INITIAL_PAGE = 0;
-        final int INITIAL_PAGE_SIZE = 1;    //Change to 100 later
-        int pagex = (page.orElse(0) < 1 ? INITIAL_PAGE : page.get() - 1);
-        
-        List<FollowerObject> followedObj = fobjr.getSelectedFollow(utc.getUser().getId()); //Are you following people? Oya get their ids
-        if(!followedObj.isEmpty())  //If you really are following someone
-        {
-            Page<PostClass> followPost = pcr.followersPost(followedObj, PageRequest.of(pagex, INITIAL_PAGE_SIZE));   //Get all followed posts
-            
-            if(followPost != null)  //If there is really a followed post
-            {
-                if(followPost.isEmpty())
-                {
-                    model.addAttribute("clickagain", "No followed post within this block, click next/previous");
-                }
-                PagerModel pgn = new PagerModel(followPost.getTotalPages(), followPost.getNumber());
-                model.addAttribute("followpost", followPost);
-                model.addAttribute("pgn", pgn);
-                if(followPost.getNumber() == 0)
-                {
-                    model.addAttribute("disp1", "none");
-                }
-                if(followPost.getNumber() + 1 == followPost.getTotalPages())
-                {
-                    model.addAttribute("disp2", "none");
-                }
-            }
-            else    //If there is no followed post
-            {
-                ra.addFlashAttribute("alert", "Followed post is empty");
-                return "redirect:/user/fallback";
-            }
-        }
-        else    //If you do not have followers
-        {
-            ra.addFlashAttribute("alert", "Empty inbox, follow people to see what they post");
-            return "redirect:/user/fallback";
-        }
-        return "pages/followedpost";
-    }
-    */
-    
-    @GetMapping("/flpost")
-    public String getInbox(@RequestParam("pg")Optional<Integer> page, ModelMap model, RedirectAttributes ra)
+    public String getFollowedPost(@RequestParam("pg")Optional<Integer> page, ModelMap model, RedirectAttributes ra)
     {
         int init = 0;
         int end = 1;
         List<PostClass> pcList3 = new LinkedList<>();
+        utc.modelTransfer(model);
         
         if(page.get() > 1)
         {
@@ -607,50 +562,14 @@ public class UserController
         return "pages/followedpost";
     }
     
-    /*
     @GetMapping("/inbox")
-    public String getRecord(HttpServletRequest req, HttpSession session, ModelMap model, @RequestParam("pg")Optional<Integer> page,
-    RedirectAttributes ra)
-    {
-        final int INITIAL_PAGE = 0;
-        final int INITIAL_PAGE_SIZE = 1;    //Change to 100 later
-        int pagex = (page.orElse(0) < 1 ? INITIAL_PAGE : page.get() - 1);
-        
-        Page<MessageObject> mo = mobjr.getMyMessage(utc.getUser().getId(), PageRequest.of(pagex, INITIAL_PAGE_SIZE));   //Get all followed posts
-        if(mo != null)  //If there are messages
-        {
-            if(mo.isEmpty())
-            {
-                model.addAttribute("clickagain", "No notifications within this block, click next/previous");
-            }
-            PagerModel pgn = new PagerModel(mo.getTotalPages(), mo.getNumber());
-            model.addAttribute("messageobj", mo);
-            model.addAttribute("pgn", pgn);
-            if(mo.getNumber() == 0)
-            {
-                model.addAttribute("disp1", "none");
-            }
-            if(mo.getNumber() + 1 == mo.getTotalPages())
-            {
-                model.addAttribute("disp2", "none");
-            }
-        }
-        else    //If there are no messages
-        {
-            ra.addFlashAttribute("clickagain", "No notifications");
-            return "redirect:/user/fallback";
-        }
-        return "pages/messagepage";
-    }
-    */
-    
-    @GetMapping("/inbox")
-    public String getRecord(ModelMap model, @RequestParam("pg")Optional<Integer> page,
+    public String getInbox(ModelMap model, @RequestParam("pg")Optional<Integer> page,
     RedirectAttributes ra)
     {
         int init = 0;
         int end = 1;
         List<MessageObject> mobj = new LinkedList<>();
+        utc.modelTransfer(model);
         
         if(page.get() > 1)
         {
@@ -659,6 +578,7 @@ public class UserController
         }
         
         List<MessageObject> mo = mobjr.getMyMessage(utc.getUser().getId());   //Get all followed posts
+        utc.modelTransfer(model);
         if(!mo.isEmpty())  //If there are messages
         {
             if(mo.size() < end)
@@ -687,24 +607,66 @@ public class UserController
         }
         else    //If there are no messages
         {
-            ra.addFlashAttribute("clickagain", "No notifications");
+            ra.addFlashAttribute("alert", "No notifications");
             return "redirect:/user/fallback";
         }
         return "pages/messagepage";
     }
     
-    /*
+    
     @GetMapping("/rcd")
-    public String getRecord(HttpServletRequest req, HttpSession session, ModelMap model)
+    public String getRecord(ModelMap model, @RequestParam("pg")Optional<Integer> page, 
+    RedirectAttributes ra)
     {
-        session = req.getSession();
-        final String[] blocks = {"firstblock", "secondblock", "fourthblock", "fifthblock", "sixthblock"};
-        utc.dispBlock(session, "thirdblock", blocks);
+        int init = 0;
+        int end = 1;
+        List<PostClass> tobj = new LinkedList<>();
+        utc.modelTransfer(model);
         
-        model.addAttribute("postclass", new PostClass());
-        return "pages/userpage";
+        if(page.get() > 1)
+        {
+            init = (page.get() - 1) * end;
+            end = end * page.get();
+        }
+        List<PostClass> trend =  pcr.getAllMyPost(utc.getUser().getId());   //Get all my posts
+        utc.modelTransfer(model);
+        
+        if(!trend.isEmpty())  //If there are messages
+        {
+            if(trend.size() < end)
+            {
+                end = trend.size();
+            }
+            for(int count = init; count < end; count++)
+            {
+                tobj.add(trend.get(count));
+            }
+            
+            model.addAttribute("trendobj", tobj);
+            model.addAttribute("prev", page.get()-1);
+            model.addAttribute("next", page.get()+1);
+                
+            if(page.get() - 1 == 0)
+            {
+                model.addAttribute("disp1", "none");
+            }
+            if(tobj.isEmpty())
+            {
+                model.addAttribute("clickagain", "No post available");
+                model.addAttribute("disp2", "none");
+                model.addAttribute("theclass", "realcentertinz");
+            }
+        }
+        else    //If there are no messages
+        {
+            ra.addFlashAttribute("alert", "You are yet to make a post");
+            return "redirect:/user/fallback";
+        }
+        
+        return "pages/mytrend";
     }
     
+    /*
     @GetMapping("/prf")
     public String editProfile(HttpServletRequest req, HttpSession session, ModelMap model)
     {

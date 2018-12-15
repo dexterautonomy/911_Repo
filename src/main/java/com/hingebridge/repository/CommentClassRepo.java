@@ -15,7 +15,4 @@ public interface CommentClassRepo extends JpaRepository<CommentClass, Long>
     
     @Query("SELECT cc FROM CommentClass cc WHERE cc.id = :id")
     public Optional<CommentClass> getComment(@Param("id")Long id);
-    
-    //@Query("SELECT cc FROM CommentClass cc WHERE cc.post_id = :id AND cc.approved = 1")
-    //public List<CommentClass> getApprovedComments(@Param("id")Long id);
 }

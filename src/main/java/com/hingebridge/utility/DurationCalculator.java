@@ -41,92 +41,82 @@ public class DurationCalculator
         
         Duration duration = Duration.between(ldt, now);
         long minutes = duration.toMinutes();
+        long hours = minutes/60;
+        long days = minutes/1440;
+        long weeks = minutes/10080;
+        long months = minutes/43200;
+        long years = minutes/525600;
         
         if(minutes < 1)
         {
             duree = "Just now";
         }
-        else if(minutes < 2)
+        else if(hours < 1)
         {
-            duree = "1 min ago";
+            if(minutes > 1)
+            {
+                duree = minutes + " mins ago";
+            }
+            else
+            {
+                duree = "a minute ago";
+            }
         }
-        else if(minutes < 3)
+        else if(days < 1)
         {
-            duree = "2 mins ago";
+            if(hours > 1)
+            {
+                duree = hours + " hrs ago";
+            }
+            else
+            {
+                duree = "an hour ago";
+            }
         }
-        else if(minutes < 4)
+        else if(weeks < 1)
         {
-            duree = "3 mins ago";
+            if(days > 1)
+            {
+                duree = days + " days ago";
+            }
+            else
+            {
+                duree = "yesterday";
+            }
         }
-        else if(minutes < 5)
+        else if(months < 1)
         {
-            duree = "4 mins ago";
+            if(weeks > 1)
+            {
+                duree = weeks + " wks ago";
+            }
+            else
+            {
+                duree = "last week";
+            }
         }
-        else if(minutes < 6)
+        else if(years < 1)
         {
-            duree = "5 mins ago";
+            if(months > 1)
+            {
+                duree = months + " mths ago";
+            }
+            else
+            {
+                duree = "last month";
+            }
         }
-        else if(minutes < 7)
+        else
         {
-            duree = "6 mins ago";
+            if(years > 1)
+            {
+                duree = years + " yrs ago";
+            }
+            else
+            {
+                duree = "last year";
+            }
         }
-        else if(minutes < 8)
-        {
-            duree = "7 mins ago";
-        }
-        else if(minutes < 9)
-        {
-            duree = "8 mins ago";
-        }
-        else if(minutes < 10)
-        {
-            duree = "9 mins ago";
-        }
-        else if(minutes < 11)
-        {
-            duree = "3 mins ago";
-        }
-        else if(minutes < 20)
-        {
-            duree = "10+ mins ago";
-        }
-        else if(minutes < 30)
-        {
-            duree = "20+ mins ago";
-        }
-        else if(minutes < 40)
-        {
-            duree = "30+ mins ago";
-        }
-        else if(minutes < 50)
-        {
-            duree = "40+ mins ago";
-        }
-        else if(minutes < 60)
-        {
-            duree = "50+ mins ago";
-        }
-        else if(minutes < 120)
-        {
-            duree = "1+ hrs ago";
-        }
-        else if(minutes < 180)
-        {
-            duree = "2+ hrs ago";
-        }
-        else if(minutes < 240)
-        {
-            duree = "3+ hrs ago";
-        }
-        else if(minutes < 300)
-        {
-            duree = "4+ hrs ago";
-        }
-        else if(minutes < 360)
-        {
-            duree = "5+ hrs ago";
-        }
-        
         
         return duree;
     }

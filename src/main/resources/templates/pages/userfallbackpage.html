@@ -57,9 +57,9 @@
                         
                     <div>
                         <a class="smallfont2" th:href="@{/user/login}">Compose</a><hr/>
-                        <a class="smallfont2" th:href="@{/user/inbox(pg=1)}">Inbox <span class="badge">102</span></a><hr/>
-                        <a class="smallfont2" th:href="@{/user/flpost(pg=1)}">Followed Posts</a><hr/>
-                        <a class="smallfont2" th:href="@{/user/rcd}">My Trend<span class="badge">1025</span></a><hr/>
+                        <a class="smallfont2" th:href="@{/user/inbox(pg=1)}">Inbox <span class="badge smallfont" th:text="${size}"></span></a><hr/>
+                        <a class="smallfont2" th:href="@{/user/flpost(pg=1)}">Followed Posts <span class="badge smallfont" th:text="${pize}"></span></a><hr/>
+                        <a class="smallfont2" th:href="@{/user/rcd(pg=1)}">My Trend <span class="badge smallfont" th:text="${tize}"></span></a><hr/>
                         <a class="smallfont2" th:href="@{/user/prf}">Edit Profile</a><hr/>
                         <a class="smallfont2" th:href="@{/user/ads}">Create Ad</a><hr/>
                         <a class="smallfont2" th:href="@{/user/adm}">Manage Ad <span class="badge">125</span></a><hr/>
@@ -73,7 +73,6 @@
                 
                 <div class="col-sm-9 realcentertinz">
                     <span th:text="${alert}"></span>
-                    <span th:text="${clickagain}"></span>
                 </div>
             </div>
             

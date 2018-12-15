@@ -57,9 +57,9 @@
                         
                     <div>
                         <a class="smallfont2" th:href="@{/user/login}">Compose</a><hr/>
-                        <a class="smallfont2" th:href="@{/user/inbox(pg=1)}">Inbox <span class="badge">102</span></a><hr/>
-                        <a class="smallfont2" th:href="@{/user/flpost(pg=1)}">Followed Posts</a><hr/>
-                        <a class="smallfont2" th:href="@{/user/rcd}">My Trend<span class="badge">1025</span></a><hr/>
+                        <a class="smallfont2" th:href="@{/user/inbox(pg=1)}">Inbox <span class="badge smallfont" th:text="${size}"></span></a><hr/>
+                        <a class="smallfont2" th:href="@{/user/flpost(pg=1)}">Followed Posts <span class="badge smallfont" th:text="${pize}"></span></a><hr/>
+                        <a class="smallfont2" th:href="@{/user/rcd(pg=1)}">My Trend <span class="badge smallfont" th:text="${tize}"></span></a><hr/>
                         <a class="smallfont2" th:href="@{/user/prf}">Edit Profile</a><hr/>
                         <a class="smallfont2" th:href="@{/user/ads}">Create Ad</a><hr/>
                         <a class="smallfont2" th:href="@{/user/adm}">Manage Ad <span class="badge">125</span></a><hr/>
@@ -72,11 +72,8 @@
                 </div>
                 
                 
-                <div class="col-sm-9" th:classappend="${session.secondblock}">
-                    <p style="text-align: center; color: blue;" th:text="${alert}"></p>
-                    
-                    <div class="centertinz" th:text="${message}"></div>
-                    
+                <div class="col-sm-9">
+                    <p class="centertinz" th:text="${alert}"></p>
                     <div class="panel panel-info">
                         <div class="panel-heading title centertinz">Inbox</div>
                     </div>

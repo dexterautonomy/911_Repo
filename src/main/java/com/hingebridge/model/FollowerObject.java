@@ -8,7 +8,7 @@ import javax.persistence.*;
 public class FollowerObject implements Serializable
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
     @Column(name = "user_id")
@@ -17,12 +17,6 @@ public class FollowerObject implements Serializable
     private Long follower_id;
     @Column(name = "flag")
     private int flag = 1;
-    
-    /*
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", updatable = false, insertable = false, nullable = false)
-    private UserClass userfollowobject;
-    */
     
     public FollowerObject(){}
     
@@ -66,16 +60,4 @@ public class FollowerObject implements Serializable
     {
         return follower_id;
     }
-    
-    /*
-    public void setUserfollowobject(UserClass uc)
-    {
-        userfollowobject = uc;
-    }
-    
-    public UserClass getUserfollowobject()
-    {
-        return userfollowobject;
-    }
-    */
 }

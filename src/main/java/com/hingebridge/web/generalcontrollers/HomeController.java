@@ -231,22 +231,4 @@ public class HomeController
         
         return "pages/reader";
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    @GetMapping("test")
-    public String getttt2()
-    {
-        return "pages/userpage";
-    }
 }

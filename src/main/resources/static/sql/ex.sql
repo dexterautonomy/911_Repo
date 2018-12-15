@@ -35,7 +35,7 @@ create table userrole
     constraint `fk_role` foreign key (`roleid`) references `roleclass` (`id`)
 );
 
-create table postclass
+create table postclass  //no more useful
 (
     id int unsigned not null auto_increment primary key,
     likes int unsigned not null,
@@ -52,7 +52,7 @@ create table postclass
 );
 
 
-create table postuserclass
+create table postuserclass  //no more useful
 (
     postid int unsigned not null,
     userid int unsigned not null,

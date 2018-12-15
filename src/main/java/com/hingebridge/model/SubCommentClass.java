@@ -9,7 +9,7 @@ import javax.persistence.*;
 public class SubCommentClass implements Serializable
 {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
     
@@ -96,7 +96,6 @@ public class SubCommentClass implements Serializable
     }    
     
     //FOR NEW CHANGES
-    
     public void setUser_id(Long value)
     {
         this.user_id = value;

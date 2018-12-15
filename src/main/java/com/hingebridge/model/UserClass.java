@@ -12,7 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class UserClass implements Serializable
 {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="id")
     private Long id;
     @Column(name="myposts")
@@ -32,6 +32,21 @@ public class UserClass implements Serializable
     private int commentban = 0;
     @Column(name="active")
     private int active = 0;
+    
+    @Column(name="yellow_star")
+    private Long yellowstar = 0L;
+    @Column(name="red_flag")
+    private Long redflag = 0L;
+    @Column(name="blue_share")
+    private Long blueshare = 0L;
+    @Column(name="green_like")
+    private Long greenlike = 0L;
+    @Column(name="black_view")
+    private Long blackview = 0L;
+    @Column(name="rating")
+    private Long rating = 0L;
+    @Column(name="color_class")
+    private String colorclass = "user_beginner";
 	
     @Column(name="pix")
     private String pix = "empty.png";
@@ -66,16 +81,6 @@ public class UserClass implements Serializable
     // UserClass ---> PostLikeClass Relationship
     @OneToMany(mappedBy = "userlikeclass")
     private List<PostLikeClass> plc;
-    
-    /*UserClass ---> MessageObject Relationship
-    @OneToMany(mappedBy = "sender")
-    private List<MessageObject> mobj;
-    */
-    
-    /* UserClass ---> FollowerObject Relationship
-    @OneToMany(mappedBy = "userfollowobject")
-    private List<FollowerObject> fobj;
-    */
     
     public UserClass(){}
 	
@@ -285,27 +290,74 @@ public class UserClass implements Serializable
     	return plc;
     }
     
-    /*
-    public void setMobj(List<MessageObject> mobj)
+    public void setYellowstar(Long value)
     {
-        this.mobj = mobj;
+    	yellowstar = value;
     }
 	
-    public List<MessageObject> getMobj()
+    public Long getYellowstar()
     {
-    	return mobj;
+    	return yellowstar;
     }
-    */
     
-    /*
-    public void setFobj(List<FollowerObject> fobj)
+    public void setRedflag(Long value)
     {
-        this.fobj = fobj;
+    	redflag = value;
     }
 	
-    public List<FollowerObject> getFobj()
+    public Long getRedflag()
     {
-    	return fobj;
+    	return redflag;
     }
-    */
+    
+    public void setBlueshare(Long value)
+    {
+    	blueshare = value;
+    }
+	
+    public Long getBlueshare()
+    {
+    	return blueshare;
+    }
+    
+    public void setGreenlike(Long value)
+    {
+    	greenlike = value;
+    }
+	
+    public Long getGreenlike()
+    {
+    	return greenlike;
+    }
+    
+    public void setBlackview(Long value)
+    {
+    	blackview = value;
+    }
+	
+    public Long getBlackview()
+    {
+    	return blackview;
+    }
+    
+    public void setRating(Long value)
+    {
+    	rating = value;
+    }
+	
+    public Long getRating()
+    {
+    	return rating;
+    }
+    
+    public void setColorclass(String value)
+    {
+    	colorclass = value;
+    }
+	
+    public String getColorclass()
+    {
+    	return colorclass;
+    }
+    
 }

@@ -1,14 +1,19 @@
 package com.hingebridge.utility;
 
 import com.hingebridge.model.CommentClass;
+import com.hingebridge.model.FollowerObject;
+import com.hingebridge.model.MessageObject;
 import com.hingebridge.model.PostClass;
 import com.hingebridge.model.SubCommentClass;
 import com.hingebridge.model.UserClass;
 import com.hingebridge.repository.CommentClassRepo;
+import com.hingebridge.repository.FollowerObjectRepo;
+import com.hingebridge.repository.MessageObjectRepo;
 import com.hingebridge.repository.PostClassRepo;
 import com.hingebridge.repository.UserClassRepo;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +23,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import com.hingebridge.repository.SubCommentClassRepo;
 import javax.servlet.http.HttpSession;
+import org.springframework.ui.ModelMap;
 
 @Component
 @PropertySource("classpath:application.properties")
@@ -27,14 +33,18 @@ public class UtilityClass
     String filePath;
     
     @Autowired
-    UserClassRepo ucr;
+    private UserClassRepo ucr;
     @Autowired
-    PostClassRepo pcr;
-    
+    private MessageObjectRepo mobjr;
     @Autowired
-    CommentClassRepo ccr;
+    private PostClassRepo pcr;
     @Autowired
-    SubCommentClassRepo qcr;
+    private FollowerObjectRepo fobjr;
+    /*@Autowired
+    private CommentClassRepo ccr;
+    @Autowired
+    private SubCommentClassRepo qcr;
+    */
     
     public UserClass getUser()
     {
@@ -44,6 +54,12 @@ public class UtilityClass
         return uc.orElse(null);
     }
     
+    public String getFilePath()
+    {
+        return filePath;
+    }
+    
+    /*
     public PostClass getPost(Long id, String title)
     {
         Optional<PostClass> pc = pcr.getPostReader(id, title);
@@ -61,11 +77,7 @@ public class UtilityClass
         Optional<SubCommentClass> subcom = qcr.getSubComment(id);
         return subcom.get();
     }
-    
-    public String getFilePath()
-    {
-        return filePath;
-    }
+    */
     
     public String getDate()
     {
@@ -129,4 +141,40 @@ public class UtilityClass
         }
     }
     */
+    
+    public long getMessageObjSize()
+    {
+        List<MessageObject> mo = mobjr.getMyMessage(getUser().getId());
+        return mo.size();
+    }
+    
+    public long getFollowedPostSize()
+    {
+        long size;
+        
+        List<FollowerObject> followedObj = fobjr.getSelectedFollow(getUser().getId());
+        if(!followedObj.isEmpty())
+        {
+            List<PostClass> po = pcr.followersPost(followedObj);
+            size = po.size();
+        }
+        else
+        {
+            size = 0l;
+        }
+        return size;
+    }
+    
+    public long getMyTrendSize()
+    { 
+        List<PostClass> trendSize = pcr.getAllMyPost(getUser().getId());
+        return trendSize.size();
+    }
+    
+    public void modelTransfer(ModelMap model)
+    {
+        model.addAttribute("size", getMessageObjSize());
+        model.addAttribute("pize", getFollowedPostSize());
+        model.addAttribute("tize", getMyTrendSize());
+    }
 }
