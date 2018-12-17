@@ -199,7 +199,7 @@ public class HomeController
     @RequestParam("alertx")Optional<String> alert)
     {
         final int INITIAL_PAGE = 0;
-        final int INITIAL_PAGE_SIZE = 1;    //pageSize is the offset
+        final int INITIAL_PAGE_SIZE = 15;    //pageSize is the offset
         int page = (commentPaginate.orElse(0) < 1 ? INITIAL_PAGE : commentPaginate.get() - 1);    //page is the LIMIT            
         
         Optional<PostClass> pc = pcr.getPostReader(id.orElse(1L), title.orElse(""));

@@ -52,8 +52,8 @@
             <div class="row">
                 <div class="col-sm-3" style="padding: 8px; background-color: rgb(248,248,248);">
                     <div class="thumbnail" style="text-align: center; background-color: rgb(247,247,247);">
-                        <img src="" th:src="@{/files/system_img/logo.jpg}" width="80" height="80" alt="onenaijalogo" style="border-radius: 50%;"/><br/><br/>
-                        <div class="caption postcomment_username" th:text="${'@' + username}"></div>
+                        <img src="" th:src="@{/files/system_img/logo.jpg}" width="80" height="80" alt="onenaijalogo" style="border-radius: 50%;"/>
+                        <div class="caption postcomment_username" th:text="${'@' + username + ' - ' + userrank}"></div>
                     </div><br/>
                         
                     <div>
@@ -89,29 +89,40 @@
                             
                             <div class="form-group">
                                 <input id="coverimg" class="btn btn-sm btn-default" th:field="*{coverFile}" type="file" style="display: inline"/>
-                                <label for="coverimg" style="display: inline">Cover Image (Optional)</label>
+                                <label for="coverimg" style="display: inline; font-weight: normal;">Cover Image (Optional)</label>
                             </div><br/>
                             
                             <div class="form-group" style="text-align: center;">
                                 <div class="radio-inline">
-                                    <label><input type="radio" th:field="*{category}" value="mypost" checked=""/> Post</label>
+                                    <label style="font-weight: normal;">
+                                        <input type="radio" th:field="*{category}" value="mypost" checked=""/> Post
+                                    </label>
                                 </div>
                                 <div class="radio-inline">
-                                    <label><input type="radio" th:field="*{category}" value="opinion"/> Opinion</label>
+                                    <label style="font-weight: normal;">
+                                        <input type="radio" th:field="*{category}" value="opinion"/> Opinion
+                                    </label>
                                 </div>
                                 <div class="radio-inline">
-                                    <label><input type="radio" th:field="*{category}" value="memelogic"/> Memelogic</label>
+                                    <label style="font-weight: normal;">
+                                        <input type="radio" th:field="*{category}" value="memelogic"/> Memelogic
+                                    </label>
                                 </div>
                                 <div class="radio-inline">
-                                    <label><input type="radio" th:field="*{category}" value="poetic_justice"/> Poetic Justice</label>
+                                    <label style="font-weight: normal;">
+                                        <input type="radio" th:field="*{category}" value="poetic_justice"/> Poetic Justice
+                                    </label>
                                 </div>
                                 <div class="radio-inline">
-                                    <label><input type="radio" th:field="*{category}" value="zex_battle"/> Battle of the sexes</label>
+                                    <label style="font-weight: normal;">
+                                        <input type="radio" th:field="*{category}" value="zex_battle"/> Battle of the sexes
+                                    </label>
                                 </div><br/>
-            			
                                 
                                 <div class="checkbox">
-                                    <label><input type="checkbox" th:field="*{rank}" value="rank" checked=""/> Rank this post</label>
+                                    <label>
+                                        <input type="checkbox" th:field="*{rank}" value="rank" checked=""/> Rank this post
+                                    </label>
                                 </div><br/>
                                 
                                 <button class="btn btn-success btn-block" name="actionButton" value="post"><span class="glyphicon glyphicon-user"></span> Post</button>    

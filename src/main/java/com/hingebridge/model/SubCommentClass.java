@@ -50,6 +50,15 @@ public class SubCommentClass implements Serializable
         this.postdate = postdate;
     }
     
+    public SubCommentClass(long uc_id, long cc_id, String content, String postdate)
+    {
+        user_id = uc_id;
+        this.comment_id = cc_id;
+        this.content = content;
+        this.postdate = postdate;
+    }
+    
+    
     public Long getId()
     {
         return id;

@@ -197,5 +197,7 @@ public class UtilityClass
     public void modelUsername(ModelMap model)
     {
         model.addAttribute("username", getUser().getUsername());
+        model.addAttribute("userrank", getUser().getUserrank());
+        
     }
 }

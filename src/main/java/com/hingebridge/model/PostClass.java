@@ -15,9 +15,15 @@ public class PostClass implements Serializable
     @Column(name = "id")
     private Long id;    
     @Column(name = "likes")
-    private Long likes = 0L;    
+    private Long likes = 0l;
+    
+    @Column(name = "red_flag")
+    private long redflag = 0l;
+    @Column(name = "star_flag")
+    private long star = 0l;
+    
     @Column(name = "views")
-    private Long views = 0L;    
+    private Long views = 0l;    
     @Column(name = "approved")
     private int approved = 0;    
     @Column(name = "post_rank")
@@ -62,12 +68,13 @@ public class PostClass implements Serializable
     @OneToMany(mappedBy = "postclassone", fetch = FetchType.EAGER)
     private List<CommentClass> comments;
     
-    // PostClass ---> PostLikeClass Relationship
+    // PostClass ---> PostReactionClass Relationship
     @OneToMany(mappedBy = "postlikeclass")
-    private List<PostLikeClass> plc;
+    private List<PostReactionClass> plc;
     
     public PostClass(){}
     
+    //Constructor for ranked post
     public PostClass(UserClass uc, String title, String content, String category, String coverImage, String date)
     {
         this.user_id = uc.getId();
@@ -79,6 +86,7 @@ public class PostClass implements Serializable
         this.postrank = uc.getUserrank();
     }
     
+    //Constructor for unranked post
     public PostClass(UserClass uc, Long postrank, String title, String content, String category, String coverImage, String date)
     {
         this.user_id = uc.getId();
@@ -103,6 +111,26 @@ public class PostClass implements Serializable
     public Long getLikes()
     {
         return likes;
+    }
+    
+    public void setRedflag(long value)
+    {
+        redflag = value;
+    }
+    
+    public long getRedflag()
+    {
+        return redflag;
+    }
+    
+    public void setStar(long value)
+    {
+        star = value;
+    }
+    
+    public long getStar()
+    {
+        return star;
     }
     
     public void setViews(Long value)
@@ -262,12 +290,12 @@ public class PostClass implements Serializable
         return new DurationCalculator().calculateDuration(date);
     }
     
-    public void setPlc(List<PostLikeClass> plc)
+    public void setPlc(List<PostReactionClass> plc)
     {
         this.plc = plc;
     }
 	
-    public List<PostLikeClass> getPlc()
+    public List<PostReactionClass> getPlc()
     {
     	return plc;
     }

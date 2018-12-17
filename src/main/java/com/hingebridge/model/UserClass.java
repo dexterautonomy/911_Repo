@@ -80,9 +80,9 @@ public class UserClass implements Serializable
     @OneToMany(mappedBy = "userthree")
     private List<SubCommentClass> quotes;
     
-    // UserClass ---> PostLikeClass Relationship
+    // UserClass ---> PostReactionClass Relationship
     @OneToMany(mappedBy = "userlikeclass")
-    private List<PostLikeClass> plc;
+    private List<PostReactionClass> plc;
     
     public UserClass(){}
 	
@@ -282,12 +282,12 @@ public class UserClass implements Serializable
     	return quotes;
     }
     
-    public void setPlc(List<PostLikeClass> plc)
+    public void setPlc(List<PostReactionClass> plc)
     {
         this.plc = plc;
     }
 	
-    public List<PostLikeClass> getPlc()
+    public List<PostReactionClass> getPlc()
     {
     	return plc;
     }

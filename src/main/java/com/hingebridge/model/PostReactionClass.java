@@ -4,8 +4,8 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "postlikeclass")
-public class PostLikeClass implements Serializable
+@Table(name = "postreactionclass")
+public class PostReactionClass implements Serializable
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,8 +15,12 @@ public class PostLikeClass implements Serializable
     private Long post_id;
     @Column(name = "userid")
     private Long user_id;
-    @Column(name = "flag")
-    private int flag = 1;
+    @Column(name = "like_flag")
+    private int likeflag;
+    @Column(name = "red_flag")
+    private int redflag;
+    @Column(name = "star_flag")
+    private int starflag;
     
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "postid", insertable = false, updatable = false, nullable = false)
@@ -26,12 +30,15 @@ public class PostLikeClass implements Serializable
     @JoinColumn(name = "userid", insertable = false, updatable = false, nullable = false)
     private UserClass userlikeclass;
     
-    public PostLikeClass(){}
+    public PostReactionClass(){}
     
-    public PostLikeClass(Long post_id, Long user_id)
+    public PostReactionClass(Long post_id, Long user_id, int likeflag, int redflag, int starflag)
     {
         this.post_id = post_id;
         this.user_id = user_id;
+        this.likeflag = likeflag;
+        this.redflag = redflag;
+        this.starflag = starflag;
     }
     
     public Long getId()
@@ -59,15 +66,36 @@ public class PostLikeClass implements Serializable
         return user_id;
     }
     
-    public void setFlag(int value)
+    public void setLikeflag(int value)
     {
-        flag = value;
+        likeflag = value;
     }
     
-    public int getFlag()
+    public int getLikeflag()
     {
-        return flag;
+        return likeflag;
     }
+    
+    public void setRedflag(int value)
+    {
+        redflag = value;
+    }
+    
+    public int getRedflag()
+    {
+        return redflag;
+    }
+    
+    public void setStarflag(int value)
+    {
+        starflag = value;
+    }
+    
+    public int getStarflag()
+    {
+        return starflag;
+    }
+    
     
     public void setPostlikeclass(PostClass pc)
     {

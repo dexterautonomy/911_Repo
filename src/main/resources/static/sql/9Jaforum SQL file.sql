@@ -46,6 +46,8 @@ create table postclass
     id int unsigned not null auto_increment primary key,
     user_id int unsigned not null,
     likes int unsigned not null,
+    red_flag int unsigned not null,
+    star_flag int unsigned not null,
     views int unsigned not null,
     approved int unsigned not null,
     post_rank int unsigned not null,
@@ -57,7 +59,6 @@ create table postclass
     coverimage varchar(255) not null,
     constraint `user_post_01` foreign key (`user_id`) references userclass(`id`)
 );
-
 
 create table commentclass
 (
@@ -86,12 +87,14 @@ create table subcommentclass
     constraint `comment_quoted_01` foreign key (`comment_id`) references commentclass(`id`)
 );
 
-create table postlikeclass
+create table postreactionclass
 (
     id int unsigned not null auto_increment primary key,
     postid int unsigned not null,
     userid int unsigned not null,
-    flag int not null,
+    like_flag int not null,
+    red_flag int not null,
+    star_flag int not null,
     constraint `fk_post_like_id` foreign key (`postid`) references `postclass` (`id`),
     constraint `fk_user_like_id` foreign key (`userid`) references `userclass` (`id`)
 );
