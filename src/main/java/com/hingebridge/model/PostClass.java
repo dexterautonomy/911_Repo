@@ -47,7 +47,9 @@ public class PostClass implements Serializable
     
     @Column(name = "coverimage")
     private String coverImage;
-     
+    
+    @Transient
+    private String content_2;
     @Transient
     private String actionButton;
     @Transient
@@ -181,6 +183,16 @@ public class PostClass implements Serializable
     public String getContent()
     {
         return content;
+    }
+    
+    public void setContent_2(String value)
+    {
+        this.content_2 = value;
+    }
+    
+    public String getContent_2()
+    {
+        return content_2;
     }
     
     public void setCategory(String value)

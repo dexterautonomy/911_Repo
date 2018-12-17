@@ -84,6 +84,11 @@ public class UserClass implements Serializable
     @OneToMany(mappedBy = "userlikeclass")
     private List<PostReactionClass> plc;
     
+    // UserClass ---> QuoteObject Relationship
+    @OneToMany(mappedBy = "userquoteobj")
+    private List<QuoteObject> quoteobj;
+    
+    
     public UserClass(){}
 	
     public UserClass(String email, String gender, String username, String password, String confirmemail)
@@ -372,4 +377,13 @@ public class UserClass implements Serializable
     	return colorclass;
     }
     
+    public void setQuoteobj(List<QuoteObject> qobj)
+    {
+        quoteobj = qobj;
+    }
+    
+    public List<QuoteObject> getQuoteobj()
+    {
+        return quoteobj;
+    }
 }

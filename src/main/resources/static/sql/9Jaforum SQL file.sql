@@ -117,4 +117,15 @@ create table followerobject
     follower_id int unsigned not null,
     flag int not null
 );
+
+create table quoteobject
+(
+    id int unsigned not null auto_increment primary key,
+    user_id int unsigned not null,
+    comment_id int unsigned not null,
+    content text not null,
+    quote_date varchar(255) not null,
+    constraint `fk_quote_user_1` foreign key (`user_id`) references `userclass` (`id`),
+    constraint `fk_quote_comment_1` foreign key (`comment_id`) references `commentclass` (`id`)
+);
 */

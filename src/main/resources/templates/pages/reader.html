@@ -92,10 +92,22 @@
                                 <div class="col-xs-10 justify panel panel-body postcomment_body">
                                     <div style="overflow: auto;">
                                         <span class="postcomment_username" th:text="${comment.usertwo.username} == ${session.username} ? 'Me' : ${'@' + comment.usertwo.username}"></span>
-                                        <span class="postcomment_duration smallfont" th:text="${comment.duration}"></span>
+                                        <span class="postcomment_duration" th:text="${comment.duration}"></span>
                                     </div>
                                     
-                                    <div th:utext="${comment.content}"></div><br/>
+                                    <div>
+                                        <div class="quotedCover" th:if="${comment.quoteobj} != null">
+                                            <div style="overflow: auto;">
+                                                <span class="postcomment_username" th:text="${comment.quoteobj.userquoteobj.username} == ${session.username} ? 'Me' : ${'@' + comment.quoteobj.userquoteobj.username}"></span>
+                                                <span class="postcomment_duration" th:text="${comment.quoteobj.duration}"></span>
+                                            </div>
+                                            <div th:utext="${comment.quoteobj.content}"></div>
+                                        </div>
+                                        
+                                        <div style="clear: both;" th:utext="${comment.content}"></div><br/>
+                                    </div>
+                                    
+                                    
                                     <div class="commentBck">
                                         <a th:href="@{user/cmt(akt=cmt_s, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg})}">
                                             <span class="glyphicon glyphicon-comment"></span>&nbsp;<span class="smallfont">Comments</span>
@@ -132,7 +144,7 @@
                                             <div class="col-xs-10 justify panel panel-body postsubcomment_body">
                                                 <div style="overflow: auto;">
                                                     <span class="postcomment_username" th:text="${subcom.userthree.username} == ${session.username} ? 'Me' : ${'@' + subcom.userthree.username}"></span>
-                                                    <span class="postcomment_duration smallfont" th:text="${subcom.duration}"></span>
+                                                    <span class="postcomment_duration" th:text="${subcom.duration}"></span>
                                                 </div>
                                                 
                                                 <div th:utext="${subcom.content}"></div><br/>

@@ -12,7 +12,7 @@ public class CommentClass implements Serializable
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    private long id;
     
     @Column(name="likes")
     private int likes = 0;
@@ -26,14 +26,14 @@ public class CommentClass implements Serializable
     
     // UserClass <--- CommentClass Relationship
     @Column(name = "user_id")
-    private Long user_id;
+    private long user_id;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", insertable = false, updatable = false, nullable = false)
     private UserClass usertwo;
     
     // PostClass <--- CommentClass Relationship
     @Column(name="post_id")
-    private Long post_id;
+    private long post_id;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "post_id", insertable = false, updatable = false, nullable = false)
     private PostClass postclassone;
@@ -45,6 +45,10 @@ public class CommentClass implements Serializable
     // CommentClass ---> MessageObject Relationship
     @OneToOne(mappedBy = "commentmessage")
     private MessageObject mobj;
+    
+    // CommentClass ---> QuoteObject Relationship
+    @OneToOne(mappedBy = "commentquoteobj")
+    private QuoteObject quoteobj;
     
     @Transient
     private String duration;
@@ -59,7 +63,7 @@ public class CommentClass implements Serializable
         this.postdate = postdate;
     }
     
-    public CommentClass(Long user_id, Long post_id, String content, String postdate)
+    public CommentClass(long user_id, long post_id, String content, String postdate)
     {
         this.user_id = user_id;
         this.post_id = post_id;
@@ -67,7 +71,7 @@ public class CommentClass implements Serializable
         this.postdate = postdate;
     }
     
-    public Long getId()
+    public long getId()
     {
         return id;
     }
@@ -114,22 +118,22 @@ public class CommentClass implements Serializable
     
     //FOR NEW CHANGES
     
-    public void setUser_id(Long value)
+    public void setUser_id(long value)
     {
         this.user_id = value;
     }
     
-    public Long getUser_id()
+    public long getUser_id()
     {
         return user_id;
     }
     
-    public void setPost_id(Long value)
+    public void setPost_id(long value)
     {
         this.post_id = value;
     }
     
-    public Long getPost_id()
+    public long getPost_id()
     {
         return post_id;
     }
@@ -178,5 +182,15 @@ public class CommentClass implements Serializable
     public MessageObject getMobj()
     {
     	return mobj;
+    }
+    
+    public void setQuoteobj(QuoteObject qobj)
+    {
+        quoteobj = qobj;
+    }
+    
+    public QuoteObject getQuoteobj()
+    {
+        return quoteobj;
     }
 }

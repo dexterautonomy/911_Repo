@@ -98,7 +98,8 @@ div.col-sm-10
 {
     float: right;
     font-weight: bold;
-    color: rgb(30,62,86)
+    color: rgb(30,62,86);
+    font-size: 11px;
 }
 
 .postsubcomment_body
@@ -214,4 +215,15 @@ div.col-sm-10
 div.commentBck a:hover
 {
     text-decoration: none;
+}
+
+.quotedCover
+{
+    overflow: auto;
+    background-color: rgb(255,215,255);
+    padding: 13px;
+    border-radius: 10px;
+    text-align: justify;
+    width: 90%;
+    float: right;
 }
