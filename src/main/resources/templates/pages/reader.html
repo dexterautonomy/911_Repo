@@ -119,13 +119,13 @@
                                             <span style="color: green;" class="glyphicon glyphicon-thumbs-up"></span>&nbsp;<span class="smallfont" th:text="${comment.likes}"></span>
                                         </a>&nbsp;&nbsp;&nbsp;
                                         <a th:href="@{user/cmt(akt=flg_s, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg})}">
-                                            <span style="color: red;" class="glyphicon glyphicon-flag"></span>&nbsp;<span class="smallfont" th:text="${comment.likes}"></span>
+                                            <span style="color: red;" class="glyphicon glyphicon-flag"></span>&nbsp;<span class="smallfont" th:text="${comment.redflag}"></span>
                                         </a>&nbsp;&nbsp;&nbsp;
                                         <a th:href="@{user/cmt(akt=str_s, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg})}">
-                                            <span style="color: yellow;" class="glyphicon glyphicon-star"></span>&nbsp;<span class="smallfont" th:text="${comment.likes}"></span>
+                                            <span style="color: yellow;" class="glyphicon glyphicon-star"></span>&nbsp;<span class="smallfont" th:text="${comment.star}"></span>
                                         </a>&nbsp;&nbsp;&nbsp;
                                         <a th:href="@{user/cmt(akt=shr_s, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg})}">
-                                            <span style="color: blue;" class="glyphicon glyphicon-share"></span>&nbsp;<span class="smallfont" th:text="${comment.likes}"></span>
+                                            <span style="color: blue;" class="glyphicon glyphicon-share"></span>&nbsp;<span class="smallfont" th:text="${comment.share}"></span>
                                         </a>&nbsp;&nbsp;&nbsp;
                                         <a th:href="@{user/cmt(akt=edit_s, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg})}">
                                             <span style="color: grey;" class="glyphicon glyphicon-pencil" th:classappend="${comment.usertwo.username} == ${session.username} ? '' : 'hidden'"></span>
@@ -150,7 +150,7 @@
                                                 <div th:utext="${subcom.content}"></div><br/>
                                                 
                                                 <div>
-                                                    <a><span class="glyphicon glyphicon-share-alt"></span>&nbsp;<span class="smallfont">Quote</span></a>&nbsp;&nbsp;&nbsp;
+                                                    <!--<a><span class="glyphicon glyphicon-share-alt"></span>&nbsp;<span class="smallfont">Quote</span></a>&nbsp;&nbsp;&nbsp;-->
                                                     <a><span style="color: green;" class="glyphicon glyphicon-thumbs-up"></span>&nbsp;<span class="smallfont" th:text="${subcom.likes}"></span></a>&nbsp;&nbsp;&nbsp;
                                                     <a><span style="color: red;" class="glyphicon glyphicon-flag"></span>&nbsp;<span class="smallfont" th:text="${subcom.likes}"></span></a>&nbsp;&nbsp;&nbsp;
                                                     <a><span style="color: yellow;" class="glyphicon glyphicon-star"></span>&nbsp;<span class="smallfont" th:text="${subcom.likes}"></span></a>&nbsp;&nbsp;&nbsp;

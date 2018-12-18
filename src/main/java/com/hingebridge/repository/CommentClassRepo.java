@@ -13,7 +13,7 @@ public interface CommentClassRepo extends JpaRepository<CommentClass, Long>
     @Query("SELECT cc FROM CommentClass cc WHERE cc.post_id = :id AND cc.approved = 1")
     public Page<CommentClass> getApprovedComments(@Param("id")Long id, Pageable pageable);
     
-    @Query("SELECT cc FROM CommentClass cc WHERE cc.id = :id")
+    @Query("SELECT cc FROM CommentClass cc WHERE cc.id = :id")  //Find out who is using this method
     public Optional<CommentClass> getComment(@Param("id")Long id);
     
     @Query("SELECT cc FROM CommentClass cc WHERE cc.user_id = :user_id AND cc.post_id = :post_id AND LOWER(cc.postdate) LIKE LOWER(CONCAT('%', :postdate, '%'))")

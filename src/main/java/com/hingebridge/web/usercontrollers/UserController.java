@@ -7,6 +7,7 @@ import com.hingebridge.model.PostClass;
 import com.hingebridge.model.QuoteObject;
 import com.hingebridge.model.SubCommentClass;
 import com.hingebridge.repository.CommentClassRepo;
+import com.hingebridge.repository.CommentReactionClassRepo;
 import com.hingebridge.repository.FollowerObjectRepo;
 import com.hingebridge.repository.MessageObjectRepo;
 import com.hingebridge.repository.PostClassRepo;
@@ -19,7 +20,6 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.hingebridge.repository.PostReactionClassRepo;
@@ -58,6 +57,8 @@ public class UserController
     private MessageObjectRepo mobjr;
     @Autowired
     private QuoteObjectRepo qobjr;
+    @Autowired
+    private CommentReactionClassRepo crcr;
     
     @GetMapping("/login")
     public String userHomePage(Authentication auth, HttpServletRequest req, ModelMap model)//, HttpSession session)
@@ -508,7 +509,7 @@ public class UserController
         return "pages/userpage";
     }
     
-    @GetMapping("cmt")
+    @GetMapping("/cmt")
     public String comment(@RequestParam("pos")Optional<Long> post_id, @RequestParam("t")Optional<String> title, 
     @RequestParam("p") Optional<Integer> pg, ModelMap model, @RequestParam("page")Optional<Integer> commentPaginate, 
     @RequestParam("akt")Optional<String> action, HttpServletRequest req, RedirectAttributes ra, 
@@ -551,129 +552,115 @@ public class UserController
             case "lk":
             {
                 String check = prcr.likedBefore(post_id.get(), id);  //has this user liked this post before now?
+                long likes = pc.get().getLikes();
                 
                 switch(check)
                 {
                     case "":
                     {
-                        long likes = pc.get().getLikes();
                         likes = likes + 1;
                         pc.get().setLikes(likes);
                         pcr.save(pc.get());
                         //increase the overall likes of the owner of the post by 1
-                        ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
                     }
                     break;
                     
                     case "liked":
                     {
-                        long likes = pc.get().getLikes();
                         likes = likes - 1;
                         pc.get().setLikes(likes);
-                        pcr.save(pc.get());
                         //decrease the overall likes of the owner of the post by 1
                         //check if his overall likes == 0 first, if its 0, leave it like that
-                        ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
                     }
                     break;
                     
                     case "unliked":
                     {
-                        long likes = pc.get().getLikes();
                         likes = likes + 1;
                         pc.get().setLikes(likes);
-                        pcr.save(pc.get());
                         //increase the overall likes of the owner of the post by 1
-                        ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
                     }
                     break;
                 }
+                
+                pcr.save(pc.get());
+                ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
             }
             break;
             
             case "flg":
             {
                 String check = prcr.redFlaggedBefore(post_id.get(), id);  //has this user liked this post before now?
+                long redflag = pc.get().getRedflag();
                 
                 switch(check)
                 {
                     case "":
                     {
-                        long redflag = pc.get().getRedflag();
                         redflag = redflag + 1;
                         pc.get().setRedflag(redflag);
-                        pcr.save(pc.get());
                         //increase the overall redflags of the owner of the post by 1
-                        ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
                     }
                     break;
                     
                     case "redflagged":
                     {
-                        long redflag = pc.get().getRedflag();
                         redflag = redflag - 1;
                         pc.get().setRedflag(redflag);
-                        pcr.save(pc.get());
                         //decrease the overall redflags of the owner of the post by 1
                         //check if his overall redflags == 0 first, if its 0, leave it like that
-                        ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
                     }
                     break;
                     
                     case "notredflagged":
                     {
-                        long redflag = pc.get().getRedflag();
                         redflag = redflag + 1;
                         pc.get().setRedflag(redflag);
-                        pcr.save(pc.get());
                         //increase the overall redflags of the owner of the post by 1
-                        ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
                     }
                     break;
                 }
+                
+                pcr.save(pc.get());
+                ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
             }
             break;
             
             case "str":
             {
                 String check = prcr.starredBefore(post_id.get(), id);  //has this user liked this post before now?
+                long star = pc.get().getStar();
                 
                 switch(check)
                 {
                     case "":
                     {
-                        long star = pc.get().getStar();
                         star = star + 1;
                         pc.get().setStar(star);
-                        pcr.save(pc.get());
                         //increase the overall star of the owner of the post by 1
-                        ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
                     }
                     break;
                     
                     case "starred":
                     {
-                        long star = pc.get().getStar();
                         star = star - 1;
                         pc.get().setStar(star);
-                        pcr.save(pc.get());
                         //decrease the overall star of the owner of the post by 1
                         //check if his overall star == 0 first, if its 0, leave it like that
-                        ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
                     }
                     break;
                     
                     case "notstarred":
                     {
-                        long star = pc.get().getStar();
                         star = star + 1;
                         pc.get().setStar(star);
-                        pcr.save(pc.get());
                         //increase the overall star of the owner of the post by 1
-                        ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
                     }
                     break;
                 }
+                
+                pcr.save(pc.get());
+                ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
             }
             break;
             
@@ -730,6 +717,205 @@ public class UserController
                     String alert = "Your rank is lesser than the post rank";
                     ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
                 }
+            }
+            break;
+            
+            case "lk_s":
+            {
+                String check = crcr.likedBefore(comment_id.get(), id);  //has this user liked this comment before now?
+                long likes = cc.get().getLikes();
+                
+                switch(check)
+                {
+                    case "":
+                    {
+                        likes = likes + 1;
+                        cc.get().setLikes(likes);
+                        //increase the overall likes of the owner of the post by 1
+                    }
+                    break;
+                    
+                    case "liked":
+                    {
+                        likes = likes - 1;
+                        cc.get().setLikes(likes);
+                        //decrease the overall likes of the owner of the post by 1
+                        //check if his overall likes == 0 first, if its 0, leave it like that
+                    }
+                    break;
+                    
+                    case "unliked":
+                    {
+                        likes = likes + 1;
+                        cc.get().setLikes(likes);
+                        //increase the overall likes of the owner of the post by 1
+                    }
+                    break;
+                }
+                
+                ccr.save(cc.get());
+                ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+            }
+            break;
+            
+            case "flg_s":
+            {
+                String check = crcr.redFlaggedBefore(comment_id.get(), id);  //has this user liked this comment before now?
+                long redflag = cc.get().getRedflag();
+                
+                switch(check)
+                {
+                    case "":
+                    {
+                        redflag = redflag + 1;
+                        cc.get().setRedflag(redflag);
+                        //increase the overall likes of the owner of the post by 1
+                    }
+                    break;
+                    
+                    case "redflagged":
+                    {
+                        redflag = redflag - 1;
+                        cc.get().setRedflag(redflag);
+                        //decrease the overall likes of the owner of the post by 1
+                        //check if his overall likes == 0 first, if its 0, leave it like that
+                    }
+                    break;
+                    
+                    case "notredflagged":
+                    {
+                        redflag = redflag + 1;
+                        cc.get().setRedflag(redflag);
+                        //increase the overall likes of the owner of the post by 1
+                    }
+                    break;
+                }
+                
+                ccr.save(cc.get());
+                ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+            }
+            break;
+            
+            case "str_s":
+            {
+                String check = crcr.starredBefore(comment_id.get(), id);  //has this user liked this comment before now?
+                long star = cc.get().getStar();
+                
+                switch(check)
+                {
+                    case "":
+                    {
+                        star = star + 1;
+                        cc.get().setStar(star);
+                        //increase the overall likes of the owner of the post by 1
+                    }
+                    break;
+                    
+                    case "starred":
+                    {
+                        star = star - 1;
+                        cc.get().setStar(star);
+                        //decrease the overall likes of the owner of the post by 1
+                        //check if his overall likes == 0 first, if its 0, leave it like that
+                    }
+                    break;
+                    
+                    case "notstarred":
+                    {
+                        star = star + 1;
+                        cc.get().setStar(star);
+                        //increase the overall likes of the owner of the post by 1
+                    }
+                    break;
+                }
+                
+                ccr.save(cc.get());
+                ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+            }
+            break;
+            
+            case "shr_s":
+            {
+                String check = crcr.sharedBefore(comment_id.get(), id);  //has this user liked this comment before now?
+                long shares = cc.get().getShare();
+                
+                switch(check)
+                {
+                    case "":
+                    {
+                        shares = shares + 1;
+                        cc.get().setShare(shares);
+                        //increase the overall shares of the owner of the post by 1
+                    }
+                    break;
+                    
+                    case "shared":
+                    {
+                        shares = shares - 1;
+                        cc.get().setShare(shares);
+                        //decrease the overall shares of the owner of the post by 1
+                        //check if his overall shares == 0 first, if its 0, leave it like that
+                    }
+                    break;
+                    
+                    case "unshared":
+                    {
+                        shares = shares + 1;
+                        cc.get().setShare(shares);
+                        //increase the overall likes of the owner of the post by 1
+                    }
+                    break;
+                }
+                
+                ccr.save(cc.get());
+                ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+            }
+            break;
+            
+            case "edit_s":
+            {
+                Optional<CommentClass> ccObj = ccr.findById(comment_id.get());
+                String content = ccObj.get().getContent();
+                
+                content=content.replaceAll("<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/", "<_");
+                content=content.replaceAll("'/><br/><br/>", "_>");
+                
+                if(utc.getUser().getId().equals(ccObj.get().getUser_id()))
+                {
+                    PostClass pClass = new PostClass();
+                    pClass.setContent(content);
+                    model.addAttribute("postclass", pClass);
+                    model.addAttribute("pos", post_id.get());
+                    model.addAttribute("cid", comment_id.get());
+                    model.addAttribute("t", title.get());
+                    model.addAttribute("p", pg.get());
+                    model.addAttribute("page", commentPaginate.get());
+                    ret = "pages/editcommentpage";
+                }
+                else
+                {
+                    String alert = "Cannot edit comment";
+                    ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                }
+            }
+            break;
+            
+            case "dlt_s":
+            {
+                String alert;
+                Optional<CommentClass> ccObj = ccr.findById(comment_id.get());
+                
+                if(utc.getUser().getId().equals(ccObj.get().getUser_id()))
+                {
+                    ccObj.get().setApproved(0);
+                    ccr.save(ccObj.get());
+                    alert = "Deleted";
+                }
+                else
+                {
+                    alert = "Cannot delete comment";
+                }
+                ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
             }
             break;
         }
@@ -1046,28 +1232,9 @@ public class UserController
                                  
                                 if(main_comment.contains(content_2))
                                 {
-                                    /*
-                                    String name = "<span class='postcomment_username'>@"+ ccid.get().getUsertwo().getUsername() +"</span>";
-                                    String duration = "<span class='postcomment_duration'>"+ ccid.get().getDuration()+"</span>";
-                                    String header = "<div class='quotedHeader'>"+ name + duration +"</div>";
-                                    content_2 = "<div class='quotedText'>"+ header + content_2 +"</div>";
-                                    content_2 = "<div class='quotedCover'>"+ content_2 +"</div>";
-                                    
-                                    content = "<div>"+ content +"</div>";
-                                    content = content_2 + content;
-                                    
-                                    CommentClass should have an extra field called quote for saving quotes, quote username and quote date they should be null...
-                                    Also creat a constructor for specially for quotes sake...
-                                    Better still create the quote object.
-                                    
-                                    */
-                                    
                                     CommentClass cc = new CommentClass(utc.getUser().getId(), post_id.get(), content, date);
                                     ccr.save(cc);
-                                    
                                     Optional<CommentClass> quickCom = ccr.getExactPost(utc.getUser().getId(), post_id.get(), date);
-                                    
-                                    
                                     QuoteObject qobj = new QuoteObject(ccid.get().getUser_id(), quickCom.get().getId(), content_2, ccid.get().getPostdate());
                                     qobjr.save(qobj);
                                     //Notify the owner of the comment here: Very important
@@ -1076,7 +1243,7 @@ public class UserController
                                 else
                                 {
                                     //wrong quote
-                                    model.addAttribute("alert", "This quote is wrong");
+                                    model.addAttribute("alert", "You did not quote @"+ ccid.get().getUsertwo().getUsername() + " properly");
                                 }
                             }
                         }
@@ -1088,6 +1255,107 @@ public class UserController
                     break;
                 }
                 ret = "pages/quotepage";
+            }
+            break;
+            
+            case "edit_cmt":
+            {
+                switch(pc.getActionButton())
+                {
+                    case "add_img":
+                    {
+                        model.addAttribute("pos", post_id.get());
+                        model.addAttribute("cid", comment_id.get());
+                        model.addAttribute("t", title.get());
+                        model.addAttribute("p", pg.get());
+                        model.addAttribute("page", commentPaginate.get());
+                
+                        pc.setContent(content);
+                
+                        MultipartFile contentFile =  pc.getContentFile();
+                        if(contentFile.isEmpty())
+                        {
+                            model.addAttribute("alert", "No image file selected");
+                        }
+                        else if(contentFile.getSize() > 0 && contentFile.getSize() <= 4000000)
+                        {
+                            String contentFileName = contentFile.getOriginalFilename();
+                            if(contentFileName != null && contentFileName.length() <= 50)
+                            {
+                                if(contentFileName.endsWith(".jpg") || contentFileName.endsWith(".png") || contentFileName.endsWith(".gif") 
+                                || contentFileName.endsWith(".jpeg") || contentFileName.endsWith(".JPG") || contentFileName.endsWith(".PNG") 
+                                || contentFileName.endsWith(".GIF") || contentFileName.endsWith(".JPEG") || contentFileName.endsWith(".webp") 
+                                || contentFileName.endsWith(".WEBP"))
+                                {
+                                    try
+                                    {
+                                        String imageRef="<_" + contentFileName + "_>";
+                                        pc.setContent(content + imageRef);
+                                
+                                        model.addAttribute("alert", "Image added to content");
+                                        File pathToFile=new File(path, contentFileName);
+                                        contentFile.transferTo(pathToFile);
+                                    }
+                                    catch (IllegalStateException | IOException ex) 
+                                    {
+                                        Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                }
+                                else
+                                {
+                                    model.addAttribute("alert", "Invalid image format (suported: jpg, png, gif, webp)");
+                                }
+                            }
+                            else
+                            {
+                                model.addAttribute("alert", "Content image name too long (less than 50 characters)");
+                            }
+                        }
+                        else if(contentFile.getSize() == 0)
+                        {
+                            model.addAttribute("alert", "");
+                        }
+                        else
+                        {
+                            model.addAttribute("alert", "File size exceeded (4MB or less)");
+                        }
+                    }
+                    break;
+            
+                    case "post":
+                    {
+                        pc.setContent(content);
+                
+                        content=content.replaceAll("<_", "<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
+                        content=content.replaceAll("_>", "'/><br/><br/>");
+                
+                        if(!content.matches("\\s*"))
+                        {
+                            if(content.length() > 1500)
+                            {
+                                model.addAttribute("pos", post_id.get());
+                                model.addAttribute("t", title.get());
+                                model.addAttribute("p", pg.get());
+                                model.addAttribute("page", commentPaginate.get());
+                        
+                                model.addAttribute("alert", "Comment must be less than 1500 characters [" + pc.getContent().length() +"]");
+                            }
+                            else
+                            {
+                                Optional<CommentClass> ccObj = ccr.findById(comment_id.get());
+                                ccObj.get().setContent(content);
+                                ccr.save(ccObj.get());
+                                return "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx=Posted";
+                            }
+                        }
+                        else
+                        {
+                            ra.addFlashAttribute("alertx", "Comment cannot be empty");
+                        }
+                    }
+                    break;
+                }
+                ret = "pages/editcommentpage";
             }
             break;
         }

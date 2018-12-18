@@ -88,6 +88,9 @@ public class UserClass implements Serializable
     @OneToMany(mappedBy = "userquoteobj")
     private List<QuoteObject> quoteobj;
     
+    // UserClass ---> CommentReactionClass Relationship
+    @OneToMany(mappedBy = "usercommentreactobj")
+    private List<CommentReactionClass> commentreact;
     
     public UserClass(){}
 	
@@ -385,5 +388,15 @@ public class UserClass implements Serializable
     public List<QuoteObject> getQuoteobj()
     {
         return quoteobj;
+    }
+    
+    public void setCommentreact(List<CommentReactionClass> crc)
+    {
+        this.commentreact = crc;
+    }
+	
+    public List<CommentReactionClass> getCommentreact()
+    {
+    	return commentreact;
     }
 }

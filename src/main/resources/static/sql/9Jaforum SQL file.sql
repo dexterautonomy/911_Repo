@@ -66,6 +66,9 @@ create table commentclass
     user_id int unsigned not null,
     post_id int unsigned not null,
     likes int unsigned not null,
+    red_flag int unsigned not null,
+    star_flag int unsigned not null,
+    share_flag int unsigned not null,
     approved int unsigned not null,
     content text not null,
     postdate varchar(50) not null,
@@ -73,6 +76,18 @@ create table commentclass
     constraint `post_comment_01` foreign key (`post_id`) references postclass(`id`)
 );
 
+create table commentreactionclass
+(
+    id int unsigned not null auto_increment primary key,
+    comment_id int unsigned not null,
+    user_id int unsigned not null,
+    like_flag int not null,
+    red_flag int not null,
+    star_flag int not null,
+    share_flag int not null,
+    constraint `fk_comment_react_id` foreign key (`comment_id`) references `commentclass` (`id`),
+    constraint `fk_user_comment_react_id` foreign key (`user_id`) references `userclass` (`id`)
+);
 
 create table subcommentclass
 (

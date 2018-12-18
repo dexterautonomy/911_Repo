@@ -15,7 +15,15 @@ public class CommentClass implements Serializable
     private long id;
     
     @Column(name="likes")
-    private int likes = 0;
+    private long likes = 0l;
+    
+    @Column(name = "red_flag")
+    private long redflag = 0l;
+    @Column(name = "star_flag")
+    private long star = 0l;
+    @Column(name = "share_flag")
+    private long share = 0l;
+    
     @Column(name="approved")
     private int approved = 1;
     
@@ -50,6 +58,10 @@ public class CommentClass implements Serializable
     @OneToOne(mappedBy = "commentquoteobj")
     private QuoteObject quoteobj;
     
+    // CommentClass ---> CommentReactionClass Relationship
+    @OneToMany(mappedBy = "commentreactionobj")
+    private List<CommentReactionClass> commentreact;
+    
     @Transient
     private String duration;
     
@@ -76,14 +88,44 @@ public class CommentClass implements Serializable
         return id;
     }
     
-    public void setLikes(int value)
+    public void setLikes(long value)
     {
         this.likes = value;
     }
     
-    public int getLikes()
+    public long getLikes()
     {
         return likes;
+    }
+    
+    public void setRedflag(long value)
+    {
+        redflag = value;
+    }
+    
+    public long getRedflag()
+    {
+        return redflag;
+    }
+    
+    public void setStar(long value)
+    {
+        star = value;
+    }
+    
+    public long getStar()
+    {
+        return star;
+    }
+    
+    public void setShare(long value)
+    {
+        share = value;
+    }
+    
+    public long getShare()
+    {
+        return share;
     }
     
     public void setApproved(int value)
@@ -192,5 +234,15 @@ public class CommentClass implements Serializable
     public QuoteObject getQuoteobj()
     {
         return quoteobj;
+    }
+    
+    public void setCommentreact(List<CommentReactionClass> crc)
+    {
+        this.commentreact = crc;
+    }
+	
+    public List<CommentReactionClass> getCommentreact()
+    {
+    	return commentreact;
     }
 }
