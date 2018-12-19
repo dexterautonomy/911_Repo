@@ -123,6 +123,16 @@ div.col-sm-10
     background-color: rgb(250,253,250);
 }
 
+div.commentBck a:hover
+{
+    text-decoration: none;
+}
+
+div.commentBck2 a:hover
+{
+    text-decoration: none;
+}
+/*
 .uploadbtnwrapper
 {
     position: relative;
@@ -137,6 +147,7 @@ div.col-sm-10
     right: 0;
     opacity: 0;
 }
+*/
 
 .unread
 {
@@ -164,30 +175,6 @@ div.col-sm-10
     line-height: normal;
 }
 
-.user_beginner
-{
-    box-shadow: 0px 4px 13px grey;
-}
-
-.user_low
-{
-    box-shadow: 0px 2px 10px rgb(200, 0, 0);
-}
-
-.user_amateur
-{
-    box-shadow: 0px 2px 10px rgb(0, 143, 222);
-}
-
-.user_high
-{
-    box-shadow: 0px 2px 10px rgb(0,132,82);
-}
-
-.user_pro
-{
-    box-shadow: 0px 2px 10px rgb(255, 205, 0);
-}
 .smallfont3A
 {
     font-size: 13px;
@@ -212,11 +199,6 @@ div.col-sm-10
     background-color: rgb(0, 165, 255);
     border: 1px solid rgb(0, 171, 226);
     border-radius: 5px;
-}
-
-div.commentBck a:hover
-{
-    text-decoration: none;
 }
 
 .quotedCover
@@ -251,4 +233,52 @@ div.commentBck a:hover
 .roundImage
 {
     border-radius: 50%;
+}
+
+
+
+
+
+
+
+
+
+.user_low
+{
+    box-shadow: 0px 2px 10px rgb(200, 0, 0);
+}
+
+.user_beginner
+{
+    box-shadow: 0px 4px 13px grey;
+}
+
+.user_pro
+{
+    box-shadow: 0px 2px 10px rgb(0, 143, 222);
+}
+
+.user_master
+{
+    box-shadow: 0px 2px 10px rgb(0,132,82);
+}
+
+.user_legend
+{
+    box-shadow: 0px 2px 10px violet;
+}
+
+.user_genius
+{
+    box-shadow: 0px 2px 10px aqua;
+}
+
+.user_guru
+{
+    box-shadow: 0px 2px 10px sandybrown;
+}
+
+.user_mod
+{
+    box-shadow: 0px 2px 10px lightsalmon;
 }

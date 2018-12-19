@@ -149,7 +149,7 @@
                                                 
                                                 <div th:utext="${subcom.content}"></div><br/>
                                                 
-                                                <div>
+                                                <div class="commentBck2">
                                                     <!--<a><span class="glyphicon glyphicon-share-alt"></span>&nbsp;<span class="smallfont">Quote</span></a>&nbsp;&nbsp;&nbsp;-->
                                                     <a th:href="@{user/cmt(akt=lk_x, sid=${subcom.id}, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg})}">
                                                         <span style="color: green;" class="glyphicon glyphicon-thumbs-up"></span>&nbsp;<span class="smallfont" th:text="${subcom.likes}"></span>

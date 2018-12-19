@@ -36,6 +36,7 @@ import com.hingebridge.repository.PostReactionClassRepo;
 import com.hingebridge.repository.QuoteObjectRepo;
 import com.hingebridge.repository.SubCommentClassRepo;
 import com.hingebridge.repository.SubCommentReactionClassRepo;
+import com.hingebridge.repository.UserClassRepo;
 
 @PreAuthorize("hasRole('USER')")
 @Controller
@@ -44,6 +45,8 @@ public class UserController
 {
     @Autowired
     private UtilityClass utc;
+    @Autowired
+    private UserClassRepo ucr;
     @Autowired
     private PostClassRepo pcr;
     @Autowired
@@ -519,8 +522,6 @@ public class UserController
         String ret= null;
         utc.sessionUsername(req);
         Optional<PostClass> pc = pcr.findById(post_id.get());
-        //Optional<CommentClass> cc = ccr.findById(comment_id.get());
-        //Optional<SubCommentClass> scc = sccr.findById(subcomment_id.get());
         
         long id = utc.getUser().getId();
         
@@ -546,7 +547,7 @@ public class UserController
                 {
                     //ra.addFlashAttribute("alertx", "Your rank is lesser than the post rank");
                     String alert = "Your rank is lesser than the post rank";
-                    ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
                 }
             }
             break;
@@ -564,6 +565,7 @@ public class UserController
                         pc.get().setLikes(likes);
                         pcr.save(pc.get());
                         //increase the overall likes of the owner of the post by 1
+                        utc.alterUserRateParameters(pc.get().getUser_id(), "save_like");
                     }
                     break;
                     
@@ -573,6 +575,7 @@ public class UserController
                         pc.get().setLikes(likes);
                         //decrease the overall likes of the owner of the post by 1
                         //check if his overall likes == 0 first, if its 0, leave it like that
+                        utc.alterUserRateParameters(pc.get().getUser_id(), "save_unlike");
                     }
                     break;
                     
@@ -581,12 +584,13 @@ public class UserController
                         likes = likes + 1;
                         pc.get().setLikes(likes);
                         //increase the overall likes of the owner of the post by 1
+                        utc.alterUserRateParameters(pc.get().getUser_id(), "save_like");
                     }
                     break;
                 }
                 
                 pcr.save(pc.get());
-                ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
             }
             break;
             
@@ -602,6 +606,7 @@ public class UserController
                         redflag = redflag + 1;
                         pc.get().setRedflag(redflag);
                         //increase the overall redflags of the owner of the post by 1
+                        utc.alterUserRateParameters(pc.get().getUser_id(), "save_redflag");
                     }
                     break;
                     
@@ -611,6 +616,7 @@ public class UserController
                         pc.get().setRedflag(redflag);
                         //decrease the overall redflags of the owner of the post by 1
                         //check if his overall redflags == 0 first, if its 0, leave it like that
+                        utc.alterUserRateParameters(pc.get().getUser_id(), "save_unredflag");
                     }
                     break;
                     
@@ -619,12 +625,13 @@ public class UserController
                         redflag = redflag + 1;
                         pc.get().setRedflag(redflag);
                         //increase the overall redflags of the owner of the post by 1
+                        utc.alterUserRateParameters(pc.get().getUser_id(), "save_redflag");
                     }
                     break;
                 }
                 
                 pcr.save(pc.get());
-                ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
             }
             break;
             
@@ -640,6 +647,7 @@ public class UserController
                         star = star + 1;
                         pc.get().setStar(star);
                         //increase the overall star of the owner of the post by 1
+                        utc.alterUserRateParameters(pc.get().getUser_id(), "save_star");
                     }
                     break;
                     
@@ -649,6 +657,7 @@ public class UserController
                         pc.get().setStar(star);
                         //decrease the overall star of the owner of the post by 1
                         //check if his overall star == 0 first, if its 0, leave it like that
+                        utc.alterUserRateParameters(pc.get().getUser_id(), "save_unstar");
                     }
                     break;
                     
@@ -657,12 +666,13 @@ public class UserController
                         star = star + 1;
                         pc.get().setStar(star);
                         //increase the overall star of the owner of the post by 1
+                        utc.alterUserRateParameters(pc.get().getUser_id(), "save_star");
                     }
                     break;
                 }
                 
                 pcr.save(pc.get());
-                ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
             }
             break;
             
@@ -684,7 +694,7 @@ public class UserController
                 {
                     //ra.addFlashAttribute("alertx", "Your rank is lesser than the post rank");
                     String alert = "Your rank is lesser than the post rank";
-                    ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
                 }
             }
             break;
@@ -717,7 +727,7 @@ public class UserController
                 {
                     //ra.addFlashAttribute("alertx", "Your rank is lesser than the post rank");
                     String alert = "Your rank is lesser than the post rank";
-                    ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
                 }
             }
             break;
@@ -735,6 +745,7 @@ public class UserController
                         likes = likes + 1;
                         cc.get().setLikes(likes);
                         //increase the overall likes of the owner of the post by 1
+                        utc.alterUserRateParameters(cc.get().getUser_id(), "save_like");
                     }
                     break;
                     
@@ -744,6 +755,7 @@ public class UserController
                         cc.get().setLikes(likes);
                         //decrease the overall likes of the owner of the post by 1
                         //check if his overall likes == 0 first, if its 0, leave it like that
+                        utc.alterUserRateParameters(cc.get().getUser_id(), "save_unlike");
                     }
                     break;
                     
@@ -752,12 +764,13 @@ public class UserController
                         likes = likes + 1;
                         cc.get().setLikes(likes);
                         //increase the overall likes of the owner of the post by 1
+                        utc.alterUserRateParameters(cc.get().getUser_id(), "save_like");
                     }
                     break;
                 }
                 
                 ccr.save(cc.get());
-                ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
             }
             break;
             
@@ -774,6 +787,7 @@ public class UserController
                         redflag = redflag + 1;
                         cc.get().setRedflag(redflag);
                         //increase the overall likes of the owner of the post by 1
+                        utc.alterUserRateParameters(cc.get().getUser_id(), "save_redflag");
                     }
                     break;
                     
@@ -783,6 +797,7 @@ public class UserController
                         cc.get().setRedflag(redflag);
                         //decrease the overall likes of the owner of the post by 1
                         //check if his overall likes == 0 first, if its 0, leave it like that
+                        utc.alterUserRateParameters(cc.get().getUser_id(), "save_unredflag");
                     }
                     break;
                     
@@ -791,12 +806,13 @@ public class UserController
                         redflag = redflag + 1;
                         cc.get().setRedflag(redflag);
                         //increase the overall likes of the owner of the post by 1
+                        utc.alterUserRateParameters(cc.get().getUser_id(), "save_redflag");
                     }
                     break;
                 }
                 
                 ccr.save(cc.get());
-                ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
             }
             break;
             
@@ -813,6 +829,7 @@ public class UserController
                         star = star + 1;
                         cc.get().setStar(star);
                         //increase the overall likes of the owner of the post by 1
+                        utc.alterUserRateParameters(cc.get().getUser_id(), "save_star");
                     }
                     break;
                     
@@ -822,6 +839,7 @@ public class UserController
                         cc.get().setStar(star);
                         //decrease the overall likes of the owner of the post by 1
                         //check if his overall likes == 0 first, if its 0, leave it like that
+                        utc.alterUserRateParameters(cc.get().getUser_id(), "save_unstar");
                     }
                     break;
                     
@@ -830,12 +848,13 @@ public class UserController
                         star = star + 1;
                         cc.get().setStar(star);
                         //increase the overall likes of the owner of the post by 1
+                        utc.alterUserRateParameters(cc.get().getUser_id(), "save_star");
                     }
                     break;
                 }
                 
                 ccr.save(cc.get());
-                ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
             }
             break;
             
@@ -852,6 +871,7 @@ public class UserController
                         shares = shares + 1;
                         cc.get().setShare(shares);
                         //increase the overall shares of the owner of the post by 1
+                        utc.alterUserRateParameters(cc.get().getUser_id(), "save_share");
                     }
                     break;
                     
@@ -861,6 +881,7 @@ public class UserController
                         cc.get().setShare(shares);
                         //decrease the overall shares of the owner of the post by 1
                         //check if his overall shares == 0 first, if its 0, leave it like that
+                        utc.alterUserRateParameters(cc.get().getUser_id(), "save_unshare");
                     }
                     break;
                     
@@ -869,12 +890,13 @@ public class UserController
                         shares = shares + 1;
                         cc.get().setShare(shares);
                         //increase the overall likes of the owner of the post by 1
+                        utc.alterUserRateParameters(cc.get().getUser_id(), "save_share");
                     }
                     break;
                 }
                 
                 ccr.save(cc.get());
-                ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
             }
             break;
             
@@ -901,7 +923,7 @@ public class UserController
                 else
                 {
                     String alert = "Cannot edit comment";
-                    ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
                 }
             }
             break;
@@ -921,7 +943,7 @@ public class UserController
                 {
                     alert = "Cannot delete comment";
                 }
-                ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
             }
             break;
             
@@ -938,6 +960,7 @@ public class UserController
                         likes = likes + 1;
                         scc.get().setLikes(likes);
                         //increase the overall likes of the owner of the post by 1
+                        utc.alterUserRateParameters(scc.get().getUser_id(), "save_like");
                     }
                     break;
                     
@@ -947,6 +970,7 @@ public class UserController
                         scc.get().setLikes(likes);
                         //decrease the overall likes of the owner of the post by 1
                         //check if his overall likes == 0 first, if its 0, leave it like that
+                        utc.alterUserRateParameters(scc.get().getUser_id(), "save_unlike");
                     }
                     break;
                     
@@ -955,12 +979,13 @@ public class UserController
                         likes = likes + 1;
                         scc.get().setLikes(likes);
                         //increase the overall likes of the owner of the post by 1
+                        utc.alterUserRateParameters(scc.get().getUser_id(), "save_like");
                     }
                     break;
                 }
                 
                 sccr.save(scc.get());
-                ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
             }
             break;
             
@@ -977,6 +1002,7 @@ public class UserController
                         redflag = redflag + 1;
                         scc.get().setRedflag(redflag);
                         //increase the overall likes of the owner of the post by 1
+                        utc.alterUserRateParameters(scc.get().getUser_id(), "save_redflag");
                     }
                     break;
                     
@@ -986,6 +1012,7 @@ public class UserController
                         scc.get().setRedflag(redflag);
                         //decrease the overall likes of the owner of the post by 1
                         //check if his overall likes == 0 first, if its 0, leave it like that
+                        utc.alterUserRateParameters(scc.get().getUser_id(), "save_unredflag");
                     }
                     break;
                     
@@ -994,12 +1021,13 @@ public class UserController
                         redflag = redflag + 1;
                         scc.get().setRedflag(redflag);
                         //increase the overall likes of the owner of the post by 1
+                        utc.alterUserRateParameters(scc.get().getUser_id(), "save_redflag");
                     }
                     break;
                 }
                 
                 sccr.save(scc.get());
-                ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
             }
             break;
             
@@ -1016,6 +1044,7 @@ public class UserController
                         starred = starred + 1;
                         scc.get().setStar(starred);
                         //increase the overall likes of the owner of the post by 1
+                        utc.alterUserRateParameters(scc.get().getUser_id(), "save_star");
                     }
                     break;
                     
@@ -1025,6 +1054,7 @@ public class UserController
                         scc.get().setStar(starred);
                         //decrease the overall likes of the owner of the post by 1
                         //check if his overall likes == 0 first, if its 0, leave it like that
+                        utc.alterUserRateParameters(scc.get().getUser_id(), "save_unstar");
                     }
                     break;
                     
@@ -1033,12 +1063,13 @@ public class UserController
                         starred = starred + 1;
                         scc.get().setStar(starred);
                         //increase the overall likes of the owner of the post by 1
+                        utc.alterUserRateParameters(scc.get().getUser_id(), "save_star");
                     }
                     break;
                 }
                 
                 sccr.save(scc.get());
-                ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
             }
             break;
             
@@ -1066,7 +1097,7 @@ public class UserController
                 else
                 {
                     String alert = "Cannot edit comment";
-                    ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
                 }
             }
             break;
@@ -1086,7 +1117,7 @@ public class UserController
                 {
                     alert = "Cannot delete comment";
                 }
-                ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
             }
             break;
         }
@@ -1191,7 +1222,7 @@ public class UserController
                             {
                                 CommentClass cc = new CommentClass(utc.getUser().getId(), post_id.get(), content, date);
                                 ccr.save(cc);
-                                return "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx=Posted";
+                                return "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx=Posted";
                             }
                         }
                         else
@@ -1293,7 +1324,7 @@ public class UserController
                                 SubCommentClass scc = new SubCommentClass(utc.getUser().getId(), comment_id.get(), content, date);
                                 sccr.save(scc);
                                 //Notify the owner of the comment here: Very important
-                                return "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx=Posted";
+                                return "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx=Posted";
                             }
                         }
                         else
@@ -1409,7 +1440,7 @@ public class UserController
                                     QuoteObject qobj = new QuoteObject(ccid.get().getUser_id(), quickCom.get().getId(), content_2, ccid.get().getPostdate());
                                     qobjr.save(qobj);
                                     //Notify the owner of the comment here: Very important
-                                    return "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx=Posted";
+                                    return "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx=Posted";
                                 }
                                 else
                                 {
@@ -1517,7 +1548,7 @@ public class UserController
                                 Optional<CommentClass> ccObj = ccr.findById(comment_id.get());
                                 ccObj.get().setContent(content);
                                 ccr.save(ccObj.get());
-                                return "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx=Posted";
+                                return "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx=Posted";
                             }
                         }
                         else
@@ -1621,7 +1652,7 @@ public class UserController
                                 Optional<SubCommentClass> sccObj = sccr.findById(subcomment_id.get());
                                 sccObj.get().setContent(content);
                                 sccr.save(sccObj.get());
-                                return "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx=Posted";
+                                return "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx=Posted";
                             }
                         }
                         else

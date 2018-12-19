@@ -16,9 +16,9 @@ public class UserClass implements Serializable
     @Column(name="id")
     private Long id;
     @Column(name="myposts")
-    private Long myposts = 0L;
+    private Long myposts = 0l;
     @Column(name="adscredit")
-    private Long adscredit = 0L;
+    private Long adscredit = 0l;
 
     @Column(name="cpm")
     private int cpm = 0;
@@ -34,19 +34,19 @@ public class UserClass implements Serializable
     private int active = 1;
     
     @Column(name="yellow_star")
-    private Long yellowstar = 0L;
+    private Long yellowstar = 0l;
     @Column(name="red_flag")
-    private Long redflag = 0L;
+    private Long redflag = 0l;
     @Column(name="blue_share")
-    private Long blueshare = 0L;
+    private Long blueshare = 0l;
     @Column(name="green_like")
-    private Long greenlike = 0L;
+    private Long greenlike = 0l;
     @Column(name="black_view")
-    private Long blackview = 0L;
+    private Long blackview = 0l;
     @Column(name="user_rank")
-    private Long userrank = 0L;
+    private Long userrank = 0l;
     @Column(name="followers")
-    private Long followers = 0L;
+    private Long followers = 0l;
     @Column(name="color_class")
     private String colorclass = "user_beginner";
 	

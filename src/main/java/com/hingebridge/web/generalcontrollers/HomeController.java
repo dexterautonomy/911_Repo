@@ -16,13 +16,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.hingebridge.model.Role;
-import com.hingebridge.model.SubCommentClass;
 import com.hingebridge.model.UserClass;
 import com.hingebridge.model.UserRoleClass;
 import com.hingebridge.repository.CommentClassRepo;
 import com.hingebridge.repository.PostClassRepo;
 import com.hingebridge.repository.RoleClassRepo;
-import com.hingebridge.repository.SubCommentClassRepo;
 import com.hingebridge.repository.UserClassRepo;
 import com.hingebridge.repository.UserRoleClassRepo;
 import com.hingebridge.utility.UtilityClass;
@@ -35,6 +33,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 public class HomeController
 {
     @Autowired
+    private UtilityClass utc;
+    @Autowired
     private UserClassRepo ucr;
     @Autowired
     private RoleClassRepo rcr;
@@ -44,8 +44,6 @@ public class HomeController
     private PostClassRepo pcr;
     @Autowired
     private CommentClassRepo ccr;
-    @Autowired
-    private SubCommentClassRepo sccr;
 	
     @GetMapping("/")
     public String getHome(HttpServletRequest req, HttpSession session, ModelMap model, @RequestParam("page") Optional<Integer> page_1)
@@ -205,6 +203,12 @@ public class HomeController
         int page = (commentPaginate.orElse(0) < 1 ? INITIAL_PAGE : commentPaginate.get() - 1);    //page is the LIMIT            
         
         Optional<PostClass> pc = pcr.getPostReader(id.get(), title.get());
+        long views = pc.get().getViews();
+        views = views + 1;
+        pc.get().setViews(views);
+        pcr.save(pc.get());
+        
+        utc.alterUserRateParameters(pc.get().getUser_id(), "save_view");
         
         Page<CommentClass> cc = ccr.getApprovedComments(id.get(), PageRequest.of(page, INITIAL_PAGE_SIZE));
         PagerModel pgn = new PagerModel(cc.getTotalPages(), cc.getNumber());
@@ -212,13 +216,44 @@ public class HomeController
         model.addAttribute("commentsExt", cc);
 	model.addAttribute("pgn", pgn);
         
-        /*
-        Page<SubCommentClass> scc = sccr.getApprovedSubComments(id.get(), PageRequest.of(page, INITIAL_PAGE_SIZE));
-        PagerModel pgn2 = new PagerModel(scc.getTotalPages(), scc.getNumber());
+        if(cc.getNumber() == 0)
+        {
+            model.addAttribute("disp1", "none");
+        }
+        if(cc.getNumber() + 1 == cc.getTotalPages())
+        {
+            model.addAttribute("disp2", "none");
+        }
+        if(cc.getTotalPages() == 0)
+        {
+            model.addAttribute("dispAlpha", "none");
+        }
         
-        model.addAttribute("subcommentsExt", scc);
-	model.addAttribute("pgn2", pgn2);
-        */
+        model.addAttribute("postclass", pc.get());
+        
+        model.addAttribute("pos", id.orElse(1L));//important for comment pagination
+        model.addAttribute("title", title.orElse(""));//important  for comment pagination
+        model.addAttribute("pg", pg.orElse(1));//for going back gotten from getHome() method
+        model.addAttribute("alertx", alert.orElse(""));
+        
+        return "pages/reader";
+    }
+    
+    @GetMapping("/b_ch")
+    public String backDoor(@RequestParam("pos")Optional<Long> id, @RequestParam("t")Optional<String> title, 
+    @RequestParam("p") Optional<Integer> pg, ModelMap model, @RequestParam("page")Optional<Integer> commentPaginate, 
+    @RequestParam("alertx")Optional<String> alert)
+    {
+        final int INITIAL_PAGE = 0;
+        final int INITIAL_PAGE_SIZE = 15;    //pageSize is the offset
+        int page = (commentPaginate.orElse(0) < 1 ? INITIAL_PAGE : commentPaginate.get() - 1);    //page is the LIMIT            
+        
+        Optional<PostClass> pc = pcr.getPostReader(id.get(), title.get());
+        Page<CommentClass> cc = ccr.getApprovedComments(id.get(), PageRequest.of(page, INITIAL_PAGE_SIZE));
+        PagerModel pgn = new PagerModel(cc.getTotalPages(), cc.getNumber());
+        
+        model.addAttribute("commentsExt", cc);
+	model.addAttribute("pgn", pgn);
         
         if(cc.getNumber() == 0)
         {
