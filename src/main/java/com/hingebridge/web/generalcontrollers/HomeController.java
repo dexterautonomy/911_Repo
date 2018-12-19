@@ -16,11 +16,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.hingebridge.model.Role;
+import com.hingebridge.model.SubCommentClass;
 import com.hingebridge.model.UserClass;
 import com.hingebridge.model.UserRoleClass;
 import com.hingebridge.repository.CommentClassRepo;
 import com.hingebridge.repository.PostClassRepo;
 import com.hingebridge.repository.RoleClassRepo;
+import com.hingebridge.repository.SubCommentClassRepo;
 import com.hingebridge.repository.UserClassRepo;
 import com.hingebridge.repository.UserRoleClassRepo;
 import com.hingebridge.utility.UtilityClass;
@@ -41,9 +43,9 @@ public class HomeController
     @Autowired
     private PostClassRepo pcr;
     @Autowired
-    private UtilityClass utc;
-    @Autowired
     private CommentClassRepo ccr;
+    @Autowired
+    private SubCommentClassRepo sccr;
 	
     @GetMapping("/")
     public String getHome(HttpServletRequest req, HttpSession session, ModelMap model, @RequestParam("page") Optional<Integer> page_1)
@@ -193,7 +195,7 @@ public class HomeController
 	return "pages/home";
     }
     
-    @GetMapping("s_ch")
+    @GetMapping("/s_ch")
     public String getStory(@RequestParam("pos")Optional<Long> id, @RequestParam("t")Optional<String> title, 
     @RequestParam("p") Optional<Integer> pg, ModelMap model, @RequestParam("page")Optional<Integer> commentPaginate, 
     @RequestParam("alertx")Optional<String> alert)
@@ -202,12 +204,21 @@ public class HomeController
         final int INITIAL_PAGE_SIZE = 15;    //pageSize is the offset
         int page = (commentPaginate.orElse(0) < 1 ? INITIAL_PAGE : commentPaginate.get() - 1);    //page is the LIMIT            
         
-        Optional<PostClass> pc = pcr.getPostReader(id.orElse(1L), title.orElse(""));
-        Page<CommentClass> cc = ccr.getApprovedComments(id.orElse(1L), PageRequest.of(page, INITIAL_PAGE_SIZE));
+        Optional<PostClass> pc = pcr.getPostReader(id.get(), title.get());
+        
+        Page<CommentClass> cc = ccr.getApprovedComments(id.get(), PageRequest.of(page, INITIAL_PAGE_SIZE));
         PagerModel pgn = new PagerModel(cc.getTotalPages(), cc.getNumber());
         
         model.addAttribute("commentsExt", cc);
 	model.addAttribute("pgn", pgn);
+        
+        /*
+        Page<SubCommentClass> scc = sccr.getApprovedSubComments(id.get(), PageRequest.of(page, INITIAL_PAGE_SIZE));
+        PagerModel pgn2 = new PagerModel(scc.getTotalPages(), scc.getNumber());
+        
+        model.addAttribute("subcommentsExt", scc);
+	model.addAttribute("pgn2", pgn2);
+        */
         
         if(cc.getNumber() == 0)
         {

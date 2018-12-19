@@ -59,8 +59,9 @@
                     <form th:action="@{/user/cmtpost(akt=cmt, pos=${pos}, t=${t}, p=${p}, page=${page})}" method="post" th:object="${postclass}" enctype="multipart/form-data">
                         <p class="centertinz smallfont3" th:text="${alert}"></p>
                         
+                        <div class="desc">Comment:</div>
                         <div class="form-group">
-                            <textarea class="form-control" th:field="*{content}" placeholder="Compose" cols="20" rows="10" required="" maxlength="10000"></textarea><br/>
+                            <textarea class="form-control" th:field="*{content}" placeholder="Comment" cols="20" rows="10" required="" maxlength="10000"></textarea><br/>
                         </div>
                             
                         <div class="form-group">

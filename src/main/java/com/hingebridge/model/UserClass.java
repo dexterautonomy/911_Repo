@@ -92,6 +92,11 @@ public class UserClass implements Serializable
     @OneToMany(mappedBy = "usercommentreactobj")
     private List<CommentReactionClass> commentreact;
     
+    // UserClass ---> SubCommentReactionClass Relationship
+    @OneToMany(mappedBy = "usersubcommentreactobj")
+    private List<SubCommentReactionClass> subcommentreact;
+    
+    
     public UserClass(){}
 	
     public UserClass(String email, String gender, String username, String password, String confirmemail)
@@ -392,11 +397,21 @@ public class UserClass implements Serializable
     
     public void setCommentreact(List<CommentReactionClass> crc)
     {
-        this.commentreact = crc;
+        commentreact = crc;
     }
 	
     public List<CommentReactionClass> getCommentreact()
     {
     	return commentreact;
+    }
+    
+    public void setSubcommentreact(List<SubCommentReactionClass> scrc)
+    {
+        subcommentreact = scrc;
+    }
+	
+    public List<SubCommentReactionClass> getSubcommentreact()
+    {
+    	return subcommentreact;
     }
 }

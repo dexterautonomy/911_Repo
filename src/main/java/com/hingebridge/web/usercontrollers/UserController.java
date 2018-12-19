@@ -35,6 +35,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.hingebridge.repository.PostReactionClassRepo;
 import com.hingebridge.repository.QuoteObjectRepo;
 import com.hingebridge.repository.SubCommentClassRepo;
+import com.hingebridge.repository.SubCommentReactionClassRepo;
 
 @PreAuthorize("hasRole('USER')")
 @Controller
@@ -59,13 +60,13 @@ public class UserController
     private QuoteObjectRepo qobjr;
     @Autowired
     private CommentReactionClassRepo crcr;
+    @Autowired
+    private SubCommentReactionClassRepo scrcr;
     
     @GetMapping("/login")
-    public String userHomePage(Authentication auth, HttpServletRequest req, ModelMap model)//, HttpSession session)
+    public String userHomePage(Authentication auth, HttpServletRequest req, ModelMap model)
     {
-        //HttpSession session = req.getSession();
-        //session.setAttribute("username", utc.getUser().getUsername());
-        utc.modelUsername(model);
+        utc.modelUser(model);
         model.addAttribute("postclass", new PostClass());
         
         utc.sessionUsername(req);
@@ -78,7 +79,7 @@ public class UserController
     public String userPostControl(@ModelAttribute("postclass")PostClass pc, HttpServletRequest req, 
     ModelMap model, RedirectAttributes ra) throws IOException
     {
-        utc.modelUsername(model);
+        utc.modelUser(model);
         String path = utc.getFilePath()+"dist_img";
         String date = utc.getDate();
         
@@ -210,7 +211,7 @@ public class UserController
                                                     {
                                                         model.addAttribute("alert", "Content must have at least one image file");
                                                         return "pages/userpage";
-                                                }
+                                                    }
                                                 }
                                                 break;
                                     
@@ -513,12 +514,13 @@ public class UserController
     public String comment(@RequestParam("pos")Optional<Long> post_id, @RequestParam("t")Optional<String> title, 
     @RequestParam("p") Optional<Integer> pg, ModelMap model, @RequestParam("page")Optional<Integer> commentPaginate, 
     @RequestParam("akt")Optional<String> action, HttpServletRequest req, RedirectAttributes ra, 
-    @RequestParam("cid")Optional<Long> comment_id)
+    @RequestParam("cid")Optional<Long> comment_id, @RequestParam("sid")Optional<Long> subcomment_id)
     {
         String ret= null;
         utc.sessionUsername(req);
         Optional<PostClass> pc = pcr.findById(post_id.get());
-        Optional<CommentClass> cc = ccr.findById(comment_id.orElse(0l));
+        //Optional<CommentClass> cc = ccr.findById(comment_id.get());
+        //Optional<SubCommentClass> scc = sccr.findById(subcomment_id.get());
         
         long id = utc.getUser().getId();
         
@@ -722,6 +724,7 @@ public class UserController
             
             case "lk_s":
             {
+                Optional<CommentClass> cc = ccr.findById(comment_id.get());
                 String check = crcr.likedBefore(comment_id.get(), id);  //has this user liked this comment before now?
                 long likes = cc.get().getLikes();
                 
@@ -760,6 +763,7 @@ public class UserController
             
             case "flg_s":
             {
+                Optional<CommentClass> cc = ccr.findById(comment_id.get());
                 String check = crcr.redFlaggedBefore(comment_id.get(), id);  //has this user liked this comment before now?
                 long redflag = cc.get().getRedflag();
                 
@@ -798,6 +802,7 @@ public class UserController
             
             case "str_s":
             {
+                Optional<CommentClass> cc = ccr.findById(comment_id.get());
                 String check = crcr.starredBefore(comment_id.get(), id);  //has this user liked this comment before now?
                 long star = cc.get().getStar();
                 
@@ -836,6 +841,7 @@ public class UserController
             
             case "shr_s":
             {
+                Optional<CommentClass> cc = ccr.findById(comment_id.get());
                 String check = crcr.sharedBefore(comment_id.get(), id);  //has this user liked this comment before now?
                 long shares = cc.get().getShare();
                 
@@ -874,13 +880,13 @@ public class UserController
             
             case "edit_s":
             {
-                Optional<CommentClass> ccObj = ccr.findById(comment_id.get());
-                String content = ccObj.get().getContent();
+                Optional<CommentClass> cc = ccr.findById(comment_id.get());
+                String content = cc.get().getContent();
                 
                 content=content.replaceAll("<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/", "<_");
                 content=content.replaceAll("'/><br/><br/>", "_>");
                 
-                if(utc.getUser().getId().equals(ccObj.get().getUser_id()))
+                if(utc.getUser().getId().equals(cc.get().getUser_id()))
                 {
                     PostClass pClass = new PostClass();
                     pClass.setContent(content);
@@ -903,12 +909,177 @@ public class UserController
             case "dlt_s":
             {
                 String alert;
-                Optional<CommentClass> ccObj = ccr.findById(comment_id.get());
+                Optional<CommentClass> cc = ccr.findById(comment_id.get());
                 
-                if(utc.getUser().getId().equals(ccObj.get().getUser_id()))
+                if(utc.getUser().getId().equals(cc.get().getUser_id()))
                 {
-                    ccObj.get().setApproved(0);
-                    ccr.save(ccObj.get());
+                    cc.get().setApproved(0);
+                    ccr.save(cc.get());
+                    alert = "Deleted";
+                }
+                else
+                {
+                    alert = "Cannot delete comment";
+                }
+                ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+            }
+            break;
+            
+            case "lk_x":
+            {
+                Optional<SubCommentClass> scc = sccr.findById(subcomment_id.get());
+                String check = scrcr.likedBefore(subcomment_id.get(), id);  //has this user liked this subcomment before now?
+                long likes = scc.get().getLikes();
+                
+                switch(check)
+                {
+                    case "":
+                    {
+                        likes = likes + 1;
+                        scc.get().setLikes(likes);
+                        //increase the overall likes of the owner of the post by 1
+                    }
+                    break;
+                    
+                    case "liked":
+                    {
+                        likes = likes - 1;
+                        scc.get().setLikes(likes);
+                        //decrease the overall likes of the owner of the post by 1
+                        //check if his overall likes == 0 first, if its 0, leave it like that
+                    }
+                    break;
+                    
+                    case "unliked":
+                    {
+                        likes = likes + 1;
+                        scc.get().setLikes(likes);
+                        //increase the overall likes of the owner of the post by 1
+                    }
+                    break;
+                }
+                
+                sccr.save(scc.get());
+                ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+            }
+            break;
+            
+            case "flg_x":
+            {
+                Optional<SubCommentClass> scc = sccr.findById(subcomment_id.get());
+                String check = scrcr.redFlaggedBefore(subcomment_id.get(), id);  //has this user liked this subcomment before now?
+                long redflag = scc.get().getRedflag();
+                
+                switch(check)
+                {
+                    case "":
+                    {
+                        redflag = redflag + 1;
+                        scc.get().setRedflag(redflag);
+                        //increase the overall likes of the owner of the post by 1
+                    }
+                    break;
+                    
+                    case "redflagged":
+                    {
+                        redflag = redflag - 1;
+                        scc.get().setRedflag(redflag);
+                        //decrease the overall likes of the owner of the post by 1
+                        //check if his overall likes == 0 first, if its 0, leave it like that
+                    }
+                    break;
+                    
+                    case "notredflagged":
+                    {
+                        redflag = redflag + 1;
+                        scc.get().setRedflag(redflag);
+                        //increase the overall likes of the owner of the post by 1
+                    }
+                    break;
+                }
+                
+                sccr.save(scc.get());
+                ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+            }
+            break;
+            
+            case "str_x":
+            {
+                Optional<SubCommentClass> scc = sccr.findById(subcomment_id.get());
+                String check = scrcr.starredBefore(subcomment_id.get(), id);  //has this user liked this subcomment before now?
+                long starred = scc.get().getStar();
+                
+                switch(check)
+                {
+                    case "":
+                    {
+                        starred = starred + 1;
+                        scc.get().setStar(starred);
+                        //increase the overall likes of the owner of the post by 1
+                    }
+                    break;
+                    
+                    case "starred":
+                    {
+                        starred = starred - 1;
+                        scc.get().setStar(starred);
+                        //decrease the overall likes of the owner of the post by 1
+                        //check if his overall likes == 0 first, if its 0, leave it like that
+                    }
+                    break;
+                    
+                    case "notstarred":
+                    {
+                        starred = starred + 1;
+                        scc.get().setStar(starred);
+                        //increase the overall likes of the owner of the post by 1
+                    }
+                    break;
+                }
+                
+                sccr.save(scc.get());
+                ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+            }
+            break;
+            
+            case "edit_x":
+            {
+                Optional<SubCommentClass> scc = sccr.findById(subcomment_id.get());
+                String content = scc.get().getContent();
+                
+                content=content.replaceAll("<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/", "<_");
+                content=content.replaceAll("'/><br/><br/>", "_>");
+                
+                if(utc.getUser().getId().equals(scc.get().getUser_id()))
+                {
+                    PostClass pClass = new PostClass();
+                    pClass.setContent(content);
+                    model.addAttribute("postclass", pClass);
+                    model.addAttribute("pos", post_id.get());
+                    model.addAttribute("sid", subcomment_id.get());
+                    model.addAttribute("cid", comment_id.get());
+                    model.addAttribute("t", title.get());
+                    model.addAttribute("p", pg.get());
+                    model.addAttribute("page", commentPaginate.get());
+                    ret = "pages/editsubcommentpage";
+                }
+                else
+                {
+                    String alert = "Cannot edit comment";
+                    ret = "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                }
+            }
+            break;
+            
+            case "dlt_x":
+            {
+                String alert;
+                Optional<SubCommentClass> scc = sccr.findById(subcomment_id.get());
+                
+                if(utc.getUser().getId().equals(scc.get().getUser_id()))
+                {
+                    scc.get().setApproved(0);
+                    sccr.save(scc.get());
                     alert = "Deleted";
                 }
                 else
@@ -926,7 +1097,7 @@ public class UserController
     public String cmtPost(@RequestParam("pos")Optional<Long> post_id, @RequestParam("t")Optional<String> title, 
     @RequestParam("p") Optional<Integer> pg, ModelMap model, @RequestParam("page")Optional<Integer> commentPaginate, 
     @ModelAttribute("postclass")PostClass pc, RedirectAttributes ra, @RequestParam("akt")Optional<String> action, 
-    @RequestParam("cid")Optional<Long> comment_id)
+    @RequestParam("cid")Optional<Long> comment_id, @RequestParam("sid")Optional<Long> subcomment_id)
     {
         String ret = null;
         String path = utc.getFilePath()+"dist_img";
@@ -1334,6 +1505,7 @@ public class UserController
                             if(content.length() > 1500)
                             {
                                 model.addAttribute("pos", post_id.get());
+                                model.addAttribute("cid", comment_id.get());
                                 model.addAttribute("t", title.get());
                                 model.addAttribute("p", pg.get());
                                 model.addAttribute("page", commentPaginate.get());
@@ -1358,6 +1530,110 @@ public class UserController
                 ret = "pages/editcommentpage";
             }
             break;
+            
+            case "edit_subcmt":
+            {
+                switch(pc.getActionButton())
+                {
+                    case "add_img":
+                    {
+                        model.addAttribute("pos", post_id.get());
+                        model.addAttribute("sid", subcomment_id.get());
+                        model.addAttribute("cid", comment_id.get());
+                        model.addAttribute("t", title.get());
+                        model.addAttribute("p", pg.get());
+                        model.addAttribute("page", commentPaginate.get());
+                
+                        pc.setContent(content);
+                
+                        MultipartFile contentFile =  pc.getContentFile();
+                        if(contentFile.isEmpty())
+                        {
+                            model.addAttribute("alert", "No image file selected");
+                        }
+                        else if(contentFile.getSize() > 0 && contentFile.getSize() <= 4000000)
+                        {
+                            String contentFileName = contentFile.getOriginalFilename();
+                            if(contentFileName != null && contentFileName.length() <= 50)
+                            {
+                                if(contentFileName.endsWith(".jpg") || contentFileName.endsWith(".png") || contentFileName.endsWith(".gif") 
+                                || contentFileName.endsWith(".jpeg") || contentFileName.endsWith(".JPG") || contentFileName.endsWith(".PNG") 
+                                || contentFileName.endsWith(".GIF") || contentFileName.endsWith(".JPEG") || contentFileName.endsWith(".webp") 
+                                || contentFileName.endsWith(".WEBP"))
+                                {
+                                    try
+                                    {
+                                        String imageRef="<_" + contentFileName + "_>";
+                                        pc.setContent(content + imageRef);
+                                
+                                        model.addAttribute("alert", "Image added to content");
+                                        File pathToFile=new File(path, contentFileName);
+                                        contentFile.transferTo(pathToFile);
+                                    }
+                                    catch (IllegalStateException | IOException ex) 
+                                    {
+                                        Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                }
+                                else
+                                {
+                                    model.addAttribute("alert", "Invalid image format (suported: jpg, png, gif, webp)");
+                                }
+                            }
+                            else
+                            {
+                                model.addAttribute("alert", "Content image name too long (less than 50 characters)");
+                            }
+                        }
+                        else if(contentFile.getSize() == 0)
+                        {
+                            model.addAttribute("alert", "");
+                        }
+                        else
+                        {
+                            model.addAttribute("alert", "File size exceeded (4MB or less)");
+                        }
+                    }
+                    break;
+            
+                    case "post":
+                    {
+                        pc.setContent(content);
+                
+                        content=content.replaceAll("<_", "<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
+                        content=content.replaceAll("_>", "'/><br/><br/>");
+                
+                        if(!content.matches("\\s*"))
+                        {
+                            if(content.length() > 1500)
+                            {
+                                model.addAttribute("pos", post_id.get());
+                                model.addAttribute("sid", subcomment_id.get());
+                                model.addAttribute("cid", comment_id.get());
+                                model.addAttribute("t", title.get());
+                                model.addAttribute("p", pg.get());
+                                model.addAttribute("page", commentPaginate.get());
+                        
+                                model.addAttribute("alert", "Comment must be less than 1500 characters [" + pc.getContent().length() +"]");
+                            }
+                            else
+                            {
+                                Optional<SubCommentClass> sccObj = sccr.findById(subcomment_id.get());
+                                sccObj.get().setContent(content);
+                                sccr.save(sccObj.get());
+                                return "redirect:/s_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx=Posted";
+                            }
+                        }
+                        else
+                        {
+                            ra.addFlashAttribute("alertx", "Comment cannot be empty");
+                        }
+                    }
+                    break;
+                }
+                ret = "pages/editcommentpage";
+            }
+            break;
         }
         return ret;
     }
@@ -1365,7 +1641,7 @@ public class UserController
     @GetMapping("/fallback")
     public String getFallbackpage(ModelMap model, HttpServletRequest req)
     {
-        utc.modelUsername(model);
+        utc.modelUser(model);
         utc.modelTransfer(model);
         return "pages/userfallbackpage";
     }
@@ -1374,7 +1650,7 @@ public class UserController
     public String getFollowedPost(@RequestParam("pg")Optional<Integer> page, HttpServletRequest req, 
     ModelMap model, RedirectAttributes ra)
     {
-        utc.modelUsername(model);
+        utc.modelUser(model);
         int init = 0;
         int end = 1;
         List<PostClass> pcList3 = new LinkedList<>();
@@ -1434,7 +1710,7 @@ public class UserController
     public String getInbox(ModelMap model, @RequestParam("pg")Optional<Integer> page,
     RedirectAttributes ra, HttpServletRequest req)
     {
-        utc.modelUsername(model);
+        utc.modelUser(model);
         int init = 0;
         int end = 1;
         List<MessageObject> mobj = new LinkedList<>();
@@ -1487,7 +1763,7 @@ public class UserController
     public String getRecord(ModelMap model, @RequestParam("pg")Optional<Integer> page, 
     RedirectAttributes ra, HttpServletRequest req)
     {
-        utc.modelUsername(model);
+        utc.modelUser(model);
         int init = 0;
         int end = 1;
         List<PostClass> tobj = new LinkedList<>();

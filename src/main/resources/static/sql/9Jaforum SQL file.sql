@@ -95,6 +95,8 @@ create table subcommentclass
     user_id int unsigned not null,
     comment_id int unsigned not null,
     likes int unsigned not null,
+    red_flag int unsigned not null,
+    star_flag int unsigned not null,
     approved int unsigned not null,
     content text not null,
     postdate varchar(50) not null,
@@ -142,5 +144,17 @@ create table quoteobject
     quote_date varchar(255) not null,
     constraint `fk_quote_user_1` foreign key (`user_id`) references `userclass` (`id`),
     constraint `fk_quote_comment_1` foreign key (`comment_id`) references `commentclass` (`id`)
+);
+
+create table subcommentreactionclass
+(
+    id int unsigned not null auto_increment primary key,
+    subcomment_id int unsigned not null,
+    user_id int unsigned not null,
+    like_flag int not null,
+    red_flag int not null,
+    star_flag int not null,
+    constraint `fk_sub_comment_react_id` foreign key (`subcomment_id`) references `subcommentclass` (`id`),
+    constraint `fk_user_sub_comment_react_id` foreign key (`user_id`) references `userclass` (`id`)
 );
 */

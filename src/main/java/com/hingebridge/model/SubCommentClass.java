@@ -2,6 +2,7 @@ package com.hingebridge.model;
 
 import com.hingebridge.utility.DurationCalculator;
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.*;
 
 @Entity
@@ -11,13 +12,17 @@ public class SubCommentClass implements Serializable
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    private long id;
     
     @Column(name="likes")
-    private int likes = 0;
+    private long likes = 0l;
+    @Column(name = "red_flag")
+    private long redflag = 0l;
+    @Column(name = "star_flag")
+    private long star = 0l;
+    
     @Column(name="approved")
     private int approved = 1;
-    
     @Column(name="content")
     private String content;
     @Column(name="postdate")
@@ -25,20 +30,27 @@ public class SubCommentClass implements Serializable
     
     // UserClass <--- SubCommentClass Relationship
     @Column(name="user_id")
-    private Long user_id;
+    private long user_id;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", insertable = false, updatable = false, nullable = false)
     private UserClass userthree;
     
     // CommentClass <--- SubCommentClass Relationship
     @Column(name="comment_id")
-    private Long comment_id;
+    private long comment_id;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "comment_id", insertable = false, updatable = false, nullable = false)
     private CommentClass commentclassone;
     
+    // SubCommentClass ---> SubCommentReactionClass Relationship
+    @OneToMany(mappedBy = "subcommentreactionobj")
+    private List<SubCommentReactionClass> subcommentreact;
+    
     @Transient
     private String duration;
+    
+    @Transient
+    private SubCommentClass subcommentclass;
     
     public SubCommentClass(){}
     
@@ -59,19 +71,39 @@ public class SubCommentClass implements Serializable
     }
     
     
-    public Long getId()
+    public long getId()
     {
         return id;
     }
     
-    public void setLikes(int value)
+    public void setLikes(long value)
     {
         this.likes = value;
     }
     
-    public int getLikes()
+    public long getLikes()
     {
         return likes;
+    }
+    
+    public void setRedflag(long value)
+    {
+        redflag = value;
+    }
+    
+    public long getRedflag()
+    {
+        return redflag;
+    }
+    
+    public void setStar(long value)
+    {
+        star = value;
+    }
+    
+    public long getStar()
+    {
+        return star;
     }
     
     public void setApproved(int value)
@@ -105,22 +137,22 @@ public class SubCommentClass implements Serializable
     }    
     
     //FOR NEW CHANGES
-    public void setUser_id(Long value)
+    public void setUser_id(long value)
     {
         this.user_id = value;
     }
     
-    public Long getUser_id()
+    public long getUser_id()
     {
         return user_id;
     }
     
-    public void setComment_id(Long value)
+    public void setComment_id(long value)
     {
         this.comment_id = value;
     }
     
-    public Long getComment_id()
+    public long getComment_id()
     {
         return comment_id;
     }
@@ -143,6 +175,16 @@ public class SubCommentClass implements Serializable
     public CommentClass getCommentclassone()
     {
     	return commentclassone;
+    }
+    
+    public void setSubcommentreact(List<SubCommentReactionClass> scrc)
+    {
+        this.subcommentreact = scrc;
+    }
+	
+    public List<SubCommentReactionClass> getSubcommentreact()
+    {
+    	return subcommentreact;
     }
     
     //Calculate duration

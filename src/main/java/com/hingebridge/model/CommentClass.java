@@ -2,6 +2,7 @@ package com.hingebridge.model;
 
 import com.hingebridge.utility.DurationCalculator;
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 import javax.persistence.*;
 
@@ -207,7 +208,19 @@ public class CommentClass implements Serializable
 	
     public List<SubCommentClass> getSubcomment()
     {
-    	return subcomment;
+        List<SubCommentClass> scc = new LinkedList<>();
+        if(!subcomment.isEmpty())
+        {
+            for(SubCommentClass sc : subcomment)
+            {
+                if(sc.getApproved() == 1)
+                {
+                    scc.add(sc);
+                }
+            }
+        }
+        
+        return scc;
     }
     
     //Calculate duration
