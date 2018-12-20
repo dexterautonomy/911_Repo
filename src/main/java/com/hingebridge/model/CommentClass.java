@@ -24,6 +24,8 @@ public class CommentClass implements Serializable
     private long star = 0l;
     @Column(name = "share_flag")
     private long share = 0l;
+    @Column(name="comment_rank")
+    private int commentrank = 0;
     
     @Column(name="approved")
     private int approved = 1;
@@ -257,5 +259,15 @@ public class CommentClass implements Serializable
     public List<CommentReactionClass> getCommentreact()
     {
     	return commentreact;
+    }
+    
+    public void setCommentrank(int value)
+    {
+    	commentrank = value;
+    }
+	
+    public int getCommentrank()
+    {
+    	return commentrank;
     }
 }

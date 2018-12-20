@@ -10,6 +10,7 @@ import com.hingebridge.repository.CommentClassRepo;
 import com.hingebridge.repository.FollowerObjectRepo;
 import com.hingebridge.repository.MessageObjectRepo;
 import com.hingebridge.repository.PostClassRepo;
+import com.hingebridge.repository.SubCommentClassRepo;
 import com.hingebridge.repository.UserClassRepo;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,7 +22,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import com.hingebridge.repository.SubCommentClassRepo;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.springframework.ui.ModelMap;
@@ -32,6 +32,32 @@ public class UtilityClass
 {
     @Value("${file.path}")
     String filePath;
+    
+    @Value("${value.b}")
+    private int b;
+    @Value("${value.c}")
+    private int c;
+    @Value("${users.size}")
+    private int userSize;
+    
+    /*
+    @Value("${value.a}")
+    private int a;
+    @Value("${value.d}")
+    private int d;
+    @Value("${value.e}")
+    private int e;
+    @Value("${value.f}")
+    private int f;
+    @Value("${value.g}")
+    private int g;
+    @Value("${value.h}")
+    private int h;
+    @Value("${value.i}")
+    private int i;
+    @Value("${value.j}")
+    private int j;
+    */
     
     @Autowired
     private UserClassRepo ucr;
@@ -47,33 +73,13 @@ public class UtilityClass
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         Optional<UserClass> uc = ucr.findByUsername(username);
-        return uc.orElse(null);
+        return uc.get();
     }
     
     public String getFilePath()
     {
         return filePath;
     }
-    
-    /*
-    public PostClass getPost(Long id, String title)
-    {
-        Optional<PostClass> pc = pcr.getPostReader(id, title);
-        return pc.get();
-    }
-    
-    public CommentClass getComment(Long id)
-    {
-        Optional<CommentClass> cc = ccr.getComment(id);
-        return cc.get();
-    }
-    
-    public SubCommentClass getSubComment(Long id)
-    {
-        Optional<SubCommentClass> subcom = qcr.getSubComment(id);
-        return subcom.get();
-    }
-    */
     
     public String getDate()
     {
@@ -127,21 +133,26 @@ public class UtilityClass
         return titleCase;
     }
     
-    /*
-    public void dispBlock(HttpSession session, String showBlock, String[] hideBlocks)
+    public void dispBlock(ModelMap model, String showBlock, String[] hideBlocks)
     {
-        session.setAttribute(showBlock, "");
+        model.addAttribute(showBlock, "");
         for(String s: hideBlocks)
         {
-            session.setAttribute(s, "hidden");
+            model.addAttribute(s, "hidden");
         }
     }
-    */
     
-    public void userRankSetting(Optional<UserClass> uc)//(long user_id)
+    public void updateViews(Optional<PostClass> pc)
     {
-        Long likes, red, star, share, followers, rank;
-        //Optional<UserClass> uc = ucr.findById(user_id);
+        long views = pc.get().getViews();
+        views = views + 1;
+        pc.get().setViews(views);
+        pcr.save(pc.get());
+    }
+    
+    public void userRankSetting(Optional<UserClass> uc)
+    {
+        long likes, red, star, share, followers, rank;
         
         likes = uc.get().getGreenlike();
         red = 10 * uc.get().getRedflag();
@@ -184,17 +195,22 @@ public class UtilityClass
         {
             uc.get().setColorclass("user_guru");
         }
-        else if(rank > 30000)
+        else if(rank > 30000 && rank < 30020)
         {
             uc.get().setColorclass("user_mod");
         }
+        else
+        {
+            uc.get().setColorclass("user_god");
+        }
+        
         
         uc.get().setUserrank(rank);
         ucr.save(uc.get());
     }
     
     
-    public void alterUserRateParameters(long user_id, String action)
+    public void alterUserRankingParameters(long user_id, String action, UserClassRepo ucr)
     {
         Optional<UserClass> uc = ucr.findById(user_id);
         
@@ -297,10 +313,82 @@ public class UtilityClass
         userRankSetting(uc);
     }
     
-    public void sessionUsername(HttpServletRequest req)
+    public void alterCommentRankingParameters(Optional<CommentClass> cc, CommentClassRepo ccr)
+    {
+        long likes, redflag, star, share, rank;
+        
+        likes = cc.get().getLikes();
+        redflag = cc.get().getRedflag();
+        star = cc.get().getStar();
+        share = cc.get().getShare();
+        
+        rank = likes + (b * star) + (c * share);
+        redflag = c * redflag;
+        Long rankDiff = rank - redflag;
+        
+        if(rankDiff > 0)
+        {
+            rankDiff = (rankDiff * 100)/cc.get().getCommentreact().size();
+            
+            if(rankDiff > 100)
+            {
+                rankDiff = 100l;
+            }
+        }
+        else
+        {
+            rankDiff = 0l;
+        }
+        
+        if(cc.get().getCommentreact().size() > userSize && redflag > rank)  //All these hard-coded values should come via the application.properties file to allow for easy update
+        {
+            cc.get().setApproved(0);
+        }
+        
+        cc.get().setCommentrank(rankDiff.intValue());
+        ccr.save(cc.get());
+    }
+    
+    public void alterSubCommentRankingParameters(Optional<SubCommentClass> scc, SubCommentClassRepo sccr)
+    {
+        long likes, redflag, star, rank;
+        
+        likes = scc.get().getLikes();
+        redflag = scc.get().getRedflag();
+        star = scc.get().getStar();
+        
+        rank = likes + (b * star);
+        
+        Long rankDiff = rank - redflag;
+        
+        if(rankDiff > 0)
+        {
+            rankDiff = (rankDiff * 100)/scc.get().getSubcommentreact().size();
+            
+            if(rankDiff > 100)
+            {
+                rankDiff = 100l;
+            }
+        }
+        else
+        {
+            rankDiff = 0l;
+        }
+        
+        if(scc.get().getSubcommentreact().size() > userSize && redflag > rank)  //All these hard-coded values should come via the application.properties file to allow for easy update
+        {
+            scc.get().setApproved(0);
+        }
+        
+        scc.get().setSubcommentrank(rankDiff.intValue());
+        sccr.save(scc.get());
+    }
+    
+    public void sessionUserDetails(HttpServletRequest req)  //important for pages/reader.html because session seems not to be able to call object properties
     {
         HttpSession session = req.getSession();
         session.setAttribute("username", getUser().getUsername());
+        session.setAttribute("usercolorclass", getUser().getColorclass());
     }
     
     public void modelUser(ModelMap model)

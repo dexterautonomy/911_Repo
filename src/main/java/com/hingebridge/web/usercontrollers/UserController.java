@@ -6,6 +6,7 @@ import com.hingebridge.model.MessageObject;
 import com.hingebridge.model.PostClass;
 import com.hingebridge.model.QuoteObject;
 import com.hingebridge.model.SubCommentClass;
+import com.hingebridge.model.UserClass;
 import com.hingebridge.repository.CommentClassRepo;
 import com.hingebridge.repository.CommentReactionClassRepo;
 import com.hingebridge.repository.FollowerObjectRepo;
@@ -37,7 +38,6 @@ import com.hingebridge.repository.QuoteObjectRepo;
 import com.hingebridge.repository.SubCommentClassRepo;
 import com.hingebridge.repository.SubCommentReactionClassRepo;
 import com.hingebridge.repository.UserClassRepo;
-
 @PreAuthorize("hasRole('USER')")
 @Controller
 @RequestMapping("/user")
@@ -69,11 +69,12 @@ public class UserController
     @GetMapping("/login")
     public String userHomePage(Authentication auth, HttpServletRequest req, ModelMap model)
     {
+        String[] hideBlocks = {"secondBlock", "thirdBlock"};
+        utc.dispBlock(model, "firstBlock", hideBlocks);
         utc.modelUser(model);
-        model.addAttribute("postclass", new PostClass());
-        
-        utc.sessionUsername(req);
+        utc.sessionUserDetails(req);    //very important
         utc.modelTransfer(model);
+        model.addAttribute("postclass", new PostClass());
         
         return "pages/userpage";
     }
@@ -520,7 +521,7 @@ public class UserController
     @RequestParam("cid")Optional<Long> comment_id, @RequestParam("sid")Optional<Long> subcomment_id)
     {
         String ret= null;
-        utc.sessionUsername(req);
+        //utc.sessionUserDetails(req);
         Optional<PostClass> pc = pcr.findById(post_id.get());
         
         long id = utc.getUser().getId();
@@ -565,7 +566,7 @@ public class UserController
                         pc.get().setLikes(likes);
                         pcr.save(pc.get());
                         //increase the overall likes of the owner of the post by 1
-                        utc.alterUserRateParameters(pc.get().getUser_id(), "save_like");
+                        utc.alterUserRankingParameters(pc.get().getUser_id(), "save_like", ucr);
                     }
                     break;
                     
@@ -575,7 +576,7 @@ public class UserController
                         pc.get().setLikes(likes);
                         //decrease the overall likes of the owner of the post by 1
                         //check if his overall likes == 0 first, if its 0, leave it like that
-                        utc.alterUserRateParameters(pc.get().getUser_id(), "save_unlike");
+                        utc.alterUserRankingParameters(pc.get().getUser_id(), "save_unlike", ucr);
                     }
                     break;
                     
@@ -584,7 +585,7 @@ public class UserController
                         likes = likes + 1;
                         pc.get().setLikes(likes);
                         //increase the overall likes of the owner of the post by 1
-                        utc.alterUserRateParameters(pc.get().getUser_id(), "save_like");
+                        utc.alterUserRankingParameters(pc.get().getUser_id(), "save_like", ucr);
                     }
                     break;
                 }
@@ -606,7 +607,7 @@ public class UserController
                         redflag = redflag + 1;
                         pc.get().setRedflag(redflag);
                         //increase the overall redflags of the owner of the post by 1
-                        utc.alterUserRateParameters(pc.get().getUser_id(), "save_redflag");
+                        utc.alterUserRankingParameters(pc.get().getUser_id(), "save_redflag", ucr);
                     }
                     break;
                     
@@ -616,7 +617,7 @@ public class UserController
                         pc.get().setRedflag(redflag);
                         //decrease the overall redflags of the owner of the post by 1
                         //check if his overall redflags == 0 first, if its 0, leave it like that
-                        utc.alterUserRateParameters(pc.get().getUser_id(), "save_unredflag");
+                        utc.alterUserRankingParameters(pc.get().getUser_id(), "save_unredflag", ucr);
                     }
                     break;
                     
@@ -625,7 +626,7 @@ public class UserController
                         redflag = redflag + 1;
                         pc.get().setRedflag(redflag);
                         //increase the overall redflags of the owner of the post by 1
-                        utc.alterUserRateParameters(pc.get().getUser_id(), "save_redflag");
+                        utc.alterUserRankingParameters(pc.get().getUser_id(), "save_redflag", ucr);
                     }
                     break;
                 }
@@ -647,7 +648,7 @@ public class UserController
                         star = star + 1;
                         pc.get().setStar(star);
                         //increase the overall star of the owner of the post by 1
-                        utc.alterUserRateParameters(pc.get().getUser_id(), "save_star");
+                        utc.alterUserRankingParameters(pc.get().getUser_id(), "save_star", ucr);
                     }
                     break;
                     
@@ -657,7 +658,7 @@ public class UserController
                         pc.get().setStar(star);
                         //decrease the overall star of the owner of the post by 1
                         //check if his overall star == 0 first, if its 0, leave it like that
-                        utc.alterUserRateParameters(pc.get().getUser_id(), "save_unstar");
+                        utc.alterUserRankingParameters(pc.get().getUser_id(), "save_unstar", ucr);
                     }
                     break;
                     
@@ -666,7 +667,7 @@ public class UserController
                         star = star + 1;
                         pc.get().setStar(star);
                         //increase the overall star of the owner of the post by 1
-                        utc.alterUserRateParameters(pc.get().getUser_id(), "save_star");
+                        utc.alterUserRankingParameters(pc.get().getUser_id(), "save_star", ucr);
                     }
                     break;
                 }
@@ -744,8 +745,7 @@ public class UserController
                     {
                         likes = likes + 1;
                         cc.get().setLikes(likes);
-                        //increase the overall likes of the owner of the post by 1
-                        utc.alterUserRateParameters(cc.get().getUser_id(), "save_like");
+                        utc.alterUserRankingParameters(cc.get().getUser_id(), "save_like", ucr);
                     }
                     break;
                     
@@ -753,9 +753,7 @@ public class UserController
                     {
                         likes = likes - 1;
                         cc.get().setLikes(likes);
-                        //decrease the overall likes of the owner of the post by 1
-                        //check if his overall likes == 0 first, if its 0, leave it like that
-                        utc.alterUserRateParameters(cc.get().getUser_id(), "save_unlike");
+                        utc.alterUserRankingParameters(cc.get().getUser_id(), "save_unlike", ucr);
                     }
                     break;
                     
@@ -763,13 +761,14 @@ public class UserController
                     {
                         likes = likes + 1;
                         cc.get().setLikes(likes);
-                        //increase the overall likes of the owner of the post by 1
-                        utc.alterUserRateParameters(cc.get().getUser_id(), "save_like");
+                        utc.alterUserRankingParameters(cc.get().getUser_id(), "save_like", ucr);
                     }
                     break;
                 }
                 
                 ccr.save(cc.get());
+                utc.alterCommentRankingParameters(cc, ccr);
+                
                 ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
             }
             break;
@@ -786,8 +785,7 @@ public class UserController
                     {
                         redflag = redflag + 1;
                         cc.get().setRedflag(redflag);
-                        //increase the overall likes of the owner of the post by 1
-                        utc.alterUserRateParameters(cc.get().getUser_id(), "save_redflag");
+                        utc.alterUserRankingParameters(cc.get().getUser_id(), "save_redflag", ucr);
                     }
                     break;
                     
@@ -795,9 +793,7 @@ public class UserController
                     {
                         redflag = redflag - 1;
                         cc.get().setRedflag(redflag);
-                        //decrease the overall likes of the owner of the post by 1
-                        //check if his overall likes == 0 first, if its 0, leave it like that
-                        utc.alterUserRateParameters(cc.get().getUser_id(), "save_unredflag");
+                        utc.alterUserRankingParameters(cc.get().getUser_id(), "save_unredflag", ucr);
                     }
                     break;
                     
@@ -805,13 +801,13 @@ public class UserController
                     {
                         redflag = redflag + 1;
                         cc.get().setRedflag(redflag);
-                        //increase the overall likes of the owner of the post by 1
-                        utc.alterUserRateParameters(cc.get().getUser_id(), "save_redflag");
+                        utc.alterUserRankingParameters(cc.get().getUser_id(), "save_redflag", ucr);
                     }
                     break;
                 }
                 
                 ccr.save(cc.get());
+                utc.alterCommentRankingParameters(cc, ccr);
                 ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
             }
             break;
@@ -828,8 +824,7 @@ public class UserController
                     {
                         star = star + 1;
                         cc.get().setStar(star);
-                        //increase the overall likes of the owner of the post by 1
-                        utc.alterUserRateParameters(cc.get().getUser_id(), "save_star");
+                        utc.alterUserRankingParameters(cc.get().getUser_id(), "save_star", ucr);
                     }
                     break;
                     
@@ -837,9 +832,7 @@ public class UserController
                     {
                         star = star - 1;
                         cc.get().setStar(star);
-                        //decrease the overall likes of the owner of the post by 1
-                        //check if his overall likes == 0 first, if its 0, leave it like that
-                        utc.alterUserRateParameters(cc.get().getUser_id(), "save_unstar");
+                        utc.alterUserRankingParameters(cc.get().getUser_id(), "save_unstar", ucr);
                     }
                     break;
                     
@@ -847,13 +840,13 @@ public class UserController
                     {
                         star = star + 1;
                         cc.get().setStar(star);
-                        //increase the overall likes of the owner of the post by 1
-                        utc.alterUserRateParameters(cc.get().getUser_id(), "save_star");
+                        utc.alterUserRankingParameters(cc.get().getUser_id(), "save_star", ucr);
                     }
                     break;
                 }
                 
                 ccr.save(cc.get());
+                utc.alterCommentRankingParameters(cc, ccr);
                 ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
             }
             break;
@@ -870,8 +863,7 @@ public class UserController
                     {
                         shares = shares + 1;
                         cc.get().setShare(shares);
-                        //increase the overall shares of the owner of the post by 1
-                        utc.alterUserRateParameters(cc.get().getUser_id(), "save_share");
+                        utc.alterUserRankingParameters(cc.get().getUser_id(), "save_share", ucr);
                     }
                     break;
                     
@@ -879,9 +871,7 @@ public class UserController
                     {
                         shares = shares - 1;
                         cc.get().setShare(shares);
-                        //decrease the overall shares of the owner of the post by 1
-                        //check if his overall shares == 0 first, if its 0, leave it like that
-                        utc.alterUserRateParameters(cc.get().getUser_id(), "save_unshare");
+                        utc.alterUserRankingParameters(cc.get().getUser_id(), "save_unshare", ucr);
                     }
                     break;
                     
@@ -889,13 +879,13 @@ public class UserController
                     {
                         shares = shares + 1;
                         cc.get().setShare(shares);
-                        //increase the overall likes of the owner of the post by 1
-                        utc.alterUserRateParameters(cc.get().getUser_id(), "save_share");
+                        utc.alterUserRankingParameters(cc.get().getUser_id(), "save_share", ucr);
                     }
                     break;
                 }
                 
                 ccr.save(cc.get());
+                utc.alterCommentRankingParameters(cc, ccr);
                 ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
             }
             break;
@@ -947,6 +937,25 @@ public class UserController
             }
             break;
             
+            case "dlt_sMod":
+            {
+                String alert;
+                Optional<CommentClass> cc = ccr.findById(comment_id.get());
+                
+                if(utc.getUser().getColorclass().equals("user_mod"))
+                {
+                    cc.get().setApproved(0);
+                    ccr.save(cc.get());
+                    alert = "Deleted";
+                }
+                else
+                {
+                    alert = "Cannot delete comment";
+                }
+                ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+            }
+            break;
+            
             case "lk_x":
             {
                 Optional<SubCommentClass> scc = sccr.findById(subcomment_id.get());
@@ -959,8 +968,7 @@ public class UserController
                     {
                         likes = likes + 1;
                         scc.get().setLikes(likes);
-                        //increase the overall likes of the owner of the post by 1
-                        utc.alterUserRateParameters(scc.get().getUser_id(), "save_like");
+                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_like", ucr);
                     }
                     break;
                     
@@ -968,9 +976,7 @@ public class UserController
                     {
                         likes = likes - 1;
                         scc.get().setLikes(likes);
-                        //decrease the overall likes of the owner of the post by 1
-                        //check if his overall likes == 0 first, if its 0, leave it like that
-                        utc.alterUserRateParameters(scc.get().getUser_id(), "save_unlike");
+                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_unlike", ucr);
                     }
                     break;
                     
@@ -978,13 +984,13 @@ public class UserController
                     {
                         likes = likes + 1;
                         scc.get().setLikes(likes);
-                        //increase the overall likes of the owner of the post by 1
-                        utc.alterUserRateParameters(scc.get().getUser_id(), "save_like");
+                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_like", ucr);
                     }
                     break;
                 }
                 
                 sccr.save(scc.get());
+                utc.alterSubCommentRankingParameters(scc, sccr);
                 ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
             }
             break;
@@ -1001,8 +1007,7 @@ public class UserController
                     {
                         redflag = redflag + 1;
                         scc.get().setRedflag(redflag);
-                        //increase the overall likes of the owner of the post by 1
-                        utc.alterUserRateParameters(scc.get().getUser_id(), "save_redflag");
+                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_redflag", ucr);
                     }
                     break;
                     
@@ -1010,9 +1015,7 @@ public class UserController
                     {
                         redflag = redflag - 1;
                         scc.get().setRedflag(redflag);
-                        //decrease the overall likes of the owner of the post by 1
-                        //check if his overall likes == 0 first, if its 0, leave it like that
-                        utc.alterUserRateParameters(scc.get().getUser_id(), "save_unredflag");
+                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_unredflag", ucr);
                     }
                     break;
                     
@@ -1020,13 +1023,13 @@ public class UserController
                     {
                         redflag = redflag + 1;
                         scc.get().setRedflag(redflag);
-                        //increase the overall likes of the owner of the post by 1
-                        utc.alterUserRateParameters(scc.get().getUser_id(), "save_redflag");
+                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_redflag", ucr);
                     }
                     break;
                 }
                 
                 sccr.save(scc.get());
+                utc.alterSubCommentRankingParameters(scc, sccr);
                 ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
             }
             break;
@@ -1043,8 +1046,7 @@ public class UserController
                     {
                         starred = starred + 1;
                         scc.get().setStar(starred);
-                        //increase the overall likes of the owner of the post by 1
-                        utc.alterUserRateParameters(scc.get().getUser_id(), "save_star");
+                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_star", ucr);
                     }
                     break;
                     
@@ -1052,9 +1054,7 @@ public class UserController
                     {
                         starred = starred - 1;
                         scc.get().setStar(starred);
-                        //decrease the overall likes of the owner of the post by 1
-                        //check if his overall likes == 0 first, if its 0, leave it like that
-                        utc.alterUserRateParameters(scc.get().getUser_id(), "save_unstar");
+                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_unstar", ucr);
                     }
                     break;
                     
@@ -1062,13 +1062,13 @@ public class UserController
                     {
                         starred = starred + 1;
                         scc.get().setStar(starred);
-                        //increase the overall likes of the owner of the post by 1
-                        utc.alterUserRateParameters(scc.get().getUser_id(), "save_star");
+                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_star", ucr);
                     }
                     break;
                 }
                 
                 sccr.save(scc.get());
+                utc.alterSubCommentRankingParameters(scc, sccr);
                 ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
             }
             break;
@@ -1120,6 +1120,25 @@ public class UserController
                 ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
             }
             break;
+            
+            case "dlt_xMod":
+            {
+                String alert;
+                Optional<SubCommentClass> scc = sccr.findById(subcomment_id.get());
+                
+                if(utc.getUser().getColorclass().equals("user_mod"))
+                {
+                    scc.get().setApproved(0);
+                    sccr.save(scc.get());
+                    alert = "Deleted";
+                }
+                else
+                {
+                    alert = "Cannot delete comment";
+                }
+                ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+            }
+            break;
         }
         return ret;
     }
@@ -1131,6 +1150,8 @@ public class UserController
     @RequestParam("cid")Optional<Long> comment_id, @RequestParam("sid")Optional<Long> subcomment_id)
     {
         String ret = null;
+        String[] hideBlocks = {"secondBlock", "thirdBlock"};
+        utc.dispBlock(model, "firstBlock", hideBlocks);
         String path = utc.getFilePath()+"dist_img";
         String date = utc.getDate();
         String content = pc.getContent().trim();
@@ -1791,7 +1812,7 @@ public class UserController
     
     
     @GetMapping("/rcd")
-    public String getRecord(ModelMap model, @RequestParam("pg")Optional<Integer> page, 
+    public String getRecord(ModelMap model, @RequestParam("pg")Optional<Integer> pgn, 
     RedirectAttributes ra, HttpServletRequest req)
     {
         utc.modelUser(model);
@@ -1800,10 +1821,10 @@ public class UserController
         List<PostClass> tobj = new LinkedList<>();
         utc.modelTransfer(model);
         
-        if(page.get() > 1)
+        if(pgn.get() > 1)
         {
-            init = (page.get() - 1) * end;
-            end = end * page.get();
+            init = (pgn.get() - 1) * end;
+            end = end * pgn.get();
         }
         List<PostClass> trend =  pcr.getAllMyPost(utc.getUser().getId());   //Get all my posts
         utc.modelTransfer(model);
@@ -1820,10 +1841,12 @@ public class UserController
             }
             
             model.addAttribute("trendobj", tobj);
-            model.addAttribute("prev", page.get()-1);
-            model.addAttribute("next", page.get()+1);
+            model.addAttribute("pgn", pgn.get());   //For reading all your posts both approved and dispproved
+            
+            model.addAttribute("prev", pgn.get()-1);
+            model.addAttribute("next", pgn.get()+1);
                 
-            if(page.get() - 1 == 0)
+            if(pgn.get() - 1 == 0)
             {
                 model.addAttribute("disp1", "none");
             }
@@ -1843,18 +1866,20 @@ public class UserController
         return "pages/mytrend";
     }
     
-    /*
+    
     @GetMapping("/prf")
-    public String editProfile(HttpServletRequest req, HttpSession session, ModelMap model)
+    public String editProfile(HttpServletRequest req, ModelMap model)
     {
-        session = req.getSession();
-        final String[] blocks = {"firstblock", "secondblock", "thirdblock", "fifthblock", "sixthblock"};
-        utc.dispBlock(session, "fourthblock", blocks);
+        String[] hideBlocks = {"firstBlock", "thirdBlock"};
+        utc.dispBlock(model, "secondBlock", hideBlocks);
+        utc.modelUser(model);
+        utc.modelTransfer(model);
         
         model.addAttribute("postclass", new PostClass());
         return "pages/userpage";
     }
     
+    /*
     @GetMapping("/ads")
     public String creatAds(HttpServletRequest req, HttpSession session, ModelMap model)
     {
@@ -1878,4 +1903,53 @@ public class UserController
     }
     */
     
+    @PostMapping("/prfupd")
+    public String updatePix(@ModelAttribute("postclass")PostClass pc, ModelMap model, RedirectAttributes ra)
+    {
+        String ret = null;
+        String path = utc.getFilePath()+"profile_img";
+        MultipartFile coverFile = pc.getCoverFile();
+        if(coverFile.getSize() > 0 && coverFile.getSize() <= 4000000)
+        {
+            String coverFileName = coverFile.getOriginalFilename();
+            if(coverFileName!=null && coverFileName.length() <= 50)
+            {
+                if(coverFileName.endsWith(".jpg") || coverFileName.endsWith(".png") || coverFileName.endsWith(".gif")
+                || coverFileName.endsWith(".jpeg") || coverFileName.endsWith(".JPG") || coverFileName.endsWith(".PNG") 
+                || coverFileName.endsWith(".GIF") || coverFileName.endsWith(".JPEG") || coverFileName.endsWith(".webp") 
+                || coverFileName.endsWith(".WEBP"))
+                {
+                    try
+                    {
+                        Optional<UserClass> uc = ucr.findById(utc.getUser().getId());
+                        uc.get().setPix(coverFileName);
+                        ucr.save(uc.get());
+                        
+                        File pathToFile=new File(path, coverFileName);
+                        coverFile.transferTo(pathToFile);
+                        ra.addFlashAttribute("alert", "Display photo updated");
+                    }
+                    catch (IOException | IllegalStateException ex)
+                    {
+                        Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                else
+                {
+                    ra.addFlashAttribute("alert", "Invalid image format (suported: jpg, png, gif, webp)");
+                }
+            }
+            else
+            {
+                ra.addFlashAttribute("alert", "Photo name too long (less than 50 characters)");
+            }
+        }
+        else if(coverFile.getSize() == 0)   //why not use coverFile.isEmpty()
+        {
+            Optional<UserClass> uc = ucr.findById(utc.getUser().getId());
+            uc.get().setPix("empty.png");
+            ucr.save(uc.get());
+        }
+        return "redirect:/user/prf";
+    }
 }

@@ -20,6 +20,8 @@ public class SubCommentClass implements Serializable
     private long redflag = 0l;
     @Column(name = "star_flag")
     private long star = 0l;
+    @Column(name="subcomment_rank")
+    private int subcommentrank = 0;
     
     @Column(name="approved")
     private int approved = 1;
@@ -191,5 +193,15 @@ public class SubCommentClass implements Serializable
     public String getDuration()
     {
         return new DurationCalculator().calculateDuration(postdate);
+    }
+    
+    public void setSubcommentrank(int value)
+    {
+    	subcommentrank = value;
+    }
+	
+    public int getSubcommentrank()
+    {
+    	return subcommentrank;
     }
 }

@@ -21,8 +21,8 @@ public interface PostClassRepo extends JpaRepository<PostClass, Long>
     @Query("SELECT pc FROM PostClass pc WHERE LOWER(pc.category) = :category AND pc.approved = 1 ORDER BY pc.id DESC")
     public Page<PostClass> getApprovedPost(@Param("category")String category, Pageable pageable);
     
-    @Query("SELECT pc FROM PostClass pc WHERE pc.id = :id AND LOWER(pc.title) LIKE LOWER(CONCAT('%', :title, '%'))")    //Remember ASC and DESC order
-    public Optional<PostClass> getPostReader(@Param("id")Long id, @Param("title")String title);
+    @Query("SELECT pc FROM PostClass pc WHERE pc.id = :id AND pc.approved = :approved AND LOWER(pc.title) LIKE LOWER(CONCAT('%', :title, '%'))")    //Remember ASC and DESC order
+    public Optional<PostClass> getPostReader(@Param("id")Long id, @Param("title")String title, @Param("approved")int approved);
     
     @Query("SELECT pc FROM PostClass pc ORDER BY pc.id DESC")
     public Page<PostClass> getFollowerPost(Pageable pageable);

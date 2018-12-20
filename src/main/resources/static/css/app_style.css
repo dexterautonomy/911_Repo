@@ -63,6 +63,12 @@ div.col-sm-10
     font-size: 11px;
 }
 
+.smallfontRank
+{
+    font-size: 10px;
+    color: blue;
+}
+
 .smallfont2
 {
     font-size: 13px;
@@ -121,11 +127,17 @@ div.col-sm-10
 .commentBck
 {
     background-color: rgb(250,253,250);
+    overflow: auto;
 }
 
 div.commentBck a:hover
 {
     text-decoration: none;
+}
+
+.commentBck2
+{
+    overflow: auto;
 }
 
 div.commentBck2 a:hover
@@ -250,22 +262,22 @@ div.commentBck2 a:hover
 
 .user_beginner
 {
-    box-shadow: 0px 4px 13px grey;
+    box-shadow: 0px 3px 12px grey;
 }
 
 .user_pro
 {
-    box-shadow: 0px 2px 10px rgb(0, 143, 222);
+    box-shadow: 0px 2px 10px rgb(0, 100, 222);
 }
 
 .user_master
 {
-    box-shadow: 0px 2px 10px rgb(0,132,82);
+    box-shadow: 0px 2px 10px rgb(0,130,81);
 }
 
 .user_legend
 {
-    box-shadow: 0px 2px 10px violet;
+    box-shadow: 0px 2px 10px rgb(144,0,144);
 }
 
 .user_genius
@@ -275,10 +287,23 @@ div.commentBck2 a:hover
 
 .user_guru
 {
-    box-shadow: 0px 2px 10px sandybrown;
+    box-shadow: 0px 2px 10px orange;
 }
 
 .user_mod
 {
-    box-shadow: 0px 2px 10px lightsalmon;
+    border-bottom: 3px solid blue;
+}
+
+.user_god
+{
+    box-shadow: 0px 2px 10px;
+}
+
+.prfdiv
+{
+    padding: 15px;
+    border-top-left-radius: 50%;
+    background-color: rgb(234,234,234);
+    border: 1px solid rgb(225,225,225);
 }

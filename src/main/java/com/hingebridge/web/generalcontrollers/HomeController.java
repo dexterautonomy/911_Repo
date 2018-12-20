@@ -196,47 +196,80 @@ public class HomeController
     @GetMapping("/s_ch")
     public String getStory(@RequestParam("pos")Optional<Long> id, @RequestParam("t")Optional<String> title, 
     @RequestParam("p") Optional<Integer> pg, ModelMap model, @RequestParam("page")Optional<Integer> commentPaginate, 
-    @RequestParam("alertx")Optional<String> alert)
+    @RequestParam("alertx")Optional<String> alert, @RequestParam("apvVal")Optional<Integer> trendApproveValue, 
+    @RequestParam("pgn") Optional<Integer> pgnx)
     {
+        String ret = null;
+        
         final int INITIAL_PAGE = 0;
         final int INITIAL_PAGE_SIZE = 15;    //pageSize is the offset
         int page = (commentPaginate.orElse(0) < 1 ? INITIAL_PAGE : commentPaginate.get() - 1);    //page is the LIMIT            
         
-        Optional<PostClass> pc = pcr.getPostReader(id.get(), title.get());
-        long views = pc.get().getViews();
-        views = views + 1;
-        pc.get().setViews(views);
-        pcr.save(pc.get());
+        Optional<PostClass> pc;    // = pcr.getPostReader(id.get(), title.get());
+        int tid = trendApproveValue.orElse(1);
         
-        utc.alterUserRateParameters(pc.get().getUser_id(), "save_view");
-        
-        Page<CommentClass> cc = ccr.getApprovedComments(id.get(), PageRequest.of(page, INITIAL_PAGE_SIZE));
-        PagerModel pgn = new PagerModel(cc.getTotalPages(), cc.getNumber());
-        
-        model.addAttribute("commentsExt", cc);
-	model.addAttribute("pgn", pgn);
-        
-        if(cc.getNumber() == 0)
+        switch(tid)
         {
-            model.addAttribute("disp1", "none");
-        }
-        if(cc.getNumber() + 1 == cc.getTotalPages())
-        {
-            model.addAttribute("disp2", "none");
-        }
-        if(cc.getTotalPages() == 0)
-        {
-            model.addAttribute("dispAlpha", "none");
+            case 0:
+            {
+                pc = pcr.getPostReader(id.get(), title.get(), 0);
+                if(utc.getUser().getId().equals(pc.get().getUser_id()))
+                {
+                    String[] hideBlocks = {"firstBlock", "secondBlock"};
+                    utc.dispBlock(model, "thirdBlock", hideBlocks);
+                    utc.modelUser(model);
+                    utc.modelTransfer(model);
+                    model.addAttribute("postclass", new PostClass());
+                    model.addAttribute("unapprovedPost", pc.get());
+                    model.addAttribute("pgn", pgnx.orElse(1));
+                    
+                    ret = "pages/userpage";
+                }
+                else
+                {
+                    //cannot do it
+                }
+            }
+            break;
+            
+            case 1:
+            {
+                pc = pcr.getPostReader(id.get(), title.get(), 1);
+                
+                utc.updateViews(pc);
+                utc.alterUserRankingParameters(pc.get().getUser_id(), "save_view", ucr);
+                
+                Page<CommentClass> cc = ccr.getApprovedComments(id.get(), PageRequest.of(page, INITIAL_PAGE_SIZE));
+                PagerModel pgn = new PagerModel(cc.getTotalPages(), cc.getNumber());
+                
+                model.addAttribute("postclass", pc.get());
+                model.addAttribute("commentsExt", cc);
+        	model.addAttribute("pgn", pgn);
+        
+                if(cc.getNumber() == 0)
+                {
+                    model.addAttribute("disp1", "none");
+                }
+                if(cc.getNumber() + 1 == cc.getTotalPages())
+                {
+                    model.addAttribute("disp2", "none");
+                }
+                if(cc.getTotalPages() == 0)
+                {
+                    model.addAttribute("dispAlpha", "none");
+                }
+                
+                model.addAttribute("pos", id.orElse(1l));//important for comment pagination
+                model.addAttribute("title", title.orElse(""));//important  for comment pagination
+                model.addAttribute("pg", pg.orElse(1));//for going back gotten from getHome() method
+                model.addAttribute("alertx", alert.orElse(""));
+                
+                ret = "pages/reader";
+            }
+            break;
         }
         
-        model.addAttribute("postclass", pc.get());
-        
-        model.addAttribute("pos", id.orElse(1L));//important for comment pagination
-        model.addAttribute("title", title.orElse(""));//important  for comment pagination
-        model.addAttribute("pg", pg.orElse(1));//for going back gotten from getHome() method
-        model.addAttribute("alertx", alert.orElse(""));
-        
-        return "pages/reader";
+        return ret;
     }
     
     @GetMapping("/b_ch")
@@ -248,7 +281,7 @@ public class HomeController
         final int INITIAL_PAGE_SIZE = 15;    //pageSize is the offset
         int page = (commentPaginate.orElse(0) < 1 ? INITIAL_PAGE : commentPaginate.get() - 1);    //page is the LIMIT            
         
-        Optional<PostClass> pc = pcr.getPostReader(id.get(), title.get());
+        Optional<PostClass> pc = pcr.getPostReader(id.get(), title.get(), 1);
         Page<CommentClass> cc = ccr.getApprovedComments(id.get(), PageRequest.of(page, INITIAL_PAGE_SIZE));
         PagerModel pgn = new PagerModel(cc.getTotalPages(), cc.getNumber());
         
