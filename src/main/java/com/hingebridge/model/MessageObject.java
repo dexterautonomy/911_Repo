@@ -10,9 +10,9 @@ public class MessageObject implements Serializable
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    private long id;
     @Column(name = "recipient_id")
-    private Long recipient_id;
+    private long recipient_id;
     @Column(name = "flag")
     private int flag = 1;
     @Column(name = "postlink")
@@ -20,7 +20,7 @@ public class MessageObject implements Serializable
     @Column(name = "unread")
     private String unread = "unread";
     @Column(name = "comment_id")
-    private Long comment_id;
+    private long commentid;
     
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "comment_id", updatable = false, insertable = false, nullable = false)
@@ -28,13 +28,14 @@ public class MessageObject implements Serializable
     
     public MessageObject(){}
     
-    public MessageObject(Long recipient_id, Long comment_id)
+    public MessageObject(long recipient_id, long commentid, String postlink)
     {
         this.recipient_id = recipient_id;
-        this.comment_id = comment_id;
+        this.commentid = commentid;
+        this.postlink = postlink;
     }
 
-    public Long getId()
+    public long getId()
     {
         return id;
     }
@@ -49,12 +50,12 @@ public class MessageObject implements Serializable
         return flag;
     }
 
-    public void setRecipient_id(Long value)
+    public void setRecipient_id(long value)
     {
         recipient_id = value;
     }
     
-    public Long getRecipient_id()
+    public long getRecipient_id()
     {
         return recipient_id;
     }
@@ -79,14 +80,14 @@ public class MessageObject implements Serializable
         return unread;
     }
     
-    public void setComment_id(Long value)
+    public void setCommentid(long value)
     {
-        comment_id = value;
+        commentid = value;
     }
     
-    public Long getComment_id()
+    public long getCommentid()
     {
-        return comment_id;
+        return commentid;
     }
     
     public void setCommentmessage(CommentClass value)

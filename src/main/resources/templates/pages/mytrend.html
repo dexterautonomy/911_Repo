@@ -86,7 +86,7 @@
                     
                     <div class="list-group centertinz">
                         <div th:each="trend : ${trendobj}">
-                            <a class="list-group-item" style="display: inline-block; width:91%;" th:href="@{/s_ch(pos=${trend.id}, t=${trend.title}, p=1, pgn=${pgn}, apvVal=${trend.approved})}">
+                            <a th:href="@{/s_ch(pos=${trend.id}, t=${trend.title}, p=1, pgn=${pgn}, apvVal=${trend.approved})}" class="list-group-item" style="display: inline-block; width:91%;">
                                 <div class="row">
                                     <div id="chead" class="list-group-item-text" th:text="${trend.title}"></div>
                                     
@@ -104,7 +104,7 @@
                                 </div>
                             </a>
                             
-                            <a style="display: inline-block; width: 5%; float: right;" th:href="@{/}">
+                            <a th:href="@{/user/dlt_(pos=${trend.id}, t=${trend.title}, pgn=${pgn}, akt=dlt_pt)}" style="display: inline-block; width: 5%; float: right;">
                                 <span class="glyphicon glyphicon-trash" style="color: red;"></span>
                             </a>
                         </div>

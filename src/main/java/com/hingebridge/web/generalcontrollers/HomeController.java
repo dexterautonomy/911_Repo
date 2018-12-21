@@ -1,6 +1,7 @@
 package com.hingebridge.web.generalcontrollers;
 
 import com.hingebridge.model.CommentClass;
+import com.hingebridge.model.MessageObject;
 import com.hingebridge.model.PagerModel;
 import com.hingebridge.model.PostClass;
 
@@ -19,6 +20,7 @@ import com.hingebridge.model.Role;
 import com.hingebridge.model.UserClass;
 import com.hingebridge.model.UserRoleClass;
 import com.hingebridge.repository.CommentClassRepo;
+import com.hingebridge.repository.MessageObjectRepo;
 import com.hingebridge.repository.PostClassRepo;
 import com.hingebridge.repository.RoleClassRepo;
 import com.hingebridge.repository.UserClassRepo;
@@ -44,6 +46,8 @@ public class HomeController
     private PostClassRepo pcr;
     @Autowired
     private CommentClassRepo ccr;
+    @Autowired
+    private MessageObjectRepo mobjr;
 	
     @GetMapping("/")
     public String getHome(HttpServletRequest req, HttpSession session, ModelMap model, @RequestParam("page") Optional<Integer> page_1)
@@ -197,7 +201,7 @@ public class HomeController
     public String getStory(@RequestParam("pos")Optional<Long> id, @RequestParam("t")Optional<String> title, 
     @RequestParam("p") Optional<Integer> pg, ModelMap model, @RequestParam("page")Optional<Integer> commentPaginate, 
     @RequestParam("alertx")Optional<String> alert, @RequestParam("apvVal")Optional<Integer> trendApproveValue, 
-    @RequestParam("pgn") Optional<Integer> pgnx)
+    @RequestParam("pgn") Optional<Integer> pgnx, @RequestParam("cid") Optional<Long> commentid)
     {
         String ret = null;
         
@@ -234,6 +238,13 @@ public class HomeController
             
             case 1:
             {
+                if(commentid.orElse(null) != null)
+                {
+                    Optional<MessageObject> mo = mobjr.findByCommentid(commentid.get());
+                    mo.get().setUnread("read");
+                    mobjr.save(mo.get());
+                }
+                
                 pc = pcr.getPostReader(id.get(), title.get(), 1);
                 
                 utc.updateViews(pc);

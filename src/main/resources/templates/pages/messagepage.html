@@ -91,7 +91,7 @@
                                     <span class="postcomment_username">Me</span>
                                     <span style="float: right;">
                                         <span class="smallfont" th:text="${mo.commentmessage.duration}"></span>&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <a th:href="@{/}">
+                                        <a th:href="@{/user/dlt_(cid=${mo.commentid}, pgn=${pgn}, akt=dlt_cmt)}">
                                             <span class="glyphicon glyphicon-trash" style="color: red;"></span>
                                         </a>
                                     </span>
@@ -99,8 +99,8 @@
                                 <div class="list-group-item-text justify smallfont3A" th:utext="${mo.commentmessage.content}"></div><br/>
                                 <div>
                                     <span style="color: green;" class="glyphicon glyphicon-thumbs-up"></span>&nbsp;<span class="smallfont" th:text="${mo.commentmessage.likes}"></span>&nbsp;&nbsp;
-                                    <span style="color: red;" class="glyphicon glyphicon-flag"></span>&nbsp;<span class="smallfont" th:text="${mo.commentmessage.likes}"></span>&nbsp;&nbsp;
-                                    <span style="color: yellow;" class="glyphicon glyphicon-star"></span>&nbsp;<span class="smallfont" th:text="${mo.commentmessage.likes}"></span>
+                                    <span style="color: red;" class="glyphicon glyphicon-flag"></span>&nbsp;<span class="smallfont" th:text="${mo.commentmessage.redflag}"></span>&nbsp;&nbsp;
+                                    <span style="color: yellow;" class="glyphicon glyphicon-star"></span>&nbsp;<span class="smallfont" th:text="${mo.commentmessage.star}"></span>
                                 </div><br/>
                                 <a th:href="@{'/' + ${mo.postlink}}">
                                     <div class="row list-group-item-text" th:each="mosubcomment: ${mo.commentmessage.subcomment}">

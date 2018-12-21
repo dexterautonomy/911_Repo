@@ -83,6 +83,8 @@ public class UserController
     public String userPostControl(@ModelAttribute("postclass")PostClass pc, HttpServletRequest req, 
     ModelMap model, RedirectAttributes ra) throws IOException
     {
+        String[] hideBlocks = {"secondBlock", "thirdBlock"};
+        utc.dispBlock(model, "firstBlock", hideBlocks);
         utc.modelUser(model);
         String path = utc.getFilePath()+"dist_img";
         String date = utc.getDate();
@@ -521,7 +523,7 @@ public class UserController
     @RequestParam("cid")Optional<Long> comment_id, @RequestParam("sid")Optional<Long> subcomment_id)
     {
         String ret= null;
-        //utc.sessionUserDetails(req);
+        utc.sessionUserDetails(req);    //Do not ever remove this
         Optional<PostClass> pc = pcr.findById(post_id.get());
         
         long id = utc.getUser().getId();
@@ -1149,9 +1151,8 @@ public class UserController
     @ModelAttribute("postclass")PostClass pc, RedirectAttributes ra, @RequestParam("akt")Optional<String> action, 
     @RequestParam("cid")Optional<Long> comment_id, @RequestParam("sid")Optional<Long> subcomment_id)
     {
+        //Do not forget to add provisions for those banned etc, they should not be able to write post, comment etc
         String ret = null;
-        String[] hideBlocks = {"secondBlock", "thirdBlock"};
-        utc.dispBlock(model, "firstBlock", hideBlocks);
         String path = utc.getFilePath()+"dist_img";
         String date = utc.getDate();
         String content = pc.getContent().trim();
@@ -1344,7 +1345,12 @@ public class UserController
                             {
                                 SubCommentClass scc = new SubCommentClass(utc.getUser().getId(), comment_id.get(), content, date);
                                 sccr.save(scc);
+                                
                                 //Notify the owner of the comment here: Very important
+                                Optional<CommentClass> cc = ccr.findById(comment_id.get());
+                                String postlink = "s_ch?pos="+post_id.get()+"&t="+title.get()+"&p="+pg.get()+"&cid="+comment_id.get()+"#"+comment_id.get();
+                                utc.updateInbox(mobjr, cc.get().getUser_id(), comment_id.get(), postlink);
+                                
                                 return "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx=Posted";
                             }
                         }
@@ -1460,7 +1466,14 @@ public class UserController
                                     Optional<CommentClass> quickCom = ccr.getExactPost(utc.getUser().getId(), post_id.get(), date);
                                     QuoteObject qobj = new QuoteObject(ccid.get().getUser_id(), quickCom.get().getId(), content_2, ccid.get().getPostdate());
                                     qobjr.save(qobj);
+                                    
+                                    /*
                                     //Notify the owner of the comment here: Very important
+                                    Optional<CommentClass> cLass = ccr.findById(comment_id.get());
+                                    String postlink = "s_ch?pos="+post_id.get()+"&t="+title.get()+"&p="+pg.get()+"&cid="+comment_id.get()+"#"+comment_id.get();
+                                    utc.updateInbox(mobjr, cLass.get().getUser_id(), comment_id.get(), postlink);
+                                    */
+                                    
                                     return "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx=Posted";
                                 }
                                 else
@@ -1788,6 +1801,7 @@ public class UserController
             }
             
             model.addAttribute("messageobj", mobj);
+            model.addAttribute("pgn", page.get());  //Key
             model.addAttribute("prev", page.get()-1);
             model.addAttribute("next", page.get()+1);
                 
@@ -1827,7 +1841,6 @@ public class UserController
             end = end * pgn.get();
         }
         List<PostClass> trend =  pcr.getAllMyPost(utc.getUser().getId());   //Get all my posts
-        utc.modelTransfer(model);
         
         if(!trend.isEmpty())  //If there are messages
         {
@@ -1866,6 +1879,56 @@ public class UserController
         return "pages/mytrend";
     }
     
+    @GetMapping("/dlt_")
+    public String deleteRecord(@RequestParam("pos")Optional<Long> post_id, @RequestParam("pgn")Optional<Long> pgn,
+    @RequestParam("akt")Optional<String> action, RedirectAttributes ra, HttpServletRequest req, ModelMap model, 
+    @RequestParam("cid")Optional<Long> commentid)
+    {
+        String ret = null;
+        
+        switch (action.get())
+        {
+            case "dlt_pt":
+            {
+                Optional<PostClass> pc = pcr.findById(post_id.get());
+        
+                if(utc.getUser().getId().equals(pc.get().getUser_id()))
+                {
+                    pc.get().setFlag(0);
+                    pcr.save(pc.get());
+                }
+                else
+                {
+                    //Impossible situation but leave am there>>
+                    ra.addFlashAttribute("alert", "Cannot execute command");
+                }
+                ret = "redirect:/user/rcd?pg="+pgn.get();
+            }
+            break;
+            
+            case "dlt_cmt":
+            {
+                Optional<MessageObject> mo = mobjr.findByCommentid(commentid.get());
+        
+                if(utc.getUser().getId().equals(mo.get().getRecipient_id()))
+                {
+                    mo.get().setFlag(0);
+                    mobjr.save(mo.get());
+                }
+                else
+                {
+                    //Impossible situation but leave am there>>
+                    ra.addFlashAttribute("alert", "Cannot execute command");
+                }
+                ret = "redirect:/user/inbox?pg="+pgn.get();
+            }
+            break;
+            
+        }
+        
+        
+        return ret;
+    }
     
     @GetMapping("/prf")
     public String editProfile(HttpServletRequest req, ModelMap model)

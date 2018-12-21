@@ -431,4 +431,44 @@ public class UtilityClass
         model.addAttribute("pize", getFollowedPostSize());
         model.addAttribute("tize", getMyTrendSize());
     }
+    
+    public void updateInbox(MessageObjectRepo mobjr, long user_id, long commentid, String postlink)
+    {
+        Optional<MessageObject> mo = mobjr.findByCommentid(commentid);
+        
+        if(mo.orElse(null) != null)
+        {
+            switch(mo.get().getFlag())
+            {
+                case 0:
+                {
+                    if(!mo.get().getUnread().equals("unread"))
+                    {
+                        mo.get().setUnread("unread");
+                    }
+                    
+                    mo.get().setFlag(1);
+                    mobjr.save(mo.get());
+                }
+                break;
+                
+                case 1:
+                {
+                    if(!mo.get().getUnread().equals("unread"))
+                    {
+                        mo.get().setUnread("unread");
+                        mobjr.save(mo.get());
+                    }
+                }
+                break;
+            }
+        }
+        else
+        {
+            MessageObject messageObj = new MessageObject(user_id, commentid, postlink);
+            mobjr.save(messageObj);
+        }
+        
+        
+    }
 }
