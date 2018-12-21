@@ -1899,7 +1899,6 @@ public class UserController
                 }
                 else
                 {
-                    //Impossible situation but leave am there>>
                     ra.addFlashAttribute("alert", "Cannot execute command");
                 }
                 ret = "redirect:/user/rcd?pg="+pgn.get();
@@ -1917,7 +1916,6 @@ public class UserController
                 }
                 else
                 {
-                    //Impossible situation but leave am there>>
                     ra.addFlashAttribute("alert", "Cannot execute command");
                 }
                 ret = "redirect:/user/inbox?pg="+pgn.get();

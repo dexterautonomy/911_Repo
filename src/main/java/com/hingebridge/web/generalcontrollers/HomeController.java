@@ -217,6 +217,7 @@ public class HomeController
             case 0:
             {
                 pc = pcr.getPostReader(id.get(), title.get(), 0);
+                
                 if(utc.getUser().getId().equals(pc.get().getUser_id()))
                 {
                     String[] hideBlocks = {"firstBlock", "secondBlock"};
@@ -231,7 +232,7 @@ public class HomeController
                 }
                 else
                 {
-                    //cannot do it
+                    //Use error controller to handle this part and remove the else block
                 }
             }
             break;
