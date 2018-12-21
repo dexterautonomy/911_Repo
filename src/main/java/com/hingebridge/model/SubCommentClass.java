@@ -30,6 +30,9 @@ public class SubCommentClass implements Serializable
     @Column(name="postdate")
     private String postdate;
     
+    @Column(name = "unread")
+    private String unread = "unread";
+    
     // UserClass <--- SubCommentClass Relationship
     @Column(name="user_id")
     private long user_id;
@@ -70,6 +73,15 @@ public class SubCommentClass implements Serializable
         this.comment_id = cc_id;
         this.content = content;
         this.postdate = postdate;
+    }
+    
+    public SubCommentClass(long uc_id, long cc_id, String content, String postdate, String read)    //No need marking your comments as unread, abi no be you write am??
+    {
+        user_id = uc_id;
+        this.comment_id = cc_id;
+        this.content = content;
+        this.postdate = postdate;
+        this.unread = read;
     }
     
     
@@ -203,5 +215,15 @@ public class SubCommentClass implements Serializable
     public int getSubcommentrank()
     {
     	return subcommentrank;
+    }
+    
+    public void setUnread(String value)
+    {
+        unread = value;
+    }
+    
+    public String getUnread()
+    {
+        return unread;
     }
 }

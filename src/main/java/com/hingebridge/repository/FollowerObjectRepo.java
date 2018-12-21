@@ -11,5 +11,5 @@ import org.springframework.stereotype.Repository;
 public interface FollowerObjectRepo extends JpaRepository<FollowerObject, Long>
 {
     @Query("SELECT fobj FROM FollowerObject fobj WHERE fobj.user_id = :user_id AND fobj.flag = 1")
-    public List<FollowerObject> getSelectedFollow(@Param("user_id")Long user_id);
+    public List<FollowerObject> getSelectedFollow(@Param("user_id")long user_id);
 }

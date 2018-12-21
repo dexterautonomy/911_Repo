@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>9jaForum</title>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+        <link rel="shortcut icon" type="image/x-icon" th:href="@{/files/system_img/logo.jpg}" href=""/>
+        <link rel="stylesheet" th:href="@{/css/app_style.css}" href=""/>
+    </head>
+    
+    <body class="container">
+        <div class="col-sm-1"></div>
+    
+        <div class="col-sm-10">
+            <div class="row">
+                <h1>
+                    <a><img src="" th:src="@{/files/system_img/logo.jpg}" width="50" height="50" alt="onenaijalogo" style="border-radius: 50%;"/> 9jaForum</a>
+                </h1>
+            </div>
+            
+            <div class="row">
+                <nav class="navbar navbar-inverse container-fluid">
+                    <ul class="nav navbar-nav">
+                        <li><a th:href="@{/user/login}">Switch</a></li>
+                        <li><a th:href="@{/}">Home</a></li>
+                        <li><a>Opinions</a></li>
+                        <li><a>Memelogic</a></li>
+                        <li><a>Poetic Justice</a></li>
+                        <li><a>Battle Of The Sexes</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a th:href="@{/user/login}"><span class="glyphicon glyphicon-user"></span> Login</a></li>
+                        <li><a th:href="@{/signup}"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                    </ul>
+                </nav>
+            </div>
+            
+            
+        
+            <div class="row errorclass">
+                <h1 th:text="${error}">Error!</h1>
+            </div>            
+            
+            
+        </div>
+        <div class="col-sm-1"></div>
+    </body>
+</html>

@@ -98,6 +98,7 @@ create table subcommentclass
     likes int unsigned not null,
     red_flag int unsigned not null,
     star_flag int unsigned not null,
+    unread varchar(10) not null,
     subcomment_rank int not null,
     approved int unsigned not null,
     content text not null,

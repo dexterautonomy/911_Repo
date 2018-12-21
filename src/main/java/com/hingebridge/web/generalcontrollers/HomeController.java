@@ -17,15 +17,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.hingebridge.model.Role;
+import com.hingebridge.model.SubCommentClass;
 import com.hingebridge.model.UserClass;
 import com.hingebridge.model.UserRoleClass;
 import com.hingebridge.repository.CommentClassRepo;
 import com.hingebridge.repository.MessageObjectRepo;
 import com.hingebridge.repository.PostClassRepo;
 import com.hingebridge.repository.RoleClassRepo;
+import com.hingebridge.repository.SubCommentClassRepo;
 import com.hingebridge.repository.UserClassRepo;
 import com.hingebridge.repository.UserRoleClassRepo;
 import com.hingebridge.utility.UtilityClass;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -48,6 +51,8 @@ public class HomeController
     private CommentClassRepo ccr;
     @Autowired
     private MessageObjectRepo mobjr;
+    @Autowired
+    private SubCommentClassRepo sccr;
 	
     @GetMapping("/")
     public String getHome(HttpServletRequest req, HttpSession session, ModelMap model, @RequestParam("page") Optional<Integer> page_1)
@@ -201,7 +206,7 @@ public class HomeController
     public String getStory(@RequestParam("pos")Optional<Long> id, @RequestParam("t")Optional<String> title, 
     @RequestParam("p") Optional<Integer> pg, ModelMap model, @RequestParam("page")Optional<Integer> commentPaginate, 
     @RequestParam("alertx")Optional<String> alert, @RequestParam("apvVal")Optional<Integer> trendApproveValue, 
-    @RequestParam("pgn") Optional<Integer> pgnx, @RequestParam("cid") Optional<Long> commentid)
+    @RequestParam("pgn") Optional<Integer> pgnx, @RequestParam("cid") Optional<Long> commentid, @RequestParam("spt") Optional<String> separateAction)
     {
         String ret = null;
         
@@ -218,21 +223,31 @@ public class HomeController
             {
                 pc = pcr.getPostReader(id.get(), title.get(), 0);
                 
-                if(utc.getUser().getId().equals(pc.get().getUser_id()))
+                if(separateAction.orElse(null) != null)
                 {
-                    String[] hideBlocks = {"firstBlock", "secondBlock"};
-                    utc.dispBlock(model, "thirdBlock", hideBlocks);
+                    String[] hideBlocks = {"firstBlock"};
+                    utc.dispBlock(model, "secondBlock", hideBlocks);
                     utc.modelUser(model);
                     utc.modelTransfer(model);
-                    model.addAttribute("postclass", new PostClass());
                     model.addAttribute("unapprovedPost", pc.get());
                     model.addAttribute("pgn", pgnx.orElse(1));
                     
-                    ret = "pages/userpage";
+                    ret = "pages/followedpost";
                 }
                 else
                 {
-                    //Use error controller to handle this part and remove the else block
+                    if(utc.getUser().getId().equals(pc.get().getUser_id()))
+                    {
+                        String[] hideBlocks = {"firstBlock", "secondBlock"};
+                        utc.dispBlock(model, "thirdBlock", hideBlocks);
+                        utc.modelUser(model);
+                        utc.modelTransfer(model);
+                        model.addAttribute("postclass", new PostClass());
+                        model.addAttribute("unapprovedPost", pc.get());
+                        model.addAttribute("pgn", pgnx.orElse(1));
+                    
+                        ret = "pages/userpage";
+                    }
                 }
             }
             break;
@@ -242,6 +257,18 @@ public class HomeController
                 if(commentid.orElse(null) != null)
                 {
                     Optional<MessageObject> mo = mobjr.findByCommentid(commentid.get());
+                    Optional<CommentClass> cc = ccr.findById(commentid.get());
+                    List<SubCommentClass> scc = cc.get().getSubcomment();
+                    
+                    for(SubCommentClass scc1 : scc)
+                    {
+                        if(!scc1.getUnread().equals("read"))
+                        {
+                            scc1.setUnread("read");
+                            sccr.save(scc1);
+                        }
+                    }
+                    
                     mo.get().setUnread("read");
                     mobjr.save(mo.get());
                 }

@@ -74,7 +74,7 @@
                 </div>
                 
                 
-                <div class="col-sm-9">
+                <div class="col-sm-9" th:classappend="${firstBlock}">
                     <p class="centertinz" th:text="${alert}"></p>
                     
                     <div class="panel panel-success">
@@ -87,7 +87,7 @@
                     
                     <div class="list-group centertinz">
                         <div th:each="post : ${followpost}" style="overflow: auto; padding: 1px;">
-                            <a class="list-group-item" style="display: inline-block; width:91%;" th:href="@{/usr_sch(pos=${post.id}, t=${post.title}, p=${pg})}" >
+                            <a class="list-group-item" style="display: inline-block; width:91%;" th:href="@{/s_ch(pos=${post.id}, t=${post.title}, p=1, pgn=${pgn}, apvVal=${post.approved}, spt=flp)}">
                                 <div>
                                     <div id="chead" class="list-group-item-text" th:text="${post.title}"></div>
                                     
@@ -122,6 +122,29 @@
                             </li>
                         </ul>
                     </div><br/>
+                </div>
+                
+                <div class="col-sm-9" th:classappend="${secondBlock}">
+                    <p class="smallfont centertinz">This post has not been approved yet</p>
+                    
+                    <div th:if="${unapprovedPost} != null">
+                        <div th:object="${unapprovedPost}" class="panel panel-success">
+                            <div class="panel-heading title centertinz" th:text="*{title}"></div>
+                            <div class="panel-body">
+                                <div style="overflow: auto;">
+                                    <span th:classappend="*{postrank} != 0 ? 'prclass' : 'hidden'" th:text="*{'PR: ' + postrank}"></span>
+                                </div>
+                        
+                                <div class="justify" th:utext="*{content}"></div><br/>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <ul class="pager centertinz">
+                        <li>
+                            <a th:href="@{/user/flpost(pg=${pgn})}">Back</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
             

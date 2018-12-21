@@ -1343,11 +1343,21 @@ public class UserController
                             }
                             else
                             {
-                                SubCommentClass scc = new SubCommentClass(utc.getUser().getId(), comment_id.get(), content, date);
+                                Optional<CommentClass> cc = ccr.findById(comment_id.get());
+                                SubCommentClass scc;
+                                
+                                if(utc.getUser().getId().equals(cc.get().getUser_id()))  //No need marking your comment as unread na, abi no be you write am??
+                                {
+                                    scc = new SubCommentClass(utc.getUser().getId(), comment_id.get(), content, date, "read");
+                                }
+                                else
+                                {
+                                    scc = new SubCommentClass(utc.getUser().getId(), comment_id.get(), content, date);
+                                }
+                                
                                 sccr.save(scc);
                                 
                                 //Notify the owner of the comment here: Very important
-                                Optional<CommentClass> cc = ccr.findById(comment_id.get());
                                 String postlink = "s_ch?pos="+post_id.get()+"&t="+title.get()+"&p="+pg.get()+"&cid="+comment_id.get()+"#"+comment_id.get();
                                 utc.updateInbox(mobjr, cc.get().getUser_id(), comment_id.get(), postlink);
                                 
@@ -1715,6 +1725,8 @@ public class UserController
     public String getFollowedPost(@RequestParam("pg")Optional<Integer> page, HttpServletRequest req, 
     ModelMap model, RedirectAttributes ra)
     {
+        String[] hideBlocks = {"secondBlock"};
+        utc.dispBlock(model, "firstBlock", hideBlocks);
         utc.modelUser(model);
         int init = 0;
         int end = 1;
@@ -1743,6 +1755,7 @@ public class UserController
                 }
                 
                 model.addAttribute("followpost", pcList3);
+                model.addAttribute("pgn", page.get());
                 model.addAttribute("prev", page.get()-1);
                 model.addAttribute("next", page.get()+1);
                 

@@ -27,7 +27,7 @@ public interface PostClassRepo extends JpaRepository<PostClass, Long>
     @Query("SELECT pc FROM PostClass pc ORDER BY pc.id DESC")
     public Page<PostClass> getFollowerPost(Pageable pageable);
     
-    @Query("SELECT pc FROM PostClass pc ORDER BY pc.id DESC")
+    @Query("SELECT pc FROM PostClass pc ORDER BY pc.id DESC")   //Whether approved or not, your followers get to see your post firsthand
     public List<PostClass> getFollowerPost();
     
     public default List<PostClass> followersPost(List<FollowerObject> fObjID)

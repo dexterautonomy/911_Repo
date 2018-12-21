@@ -442,23 +442,30 @@ public class UtilityClass
             {
                 case 0:
                 {
-                    if(!mo.get().getUnread().equals("unread"))
+                    if(!getUser().getId().equals(mo.get().getRecipient_id()))   //No need notifying yourself on a subcomment you made na
                     {
-                        mo.get().setUnread("unread");
-                    }
+                        if(!mo.get().getUnread().equals("unread"))
+                        {
+                            mo.get().setUnread("unread");
+                        }
                     
-                    mo.get().setFlag(1);
-                    mobjr.save(mo.get());
+                        mo.get().setFlag(1);
+                        mobjr.save(mo.get());
+                    }
                 }
                 break;
                 
                 case 1:
                 {
-                    if(!mo.get().getUnread().equals("unread"))
+                    if(!getUser().getId().equals(mo.get().getRecipient_id()))   //No need notifying yourself on a subcomment you made na
                     {
-                        mo.get().setUnread("unread");
-                        mobjr.save(mo.get());
+                        if(!mo.get().getUnread().equals("unread"))
+                        {
+                            mo.get().setUnread("unread");
+                            mobjr.save(mo.get());
+                        }
                     }
+                    
                 }
                 break;
             }
@@ -468,7 +475,5 @@ public class UtilityClass
             MessageObject messageObj = new MessageObject(user_id, commentid, postlink);
             mobjr.save(messageObj);
         }
-        
-        
     }
 }

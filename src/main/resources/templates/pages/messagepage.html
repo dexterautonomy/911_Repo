@@ -107,7 +107,7 @@
                                         <div class="col-xs-1">
                                             <img th:classappend="${mosubcomment.userthree.colorclass}" class="roundimg" src="" th:src="@{'/files/profile_img/' + ${mosubcomment.userthree.pix}}" width="35" height="35" alt="" th:alt="${mosubcomment.userthree.username + ' pic'}" />
                                         </div>
-                                        <div class="col-xs-10 justify panel panel-body postsubcomment_body">
+                                        <div class="col-xs-10 justify panel panel-body" th:classappend="${mosubcomment.unread} == 'unread' ? 'unreadSub' : 'postsubcomment_body2'">
                                             <div style="overflow: auto;">
                                                 <span class="postcomment_username" th:text="${mosubcomment.userthree.username} == ${session.username} ? 'Me' : ${'@' + mosubcomment.userthree.username}"></span>
                                                 <span class="postcomment_duration smallfont" th:text="${mosubcomment.duration}"></span>
