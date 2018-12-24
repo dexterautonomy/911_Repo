@@ -7,6 +7,7 @@ import com.hingebridge.model.PostClass;
 import com.hingebridge.model.SubCommentClass;
 import com.hingebridge.model.UserClass;
 import com.hingebridge.repository.CommentClassRepo;
+import com.hingebridge.repository.FollowedPostDeleteObjectRepo;
 import com.hingebridge.repository.FollowerObjectRepo;
 import com.hingebridge.repository.MessageObjectRepo;
 import com.hingebridge.repository.PostClassRepo;
@@ -14,6 +15,7 @@ import com.hingebridge.repository.SubCommentClassRepo;
 import com.hingebridge.repository.UserClassRepo;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +69,8 @@ public class UtilityClass
     private PostClassRepo pcr;
     @Autowired
     private FollowerObjectRepo fobjr;
+    @Autowired
+    private FollowedPostDeleteObjectRepo fpdor;
     
     public UserClass getUser()
     {
@@ -405,12 +409,24 @@ public class UtilityClass
     public long getFollowedPostSize()
     {
         long size;
+        LinkedList<PostClass> pcList = new LinkedList<>();
         
         List<FollowerObject> followedObj = fobjr.getSelectedFollow(getUser().getId());
         if(!followedObj.isEmpty())
         {
             List<PostClass> po = pcr.followersPost(followedObj);
-            size = po.size();
+            
+            for(PostClass pClass : po)
+            {
+                boolean var = fpdor.getDeletedPostObject(pClass.getId(), getUser().getId());
+                    
+                if(!var)
+                {
+                    pcList.add(pClass);
+                }
+            }
+            
+            size = pcList.size();
         }
         else
         {

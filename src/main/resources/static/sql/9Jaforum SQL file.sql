@@ -160,4 +160,30 @@ create table subcommentreactionclass
     constraint `fk_sub_comment_react_id` foreign key (`subcomment_id`) references `subcommentclass` (`id`),
     constraint `fk_user_sub_comment_react_id` foreign key (`user_id`) references `userclass` (`id`)
 );
+
+create table followedpostdeleteobject
+(
+    id int unsigned not null auto_increment primary key,
+    post_id int unsigned not null,
+    user_id int unsigned not null,
+    flagdelete int not null,
+    flagread int not null
+);
+
+create table advertobject
+(
+    id int unsigned not null auto_increment primary key,
+    user_id int unsigned not null,
+    approve int not null,
+    payoption varchar(10) not null,
+    startdate varchar(10) not null,
+    clicks int unsigned not null,
+    views int unsigned not null,
+    adsimage varchar(255) not null,
+    landingpage varchar(255) not null,
+    pause int not null,
+    expired int not null,
+    constraint `fk_user_ads` foreign key (`user_id`) references `userclass` (`id`)
+);
+
 */

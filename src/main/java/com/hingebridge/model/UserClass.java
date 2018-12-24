@@ -96,6 +96,9 @@ public class UserClass implements Serializable
     @OneToMany(mappedBy = "usersubcommentreactobj")
     private List<SubCommentReactionClass> subcommentreact;
     
+    // UserClass ---> AdvertObject Relationship
+    @OneToMany(mappedBy = "userAdvert")
+    private List<AdvertObject> advertObject;
     
     public UserClass(){}
 	
@@ -413,5 +416,15 @@ public class UserClass implements Serializable
     public List<SubCommentReactionClass> getSubcommentreact()
     {
     	return subcommentreact;
+    }
+    
+    public void setAdvertObject(List<AdvertObject> adObj)
+    {
+        advertObject = adObj;
+    }
+	
+    public List<AdvertObject> getAdvertObject()
+    {
+    	return advertObject;
     }
 }

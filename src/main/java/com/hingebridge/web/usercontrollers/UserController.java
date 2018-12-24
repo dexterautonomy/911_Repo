@@ -1,6 +1,8 @@
 package com.hingebridge.web.usercontrollers;
 
+import com.hingebridge.model.AdvertObject;
 import com.hingebridge.model.CommentClass;
+import com.hingebridge.model.FollowedPostDeleteObject;
 import com.hingebridge.model.FollowerObject;
 import com.hingebridge.model.MessageObject;
 import com.hingebridge.model.PostClass;
@@ -9,6 +11,7 @@ import com.hingebridge.model.SubCommentClass;
 import com.hingebridge.model.UserClass;
 import com.hingebridge.repository.CommentClassRepo;
 import com.hingebridge.repository.CommentReactionClassRepo;
+import com.hingebridge.repository.FollowedPostDeleteObjectRepo;
 import com.hingebridge.repository.FollowerObjectRepo;
 import com.hingebridge.repository.MessageObjectRepo;
 import com.hingebridge.repository.PostClassRepo;
@@ -65,6 +68,8 @@ public class UserController
     private CommentReactionClassRepo crcr;
     @Autowired
     private SubCommentReactionClassRepo scrcr;
+    @Autowired
+    private FollowedPostDeleteObjectRepo fpdor;
     
     @GetMapping("/login")
     public String userHomePage(Authentication auth, HttpServletRequest req, ModelMap model)
@@ -1713,6 +1718,7 @@ public class UserController
         return ret;
     }
     
+    /*
     @GetMapping("/fallback")
     public String getFallbackpage(ModelMap model, HttpServletRequest req)
     {
@@ -1720,18 +1726,14 @@ public class UserController
         utc.modelTransfer(model);
         return "pages/userfallbackpage";
     }
+    */
     
     @GetMapping("/flpost")
     public String getFollowedPost(@RequestParam("pg")Optional<Integer> page, HttpServletRequest req, 
     ModelMap model, RedirectAttributes ra)
     {
-        String[] hideBlocks = {"secondBlock"};
-        utc.dispBlock(model, "firstBlock", hideBlocks);
-        utc.modelUser(model);
         int init = 0;
-        int end = 1;
-        List<PostClass> pcList3 = new LinkedList<>();
-        utc.modelTransfer(model);
+        int end = 10;
         
         if(page.get() > 1)
         {
@@ -1739,22 +1741,61 @@ public class UserController
             end = end * page.get();
         }
         
+        String[] hideBlocks = {"secondBlock"};
+        utc.dispBlock(model, "firstBlock", hideBlocks);
+        utc.modelUser(model);
+        utc.modelTransfer(model);
+        
+        List<PostClass> pcList3 = new LinkedList<>();
+        List<PostClass> pcList4 = new LinkedList<>();   //very important
+        List<String> readOnly = new LinkedList<>();
+        
         List<FollowerObject> followedObj = fobjr.getSelectedFollow(utc.getUser().getId()); //Are you following people? Oya get their ids
         if(!followedObj.isEmpty())  //If you really are following someone
         {
-            List<PostClass> followPost = pcr.followersPost(followedObj);
+            List<PostClass> followPost = pcr.followersPost(followedObj);    //Get the followed posts
             if(followPost != null)  //If there is really a followed post
             {
-                if(followPost.size() < end)
+                for(int count = 0; count < followPost.size(); count++)
                 {
-                    end = followPost.size();
-                }
-                for(int count = init; count < end; count++)
-                {
-                    pcList3.add(followPost.get(count));
+                    boolean delete = fpdor.getDeletedPostObject(followPost.get(count).getId(), utc.getUser().getId());
+                    
+                    if(!delete)
+                    {
+                        pcList3.add(followPost.get(count));    //So, pcList3 is the undeleted followed post
+                    }
                 }
                 
-                model.addAttribute("followpost", pcList3);
+                if(pcList3.size() < end)
+                {
+                    end = pcList3.size();
+                }
+                
+                for(int count = init; count < end; count++)
+                {
+                    pcList4.add(pcList3.get(count)); //and pcList4 is the sublist of pcList3 based on pagination
+                }
+                
+                boolean read;
+                
+                for(int count = 0; count < pcList4.size(); count++)
+                {
+                    read = fpdor.getReadPostObject(pcList4.get(count).getId(), utc.getUser().getId());
+                    
+                    if(read)
+                    {
+                        readOnly.add("readFollow");
+                    }
+                    else
+                    {
+                        readOnly.add("unreadFollow");
+                    }
+                }
+                
+                
+                model.addAttribute("followpost", pcList4);
+                model.addAttribute("readFollowPost", readOnly);
+                
                 model.addAttribute("pgn", page.get());
                 model.addAttribute("prev", page.get()-1);
                 model.addAttribute("next", page.get()+1);
@@ -1763,23 +1804,27 @@ public class UserController
                 {
                     model.addAttribute("disp1", "none");
                 }
-                if(pcList3.isEmpty())
+                if(pcList4.isEmpty())
                 {
-                    model.addAttribute("clickagain", "No post available");
+                    model.addAttribute("nopostavailable", "No post available");
                     model.addAttribute("disp2", "none");
                     model.addAttribute("theclass", "realcentertinz");
                 }
             }
             else    //If there is no followed post
             {
-                ra.addFlashAttribute("alert", "No post available");
-                return "redirect:/user/fallback";
+                //ra.addFlashAttribute("alert", "No post available");
+                //return "redirect:/user/fallback";
+                model.addAttribute("nothing", "realcentertinz");
+                model.addAttribute("alertFallback", "No post available");
             }
         }
         else    //If you do not have followers
         {
-            ra.addFlashAttribute("alert", "You really are not following anyone at the moment");
-            return "redirect:/user/fallback";
+            //ra.addFlashAttribute("alert", "You really are not following anyone at the moment");
+            //return "redirect:/user/fallback";
+            model.addAttribute("nothing", "realcentertinz");
+            model.addAttribute("alertFallback", "You really are not following anyone at the moment");
         }
         return "pages/followedpost";
     }
@@ -1824,15 +1869,18 @@ public class UserController
             }
             if(mobj.isEmpty())
             {
-                model.addAttribute("clickagain", "No notifications");
+                model.addAttribute("nonotifications", "No notifications");
                 model.addAttribute("disp2", "none");
                 model.addAttribute("theclass", "realcentertinz");
             }
         }
         else    //If there are no messages
         {
-            ra.addFlashAttribute("alert", "No notifications");
-            return "redirect:/user/fallback";
+            //ra.addFlashAttribute("alert", "No notifications");
+            //return "redirect:/user/fallback";
+            model.addAttribute("nothing", "realcentertinz");
+            model.addAttribute("alertFallback", "No notifications");
+            
         }
         return "pages/messagepage";
     }
@@ -1878,15 +1926,17 @@ public class UserController
             }
             if(tobj.isEmpty())
             {
-                model.addAttribute("clickagain", "No post available");
+                model.addAttribute("nopostavailable", "No post available");
                 model.addAttribute("disp2", "none");
                 model.addAttribute("theclass", "realcentertinz");
             }
         }
         else    //If there are no messages
         {
-            ra.addFlashAttribute("alert", "You are yet to make a post");
-            return "redirect:/user/fallback";
+            //ra.addFlashAttribute("alert", "You are yet to make a post");
+            //return "redirect:/user/fallback";
+            model.addAttribute("nothing", "realcentertinz");
+            model.addAttribute("alertFallback", "You are yet to make a post");
         }
         
         return "pages/mytrend";
@@ -1935,8 +1985,28 @@ public class UserController
             }
             break;
             
-        }
+            case "dlt_ft":
+            {
         
+                Optional<FollowedPostDeleteObject> fpdobj = fpdor.getDeletedPost(post_id.get(), utc.getUser().getId());
+                
+                if(fpdobj.orElse(null) != null)
+                {
+                    fpdobj.get().setFlagDelete(1);
+                    fpdor.save(fpdobj.get());
+                }
+                else
+                {
+                    FollowedPostDeleteObject fpdo = new FollowedPostDeleteObject(post_id.get(), utc.getUser().getId());
+                    fpdor.save(fpdo);
+                }
+                
+                ra.addFlashAttribute("alert", "Followed post deleted");
+                ret = "redirect:/user/flpost?pg="+pgn.get();
+            }
+            break;
+            
+        }
         
         return ret;
     }
@@ -1953,18 +2023,43 @@ public class UserController
         return "pages/userpage";
     }
     
-    /*
+    
     @GetMapping("/ads")
-    public String creatAds(HttpServletRequest req, HttpSession session, ModelMap model)
+    public String creatAds(HttpServletRequest req, ModelMap model, @RequestParam("ct_")Optional<String> cat)
     {
-        session = req.getSession();
-        final String[] blocks = {"firstblock", "secondblock", "thirdblock", "fourthblock", "sixthblock"};
-        utc.dispBlock(session, "fifthblock", blocks);
+        utc.modelUser(model);
+        utc.modelTransfer(model);
         
-        model.addAttribute("postclass", new PostClass());
-        return "pages/userpage";
+        if(cat.orElse(null) != null)
+        {
+            switch(cat.get())
+            {
+                case "nw":
+                {
+                    String[] hideBlocks = {"firstBlock"};
+                    utc.dispBlock(model, "secondBlock", hideBlocks);
+                    model.addAttribute("adsObject", new AdvertObject());
+                }
+                break;
+            
+                case "mn":
+                {
+                    
+                }
+                break;
+            
+            }
+        }
+        else
+        {
+            String[] hideBlocks = {"secondBlock"};
+            utc.dispBlock(model, "firstBlock", hideBlocks);
+        }
+        
+        return "pages/adspage";
     }
     
+    /*
     @GetMapping("/adm")
     public String manageAds(HttpServletRequest req, HttpSession session, ModelMap model)
     {

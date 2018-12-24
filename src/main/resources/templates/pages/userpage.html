@@ -24,10 +24,10 @@
                     <ul class="nav navbar-nav">
                         <li><a th:href="@{/}">Switch</a></li>
                         <li><a th:href="@{/user/login}">Home</a></li>
-                        <li><a>Opinions</a></li>
+                        <li><a>Opinion</a></li>
                         <li><a>Memelogic</a></li>
-                        <li><a>Poetic Justice</a></li>
-                        <li><a>Battle Of The Sexes</a></li>
+                        <li><a>Poem/Sarcasm</a></li>
+                        <li><a>The Sexes</a></li>
                     </ul>
                 </nav>
             </div>
@@ -64,8 +64,7 @@
                         <a class="smallfont2" th:href="@{/user/flpost(pg=1)}">Followed Posts <span class="badge smallfont" th:text="${pize}"></span></a><hr/>
                         <a class="smallfont2" th:href="@{/user/rcd(pg=1)}">My Trend <span class="badge smallfont" th:text="${tize}"></span></a><hr/>
                         
-                        <a class="smallfont2" th:href="@{/user/ads}">Create Ad</a><hr/>
-                        <a class="smallfont2" th:href="@{/user/adm}">Manage Ad <span class="badge">125</span></a><hr/>
+                        <a class="smallfont2" th:href="@{/user/ads}">Ads</a><hr/>
             	        
                         <form th:action="@{/j_spring_security_logout}" method="POST">
                             <button class="btn btn-danger btn-sm" name="xx" value="logout"><span class="glyphicon glyphicon-user"></span> Logout</button>

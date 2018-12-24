@@ -196,12 +196,19 @@ div.commentBck2 a:hover
 .prclass
 {
     float: right;
-    font-weight: bold;
     font-size: 10px;
     padding: 2px;
     background-color: rgb(0, 165, 255);
     border: 1px solid rgb(0, 171, 226);
     border-radius: 5px;
+    color: black;
+}
+
+.prclass:hover
+{
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
 }
 
 .quotedCover
@@ -301,8 +308,8 @@ div.commentBck2 a:hover
 
 .errorclass
 {
-    height: 400px;
-    line-height: 400px;
+    height: 500px;
+    line-height: 250px;
     text-align: center;
     font-size: 18px;
     text-decoration: none;
@@ -343,4 +350,84 @@ div.commentBck2 a:hover
 {
     background-color: rgb(250,250,250);
     border: 1px solid rgb(233,233,233);
+}
+
+.readFollow
+{
+    background-color: rgba(190, 235, 195,0.5);
+    border: 1px solid rgba(180, 220, 180,0.4);
+}
+
+.unreadFollow
+{
+    background-color: rgb(250, 240, 240);
+    border: 1px solid rgb(250, 230, 230);
+}
+
+a.unreadFollow:hover
+{
+    background-color: rgb(250,250,250);
+    border: 1px solid rgb(250,250,250);
+}
+
+a.readFollow:hover 
+{
+    background-color: rgb(250,250,250);
+    border: 1px solid rgb(250,250,250);
+}
+
+.adDiv
+{
+    height: 250px;
+    line-height: 250px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.adDiv a
+{
+    display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
+}
+
+.newAd
+{
+    width: 200px;
+    height: 150px;
+    background-color: rgb(190, 235, 195);
+    border: 1px solid rgb(180, 220, 180);
+    border-radius: 10px;
+    padding-top: 60px;
+    font-size: 16px;
+    text-decoration: none;
+    color: rgb(0,100,50);
+}
+
+.existingAd
+{
+    width: 200px;
+    height: 150px;
+    background-color: rgb(255, 230, 220);
+    border: 1px solid rgb(255, 220, 210);
+    border-radius: 10px;
+    padding-top: 60px;
+    font-size: 16px;
+    
+    text-decoration: none;
+    color: rgb(0,100,50);
+}
+
+.newAd:hover
+{
+    text-decoration: none;
+    background-color: rgb(170, 215, 175);
+    box-shadow: 5px 5px 15px grey;
+}
+
+.existingAd:hover
+{
+    text-decoration: none;
+    background-color: rgb(255, 195, 177);
+    box-shadow: 5px 5px 15px grey;
 }

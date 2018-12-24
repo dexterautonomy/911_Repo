@@ -1,6 +1,7 @@
 package com.hingebridge.web.generalcontrollers;
 
 import com.hingebridge.model.CommentClass;
+import com.hingebridge.model.FollowedPostDeleteObject;
 import com.hingebridge.model.MessageObject;
 import com.hingebridge.model.PagerModel;
 import com.hingebridge.model.PostClass;
@@ -21,6 +22,7 @@ import com.hingebridge.model.SubCommentClass;
 import com.hingebridge.model.UserClass;
 import com.hingebridge.model.UserRoleClass;
 import com.hingebridge.repository.CommentClassRepo;
+import com.hingebridge.repository.FollowedPostDeleteObjectRepo;
 import com.hingebridge.repository.MessageObjectRepo;
 import com.hingebridge.repository.PostClassRepo;
 import com.hingebridge.repository.RoleClassRepo;
@@ -53,6 +55,8 @@ public class HomeController
     private MessageObjectRepo mobjr;
     @Autowired
     private SubCommentClassRepo sccr;
+    @Autowired
+    private FollowedPostDeleteObjectRepo fpdor;
 	
     @GetMapping("/")
     public String getHome(HttpServletRequest req, HttpSession session, ModelMap model, @RequestParam("page") Optional<Integer> page_1)
@@ -229,6 +233,10 @@ public class HomeController
                     utc.dispBlock(model, "secondBlock", hideBlocks);
                     utc.modelUser(model);
                     utc.modelTransfer(model);
+                    
+                    FollowedPostDeleteObject fpdo = new FollowedPostDeleteObject(id.get(), utc.getUser().getId(), 1);
+                    fpdor.save(fpdo);
+                    
                     model.addAttribute("unapprovedPost", pc.get());
                     model.addAttribute("pgn", pgnx.orElse(1));
                     
@@ -254,6 +262,12 @@ public class HomeController
             
             case 1:
             {
+                if(separateAction.orElse(null) != null)
+                {
+                    FollowedPostDeleteObject fpdo = new FollowedPostDeleteObject(id.get(), utc.getUser().getId(), 1);
+                    fpdor.save(fpdo);
+                }
+                
                 if(commentid.orElse(null) != null)
                 {
                     Optional<MessageObject> mo = mobjr.findByCommentid(commentid.get());

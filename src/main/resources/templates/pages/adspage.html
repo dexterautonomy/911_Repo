@@ -23,11 +23,11 @@
                 <nav class="navbar navbar-inverse container-fluid">
                     <ul class="nav navbar-nav">
                         <li><a th:href="@{/}">Switch</a></li>
-                        <li><a>Home</a></li>
-                        <li><a>Opinions</a></li>
+                        <li><a th:href="@{/user/login}">Home</a></li>
+                        <li><a>Opinion</a></li>
                         <li><a>Memelogic</a></li>
-                        <li><a>Poetic Justice</a></li>
-                        <li><a>Battle Of The Sexes</a></li>
+                        <li><a>Poem/Sarcasm</a></li>
+                        <li><a>The Sexes</a></li>
                     </ul>
                 </nav>
             </div>
@@ -48,6 +48,7 @@
             </div>
             -->
             
+            
             <div class="row">
                 <div class="col-sm-3" style="padding: 8px; background-color: rgb(248,248,248);">
                     <a class="smallfont2" th:href="@{/user/prf}">
@@ -63,8 +64,7 @@
                         <a class="smallfont2" th:href="@{/user/flpost(pg=1)}">Followed Posts <span class="badge smallfont" th:text="${pize}"></span></a><hr/>
                         <a class="smallfont2" th:href="@{/user/rcd(pg=1)}">My Trend <span class="badge smallfont" th:text="${tize}"></span></a><hr/>
                         
-                        <a class="smallfont2" th:href="@{/user/ads}">Create Ad</a><hr/>
-                        <a class="smallfont2" th:href="@{/user/adm}">Manage Ad <span class="badge">125</span></a><hr/>
+                        <a class="smallfont2" th:href="@{/user/ads}">Ads</a><hr/>
             	        
                         <form th:action="@{/j_spring_security_logout}" method="POST">
                             <button class="btn btn-danger btn-sm" name="xx" value="logout"><span class="glyphicon glyphicon-user"></span> Logout</button>
@@ -74,69 +74,59 @@
                 </div>
                 
                 <div class="col-sm-9">
-                    <!--
-                    <p class="smallfont centertinz" th:text="${alert}"></p>
-                    -->
-                    
                     <div class="panel panel-primary">
-                        <div class="panel-heading title centertinz">My Trends</div>
+                        <div class="panel-heading title centertinz">Adverts</div>
                     </div>
                     
-                    <!--
-                    <div th:classappend="${theclass}">
-                        <span th:text="${clickagain}"></span>
-                    </div>
-                    -->
-                    
-                    <div th:classappend="${nothing}">
-                        <span th:text="${alertFallback}"></span>
+                    <div style="overflow: auto;">
+                        <a class="prclass" th:href="@{/}">Buy Credit</a>
                     </div>
                     
-                    <div th:if="${trendobj} != null">
+                    <div class="adDiv" th:classappend="${firstBlock}">
+                        <div class="col-sm-6">
+                            <a th:href="@{/user/ads(ct_=nw)}" class="newAd">Create New Ad</a>
+                        </div>
                         
-                        <div th:classappend="${theclass}">
-                            <span th:text="${nopostavailable}"></span>
+                        <div class="col-sm-6">
+                            <a th:href="@{//user/ads(ct_=mn)}" class="existingAd">Manage Ad</a>
                         </div>
+                    </div>
                     
-                        <div class="list-group centertinz">
-                            <div th:each="trend : ${trendobj}">
-                                <a th:href="@{/s_ch(pos=${trend.id}, t=${trend.title}, p=1, pgn=${pgn}, apvVal=${trend.approved})}" class="list-group-item readFollow" style="display: inline-block; width:91%;">
-                                    <div class="row">
-                                        <div id="chead" class="list-group-item-text" th:text="${trend.title}"></div>
-                                    
-                                        <div class="smallfont">
-                                            <span th:text="${trend.duration}"></span>&nbsp;&nbsp;
-                                            <span style="color: black;" class="glyphicon glyphicon-eye-open"></span>
-                                            <span th:text="${trend.views}"></span>&nbsp;&nbsp;
-                                            <span style="color: green;" class="glyphicon glyphicon-thumbs-up"></span>
-                                            <span th:text="${trend.likes}"></span>&nbsp;&nbsp;
-                                            <span style="color: red;" class="glyphicon glyphicon-flag"></span>
-                                            <span th:text="${trend.likes}"></span>&nbsp;&nbsp;
-                                            <span style="color: yellow;" class="glyphicon glyphicon-star"></span>
-                                            <span th:text="${trend.likes}"></span>
-                                        </div>
-                                    </div>
-                                </a>
-                            
-                                <a th:href="@{/user/dlt_(pos=${trend.id}, t=${trend.title}, pgn=${pgn}, akt=dlt_pt)}" style="display: inline-block; width: 5%; float: right;">
-                                    <span class="glyphicon glyphicon-trash" style="color: red;"></span>
-                                </a>
-                            </div>
-                        </div>
-                    
+                    <div th:classappend="${secondBlock}" th:if="${adsObject} != null">
+                        <p class="smallfont centertinz" th:text="${alert}"></p>
+                        
                         <div>
-                            <ul class="pager centertinz">
-                                <li th:style="'display:'+@{${disp1}}+';'">
-                                    <a class="btn" th:href="@{/user/rcd(pg= ${prev})}"> Previous </a>
-                                </li>
-                                <li th:style="'display:'+@{${disp2}}+';'">
-                                    <a class="btn" th:href="@{/user/rcd(pg=${next})}"> Next </a>
-                                </li>
-                            </ul>
+                            <form th:action="@{/}" method="post" th:object="${adsObject}" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <input class="form-control" th:field="*{landingPage}" type="text" placeholder="Target URL" required="" maxlength="254"/><br/>
+                                </div>
+                            
+                                <div class="form-group">
+                                    <input id="adsImg" class="btn btn-sm btn-default" th:field="*{file}" type="file" style="display: inline"/>
+                                    <label for="adsImg" style="display: inline; font-weight: normal;"> Advert photo</label>
+                                </div><br/>
+                            
+                                <div class="form-group" style="text-align: center;">
+                                    <div class="radio-inline">
+                                        <label style="font-weight: normal;">
+                                            <input type="radio" th:field="*{payOption}" value="CPM" checked=""/> Cost/Mille
+                                        </label>
+                                    </div>
+                                    <div class="radio-inline">
+                                        <label style="font-weight: normal;">
+                                            <input type="radio" th:field="*{payOption}" value="CPC"/> Cost/Click
+                                        </label>
+                                    </div><br/><br/>
+                                
+                                    <input type="submit" class="btn btn-success btn-block" value="Submit"/>
+                                </div>
+                            </form>
                         </div><br/>
                     </div>
+                    
                 </div>
             </div>
+            
             
             <!--
             <div class="row" style="text-align: center;">
@@ -153,7 +143,6 @@
                 </div>
             </div><br/><br/>
             -->
-            
             <div class="row">
                 <div style="background-color: rgb(0,88,52); height: 100px;"></div>
             </div>
