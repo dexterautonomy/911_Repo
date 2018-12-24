@@ -264,8 +264,18 @@ public class HomeController
             {
                 if(separateAction.orElse(null) != null)
                 {
-                    FollowedPostDeleteObject fpdo = new FollowedPostDeleteObject(id.get(), utc.getUser().getId(), 1);
-                    fpdor.save(fpdo);
+                    Optional<FollowedPostDeleteObject> fpdobj = fpdor.getDeletedPost(id.get(), utc.getUser().getId());
+                    
+                    if(fpdobj.orElse(null) != null)
+                    {
+                        fpdobj.get().setFlagRead(1);
+                        fpdor.save(fpdobj.get());
+                    }
+                    else
+                    {
+                        FollowedPostDeleteObject fpdo = new FollowedPostDeleteObject(id.get(), utc.getUser().getId(), 1);
+                        fpdor.save(fpdo);
+                    }
                 }
                 
                 if(commentid.orElse(null) != null)
