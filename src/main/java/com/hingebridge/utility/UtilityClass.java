@@ -492,4 +492,16 @@ public class UtilityClass
             mobjr.save(messageObj);
         }
     }
+    
+    public boolean checkCredit()
+    {
+        boolean gotCredit = false;
+        
+        if(getUser().getAdscredit() > 0)
+        {
+            gotCredit = true;
+        }
+        
+        return gotCredit;
+    }
 }

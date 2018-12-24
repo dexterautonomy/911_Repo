@@ -9,6 +9,7 @@ import com.hingebridge.model.PostClass;
 import com.hingebridge.model.QuoteObject;
 import com.hingebridge.model.SubCommentClass;
 import com.hingebridge.model.UserClass;
+import com.hingebridge.repository.AdvertObjectRepo;
 import com.hingebridge.repository.CommentClassRepo;
 import com.hingebridge.repository.CommentReactionClassRepo;
 import com.hingebridge.repository.FollowedPostDeleteObjectRepo;
@@ -70,6 +71,8 @@ public class UserController
     private SubCommentReactionClassRepo scrcr;
     @Autowired
     private FollowedPostDeleteObjectRepo fpdor;
+    @Autowired
+    private AdvertObjectRepo aor;
     
     @GetMapping("/login")
     public String userHomePage(Authentication auth, HttpServletRequest req, ModelMap model)
@@ -2024,8 +2027,10 @@ public class UserController
     }
     
     
-    @GetMapping("/ads")
-    public String creatAds(HttpServletRequest req, ModelMap model, @RequestParam("ct_")Optional<String> cat)
+    @RequestMapping("/ads")
+    public String creatAds(HttpServletRequest req, ModelMap model, @RequestParam("ct_")Optional<String> cat, 
+    @RequestParam("pt_ad")Optional<String> postAd, @ModelAttribute("advertObject")Optional<AdvertObject> adObj, 
+    @RequestParam("pg")Optional<Integer> pgn, @RequestParam("edit")Optional<String> edit, @RequestParam("pos")Optional<Long> pos)
     {
         utc.modelUser(model);
         utc.modelTransfer(model);
@@ -2036,23 +2041,171 @@ public class UserController
             {
                 case "nw":
                 {
-                    String[] hideBlocks = {"firstBlock"};
+                    String[] hideBlocks = {"firstBlock", "thirdBlock", "fourthBlock"};
                     utc.dispBlock(model, "secondBlock", hideBlocks);
-                    model.addAttribute("adsObject", new AdvertObject());
+                    model.addAttribute("advertObject", new AdvertObject());
                 }
                 break;
             
                 case "mn":
                 {
+                    String[] hideBlocks = {"firstBlock", "secondBlock", "fourthBlock"};
+                    utc.dispBlock(model, "thirdBlock", hideBlocks);
                     
+                    List<AdvertObject> ad = utc.getUser().getAdvertObject();
+                    
+                    if(!ad.isEmpty())
+                    {
+                        int init = 0;
+                        int end = 1;
+                        List<AdvertObject> selectedAd = new LinkedList<>();
+                        
+                        if(pgn.get() > 1)
+                        {
+                            init = (pgn.get() - 1) * end;
+                            end = end * pgn.get();
+                        }
+                        
+                        if(ad.size() < end)
+                        {
+                            end = ad.size();
+                        }
+                        
+                        for(int count = init; count < end; count++)
+                        {
+                            selectedAd.add(ad.get(count));
+                        }
+                        
+                        model.addAttribute("pgn", pgn.get());//wait
+            
+                        model.addAttribute("prev", pgn.get()-1);
+                        model.addAttribute("next", pgn.get()+1);
+                        model.addAttribute("unExpiredAdObjList", selectedAd);
+                    
+                        if(pgn.get() - 1 == 0)
+                        {
+                            model.addAttribute("disp1", "none");
+                        }
+                        if(selectedAd.isEmpty())
+                        {
+                            model.addAttribute("disp2", "none");
+                            model.addAttribute("noAdAvailable", "No ad available");
+                            model.addAttribute("theclass", "realcentertinz");
+                        }
+                    }
+                    else
+                    {
+                        model.addAttribute("noAdsPostedYet", "realcentertinz");
+                        model.addAttribute("alertFallback", "No ads posted yet");
+                    }
                 }
                 break;
             
             }
         }
+        else if(postAd.orElse(null) != null)
+        {
+            String[] hideBlocks = {"firstBlock", "thirdBlock", "fourthBlock"};
+            utc.dispBlock(model, "secondBlock", hideBlocks);
+                
+            if(utc.checkCredit())
+            {
+                String path = utc.getFilePath()+"ad_img";
+                String landingPage = adObj.get().getLandingPage().trim();
+                String payOption = adObj.get().getPayOption();
+                MultipartFile file = adObj.get().getFile();
+                String fileName = file.getOriginalFilename();
+                long fileSize = file.getSize();
+                
+                adObj.get().setPayOption(adObj.get().getPayOption());   //In case of error/alert message, no need to start retyping
+                adObj.get().setLandingPage(adObj.get().getLandingPage());   //In case of error/alert message, no need to start retyping
+            
+                if(!file.isEmpty())
+                {
+                    if(fileSize < 1000002)
+                    {
+                        if(fileName != null && fileName.length() < 21)
+                        {
+                            if(fileName.endsWith(".jpg") || fileName.endsWith(".png") || fileName.endsWith(".gif") 
+                            || fileName.endsWith(".jpeg") || fileName.endsWith(".JPG") || fileName.endsWith(".PNG") 
+                            || fileName.endsWith(".GIF") || fileName.endsWith(".JPEG") || fileName.endsWith(".webp") 
+                            || fileName.endsWith(".WEBP"))
+                            {
+                                try 
+                                {
+                                    if(landingPage != null)
+                                    {
+                                        AdvertObject ao = null;
+                                                
+                                        switch(payOption)
+                                        {
+                                            case "CPM":
+                                            {
+                                                ao = new AdvertObject(utc.getUser().getId(), "CPM", utc.getDate(), fileName, landingPage);
+                                            }
+                                            break;
+                                        
+                                            case "CPC":
+                                            {
+                                                ao = new AdvertObject(utc.getUser().getId(), "CPC", utc.getDate(), fileName, landingPage);
+                                            }
+                                            break;
+                                        }
+                                    
+                                        aor.save(ao);
+                                        model.addAttribute("alert", "Ad saved");
+                                        File pathToFile=new File(path, fileName);
+                                        file.transferTo(pathToFile);
+                                        
+                                        return "redirect:/user/ads?ct_=mn";
+                                    }
+                                }
+                                catch (IOException | IllegalStateException ex)
+                                {
+                                    Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                            else
+                            {
+                                model.addAttribute("alert", "Invalid image format (suported: jpg, png, gif, webp)");
+                            }
+                        }
+                        else
+                        {
+                            model.addAttribute("alert", "Image name is long (should be less than 20 characters)");
+                        }
+                    }
+                    else
+                    {
+                        model.addAttribute("alert", "Acceptable image size exceeded (should be 1MB of less)");
+                    }
+                }
+            }
+            else
+            {
+                model.addAttribute("alert", "Buy credit");
+            }
+        }
+        else if(edit.orElse(null) != null)
+        {
+            String[] hideBlocks = {"firstBlock", "secondBlock", "thirdBlock"};
+            utc.dispBlock(model, "fourthBlock", hideBlocks);
+            
+            Optional<AdvertObject> ao = aor.findById(pos.get());
+            
+            if(ao.get().getUserId().equals(utc.getUser().getId()))
+            {
+                model.addAttribute("editAdvert", ao.get());
+                model.addAttribute("pgn", pgn.get());
+            }
+            else
+            {
+                model.addAttribute("alert", "Access denied");
+            }
+        }
         else
         {
-            String[] hideBlocks = {"secondBlock"};
+            String[] hideBlocks = {"secondBlock", "thirdBlock", "fourthBlock"};
             utc.dispBlock(model, "firstBlock", hideBlocks);
         }
         

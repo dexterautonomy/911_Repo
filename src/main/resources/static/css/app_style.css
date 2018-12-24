@@ -431,3 +431,15 @@ a.readFollow:hover
     background-color: rgb(255, 195, 177);
     box-shadow: 5px 5px 15px grey;
 }
+
+.deleteCan
+{
+    color: red;
+    padding-top: 17px;
+    font-size: 11px;
+}
+
+.advertForm
+{
+    margin-top: 30px;
+}

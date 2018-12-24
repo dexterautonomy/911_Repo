@@ -176,14 +176,13 @@ create table advertobject
     user_id int unsigned not null,
     approve int not null,
     payoption varchar(10) not null,
-    startdate varchar(10) not null,
+    startdate varchar(50) not null,
     clicks int unsigned not null,
     views int unsigned not null,
     adsimage varchar(255) not null,
-    landingpage varchar(255) not null,
+    landingpage text not null,
     pause int not null,
     expired int not null,
     constraint `fk_user_ads` foreign key (`user_id`) references `userclass` (`id`)
 );
-
 */

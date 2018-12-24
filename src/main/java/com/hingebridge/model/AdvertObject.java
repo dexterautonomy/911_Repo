@@ -11,19 +11,19 @@ public class AdvertObject implements Serializable
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private long id;
+    private Long id;
     @Column(name = "user_id")
-    private long userId;
+    private Long userId;
     @Column(name = "approve")
     private int approve = 0;
     @Column(name = "payoption")
-    private String payOption;
+    private String payOption = "CPM";
     @Column(name = "startdate")
     private String startDate;
     @Column(name = "clicks")
-    private long clicks = 0;
+    private Long clicks = 0l;
     @Column(name = "views")
-    private long views = 0;
+    private Long views = 0l;
     @Column(name = "adsimage")
     private String adsImage;
     @Column(name = "landingpage")
@@ -34,6 +34,9 @@ public class AdvertObject implements Serializable
     private int expired = 0;
     
     @Transient
+    private String actionButton;
+    
+    @Transient
     private MultipartFile file;
     
     @ManyToOne(fetch = FetchType.EAGER)
@@ -42,7 +45,7 @@ public class AdvertObject implements Serializable
     
     public AdvertObject(){}
     
-    public AdvertObject(long userId, String payOption, String startDate, String adsImage, String landingPage)
+    public AdvertObject(Long userId, String payOption, String startDate, String adsImage, String landingPage)
     {
         this.userId = userId;
         this.payOption = payOption;
@@ -51,17 +54,17 @@ public class AdvertObject implements Serializable
         this.landingPage = landingPage;
     }
     
-    public long getId()
+    public Long getId()
     {
         return id;
     }
     
-    public void setUserId(long userId)
+    public void setUserId(Long userId)
     {
         this.userId = userId;
     }
     
-    public long getUserId()
+    public Long getUserId()
     {
         return userId;
     }
@@ -96,22 +99,22 @@ public class AdvertObject implements Serializable
         return startDate;
     }
     
-    public void setClicks(long clicks)
+    public void setClicks(Long clicks)
     {
         this.clicks = clicks;
     }
     
-    public long getClicks()
+    public Long getClicks()
     {
         return clicks;
     }
     
-    public void setViews(long views)
+    public void setViews(Long views)
     {
         this.views = views;
     }
     
-    public long getViews()
+    public Long getViews()
     {
         return views;
     }
@@ -174,5 +177,15 @@ public class AdvertObject implements Serializable
     public UserClass getUserAdvert()
     {
         return userAdvert;
+    }
+    
+    public void setActionButton(String value)
+    {
+        this.actionButton = value;
+    }
+    
+    public String getActionButton()
+    {
+        return actionButton;
     }
 }

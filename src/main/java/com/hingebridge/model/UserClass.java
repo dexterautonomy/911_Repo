@@ -1,6 +1,7 @@
 package com.hingebridge.model;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.*;
@@ -425,6 +426,15 @@ public class UserClass implements Serializable
 	
     public List<AdvertObject> getAdvertObject()
     {
-    	return advertObject;
+    	//return advertObject;
+        List<AdvertObject> unExpiredAdObjList = new LinkedList<>();
+        for(AdvertObject ao : advertObject)
+        {
+            if(ao.getExpired() == 0)
+            {
+                unExpiredAdObjList.add(ao);
+            }
+        }
+        return unExpiredAdObjList;
     }
 }
