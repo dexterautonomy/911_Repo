@@ -2030,7 +2030,9 @@ public class UserController
     @RequestMapping("/ads")
     public String creatAds(HttpServletRequest req, ModelMap model, @RequestParam("ct_")Optional<String> cat, 
     @RequestParam("pt_ad")Optional<String> postAd, @ModelAttribute("advertObject")Optional<AdvertObject> adObj, 
-    @RequestParam("pg")Optional<Integer> pgn, @RequestParam("edit")Optional<String> edit, @RequestParam("pos")Optional<Long> pos)
+    @RequestParam("pg")Optional<Integer> pgn, @RequestParam("edit")Optional<String> edit, @RequestParam("pos")Optional<Long> pos, 
+    @RequestParam("pt_adx")Optional<String> klass1, @RequestParam("edit_")Optional<String> klass2,
+    @ModelAttribute("editAdvert")AdvertObject adv, RedirectAttributes ra)
     {
         utc.modelUser(model);
         utc.modelTransfer(model);
@@ -2202,6 +2204,128 @@ public class UserController
             {
                 model.addAttribute("alert", "Access denied");
             }
+        }
+        else if(klass1.orElse(null) != null && klass2.orElse(null) != null)
+        {
+            String[] hideBlocks = {"firstBlock", "secondBlock", "thirdBlock"};
+            utc.dispBlock(model, "fourthBlock", hideBlocks);
+            
+            model.addAttribute("pos", pos.get());
+            model.addAttribute("pgn", pgn.get());
+            
+            Optional<AdvertObject> ao = aor.findById(pos.get());
+            
+            if(ao.get().getUserId().equals(utc.getUser().getId()))
+            {
+                switch(adv.getActionButton())
+                {
+                    case "update":
+                    {
+                        MultipartFile file = adv.getFile();
+                        String fileName = file.getOriginalFilename();
+                        long fileSize = file.getSize();
+                        
+                        String path = utc.getFilePath()+"ad_img";
+                
+                        ao.get().setPayOption(adv.getPayOption());
+                        
+                        if(adv.getLandingPage() != null && !adv.getLandingPage().matches("\\s*"))
+                        {
+                            ao.get().setLandingPage(adv.getLandingPage());
+                            
+                            if(!file.isEmpty())
+                            {
+                                if(fileSize < 1000002)
+                                {
+                                    if(fileName != null && fileName.length() < 21)
+                                    {
+                                        if(fileName.endsWith(".jpg") || fileName.endsWith(".png") || fileName.endsWith(".gif") 
+                                        || fileName.endsWith(".jpeg") || fileName.endsWith(".JPG") || fileName.endsWith(".PNG") 
+                                        || fileName.endsWith(".GIF") || fileName.endsWith(".JPEG") || fileName.endsWith(".webp") 
+                                        || fileName.endsWith(".WEBP"))
+                                        {
+                                            try 
+                                            {
+                                                ao.get().setAdsImage(fileName);
+                                                File pathToFile=new File(path, fileName);
+                                                file.transferTo(pathToFile);
+                                                
+                                                aor.save(ao.get());
+                                                model.addAttribute("editAdvert", ao.get());
+                                                model.addAttribute("alert", "Ad updated successfully");
+                                                
+                                            }
+                                            catch (IOException | IllegalStateException ex)
+                                            {
+                                                Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            model.addAttribute("alert", "Invalid image format (suported: jpg, png, gif, webp)");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        model.addAttribute("alert", "Image name is long (should be less than 20 characters)");
+                                    }
+                                }
+                                else
+                                {
+                                    model.addAttribute("alert", "Acceptable image size exceeded (should be 1MB of less)");
+                                }
+                            }
+                            else
+                            {
+                                 //model.addAttribute("editAdvert", ao.get());
+                                aor.save(ao.get());
+                                model.addAttribute("editAdvert", ao.get());
+                                model.addAttribute("alert", "Ad updated successfully");                
+                            }
+                        }
+                        else
+                        {
+                            
+                            model.addAttribute("editAdvert", ao.get());
+                            model.addAttribute("alert", "Enter a URL");
+                        }
+                    }
+                    break;
+                    
+                    case "pause":
+                    {
+                        if(ao.get().getPause() == 1)
+                        {
+                            ao.get().setPause(0);
+                            model.addAttribute("alert", "Started");
+                        }
+                        else if(ao.get().getPause() == 0)
+                        {
+                            ao.get().setPause(1);
+                            model.addAttribute("alert", "Paused");
+                        }
+                        
+                        model.addAttribute("editAdvert", ao.get());
+                        model.addAttribute("pos", pos.get());
+                        
+                        aor.save(ao.get());
+                    }
+                    break;
+                    
+                    case "terminate":
+                    {
+                        ao.get().setExpired(1);
+                        aor.save(ao.get());
+                        ra.addFlashAttribute("alert", "Ad terminated");
+                        return "redirect:/user/ads?ct_=mn&pg="+pgn.get();
+                    }                    
+                }
+            }
+            else
+            {
+                model.addAttribute("alert", "Access denied");
+            }
+            
         }
         else
         {

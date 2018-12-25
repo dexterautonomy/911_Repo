@@ -99,7 +99,7 @@
                     </div>
                     
                     <div class="advertForm" th:classappend="${secondBlock}" th:if="${advertObject} != null">
-                        
+                        <br/>
                         
                         <div>
                             <form th:action="@{/user/ads(pt_ad)}" method="post" th:object="${advertObject}" enctype="multipart/form-data">
@@ -131,7 +131,7 @@
                     </div>
                     
                     <div class="" th:classappend="${thirdBlock}" th:if="${unExpiredAdObjList} != null">
-                        
+                        <br/>
                         
                         <div th:classappend="${theclass}">
                             <span th:text="${noAdAvailable}"></span>
@@ -141,10 +141,10 @@
                             <div th:each="adObj : ${unExpiredAdObjList}">
                                 <a class="list-group-item" th:href="@{/user/ads(edit, pos=${adObj.id}, pg=${pgn})}">
                                     <div class="row">
-                                        <div class="col-xs-6">
+                                        <div class="col-xs-5">
                                             <img src="" th:src="@{'/files/ad_img/' + ${adObj.adsImage}}" width="250" height="100" alt="" th:alt="${adObj.adsImage}"/>
                                         </div>
-                                        <div class="col-xs-6">
+                                        <div class="col-xs-7">
                                             <div>
                                                 <span>Admin approval: </span>
                                                 <span th:text="${adObj.approve} == 0 ? 'Pending' : 'Active'"></span>
@@ -190,10 +190,10 @@
                     </div>
                     
                     <div class="" th:classappend="${fourthBlock}" th:if="${editAdvert} != null">
-                        
+                        <br/>
                         
                         <div>
-                            <form th:action="@{/user/ads(pt_ad, edit_)}" method="post" th:object="${editAdvert}" enctype="multipart/form-data">
+                            <form th:action="@{/user/ads(pt_adx, edit_, pos=*{id}, pg=${pgn})}" method="post" th:object="${editAdvert}" enctype="multipart/form-data">
                                 
                                 <div style="text-align: center;">
                                     <span>
@@ -206,14 +206,14 @@
                                 </div>
                            
                                 <div class="form-group" style="text-align: center;">
-                                    <input id="adsImg2" class="btn btn-sm btn-default" th:field="*{file}" type="file" style="display: inline" required=""/>
-                                    <label for="adsImg2" style="display: inline; font-weight: normal;"> Advert photo</label>
+                                    <input id="adsImg2" class="btn btn-sm btn-default" th:field="*{file}" type="file" style="display: inline"/>
+                                    <label for="adsImg2" style="display: inline; font-weight: normal;"> Update ad photo</label>
                                 </div><br/>
                             
                                 <div class="form-group" style="text-align: center;">
                                     <div class="radio-inline">
                                         <label style="font-weight: normal;">
-                                            <input type="radio" th:field="*{payOption}" value="CPM" checked=""/> Cost/Mille
+                                            <input type="radio" th:field="*{payOption}" value="CPM"/> Cost/Mille
                                         </label>
                                     </div>
                                     <div class="radio-inline">
@@ -228,7 +228,9 @@
                                         </div>
                                         
                                         <div class="btn-group">
-                                            <button name="actionButton" value="pause" class="btn btn-warning">Pause</button>
+                                            <button name="actionButton" value="pause" class="btn" th:classappend="*{pause} == 1 ? 'btn-success' : 'btn-warning'">
+                                                <span th:text="*{pause} == 1 ? 'Start' : 'Pause'"></span>
+                                            </button>
                                         </div>
                                         
                                         <div class="btn-group">
