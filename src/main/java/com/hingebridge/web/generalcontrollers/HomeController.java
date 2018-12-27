@@ -29,6 +29,7 @@ import com.hingebridge.repository.RoleClassRepo;
 import com.hingebridge.repository.SubCommentClassRepo;
 import com.hingebridge.repository.UserClassRepo;
 import com.hingebridge.repository.UserRoleClassRepo;
+import com.hingebridge.utility.AdvertAlgorithmClass;
 import com.hingebridge.utility.UtilityClass;
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +42,8 @@ public class HomeController
 {
     @Autowired
     private UtilityClass utc;
+    @Autowired
+    private AdvertAlgorithmClass aac;
     @Autowired
     private UserClassRepo ucr;
     @Autowired
@@ -61,6 +64,8 @@ public class HomeController
     @GetMapping("/")
     public String getHome(HttpServletRequest req, HttpSession session, ModelMap model, @RequestParam("page") Optional<Integer> page_1)
     {
+        aac.displayAdvert(model);   //This line is for adverts
+        
         session = req.getSession();
         final int INITIAL_PAGE = 0;
         final int INITIAL_PAGE_SIZE = 5;    //pageSize is the offset
@@ -102,9 +107,11 @@ public class HomeController
 	return "pages/signup";
     }
 	
-    @PostMapping("reg_1")
+    @PostMapping("/reg_1")
     public String register(@ModelAttribute("signupobject")UserClass uc, HttpServletRequest req, HttpSession session, ModelMap model)
     {
+        aac.displayAdvert(model);   //This line is for adverts
+        
 	String confirmemail = new BCryptPasswordEncoder().encode(uc.getUsername());
 	session = req.getSession();
 	session.setAttribute("confirmemail", confirmemail);
@@ -149,6 +156,8 @@ public class HomeController
     public String register2(@RequestParam("id_tk")String username, @RequestParam("u_tk")String password, @RequestParam("e_tk")String email, 
     @RequestParam("c_tk")String confirmemail, @RequestParam("x_tk")String gender, HttpServletRequest req, HttpSession session, ModelMap model)
     {
+        aac.displayAdvert(model);   //This line is for adverts
+        
 	session = req.getSession();
 	String confirmemailx = (String)session.getAttribute("confirmemail");
 	String usernamex = (String)session.getAttribute("username");
@@ -212,6 +221,8 @@ public class HomeController
     @RequestParam("alertx")Optional<String> alert, @RequestParam("apvVal")Optional<Integer> trendApproveValue, 
     @RequestParam("pgn") Optional<Integer> pgnx, @RequestParam("cid") Optional<Long> commentid, @RequestParam("spt") Optional<String> separateAction)
     {
+        aac.displayAdvert(model);   //This line is for adverts
+        
         String ret = null;
         
         final int INITIAL_PAGE = 0;
@@ -234,8 +245,16 @@ public class HomeController
                     utc.modelUser(model);
                     utc.modelTransfer(model);
                     
-                    FollowedPostDeleteObject fpdo = new FollowedPostDeleteObject(id.get(), utc.getUser().getId(), 1);
-                    fpdor.save(fpdo);
+                    boolean postExist = fpdor.getReadPostObject(id.get(), utc.getUser().getId());
+                    if(!postExist)
+                    {
+                        FollowedPostDeleteObject fpdo = new FollowedPostDeleteObject(id.get(), utc.getUser().getId(), 1);
+                        fpdor.save(fpdo);
+                    }
+                    
+                    //Optional<FollowedPostDeleteObject> fpdobj = fpdor.getDeletedPost(id.get(), utc.getUser().getId());
+                    //FollowedPostDeleteObject fpdo = new FollowedPostDeleteObject(id.get(), utc.getUser().getId(), 1);
+                    //fpdor.save(fpdo);
                     
                     model.addAttribute("unapprovedPost", pc.get());
                     model.addAttribute("pgn", pgnx.orElse(1));
@@ -264,6 +283,13 @@ public class HomeController
             {
                 if(separateAction.orElse(null) != null)
                 {
+                    boolean postExist = fpdor.getReadPostObject(id.get(), utc.getUser().getId());
+                    if(!postExist)
+                    {
+                        FollowedPostDeleteObject fpdo = new FollowedPostDeleteObject(id.get(), utc.getUser().getId(), 1);
+                        fpdor.save(fpdo);
+                    }
+                    /*
                     Optional<FollowedPostDeleteObject> fpdobj = fpdor.getDeletedPost(id.get(), utc.getUser().getId());
                     
                     if(fpdobj.orElse(null) != null)
@@ -276,6 +302,7 @@ public class HomeController
                         FollowedPostDeleteObject fpdo = new FollowedPostDeleteObject(id.get(), utc.getUser().getId(), 1);
                         fpdor.save(fpdo);
                     }
+                    */
                 }
                 
                 if(commentid.orElse(null) != null)
@@ -340,6 +367,8 @@ public class HomeController
     @RequestParam("p") Optional<Integer> pg, ModelMap model, @RequestParam("page")Optional<Integer> commentPaginate, 
     @RequestParam("alertx")Optional<String> alert)
     {
+        aac.displayAdvert(model);   //This line is for adverts
+        
         final int INITIAL_PAGE = 0;
         final int INITIAL_PAGE_SIZE = 15;    //pageSize is the offset
         int page = (commentPaginate.orElse(0) < 1 ? INITIAL_PAGE : commentPaginate.get() - 1);    //page is the LIMIT            
@@ -372,5 +401,12 @@ public class HomeController
         model.addAttribute("alertx", alert.orElse(""));
         
         return "pages/reader";
+    }
+    
+    //This is very important for CPC adverts
+    @GetMapping(value="/rdr")
+    public String updateClick(@RequestParam("uk_")long adId)
+    {
+        return "redirect:"+ aac.perClick(adId);
     }
 }

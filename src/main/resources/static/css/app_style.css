@@ -1,11 +1,11 @@
 body.container
 {
-    background-color:  white;
+    background-color: rgb(240,240,240);
 }
 
 div.col-sm-10
 {
-    background-color: rgb(250,250,250);
+    background-color: white;
 }
 
 #login_error
@@ -234,15 +234,11 @@ div.commentBck2 a:hover
 
 .thumbNailX
 {
-    border: 1px solid rgb(233, 233, 233);
+    border: 1px solid rgb(220, 230, 245);
     border-radius: 5px;
     text-align: center;
     padding: 10px;
-}
-
-.roundImage
-{
-    border-radius: 50%;
+    background-color: rgb(230, 240, 251);
 }
 
 
@@ -354,8 +350,8 @@ div.commentBck2 a:hover
 
 .readFollow
 {
-    background-color: rgba(190, 235, 195,0.5);
-    border: 1px solid rgba(180, 220, 180,0.4);
+    background-color: rgba(230, 240, 251, 0.7);
+    border: 1px solid rgba(220, 230, 240,0.6);
 }
 
 .unreadFollow
@@ -364,21 +360,21 @@ div.commentBck2 a:hover
     border: 1px solid rgb(250, 230, 230);
 }
 
-a.unreadFollow:hover
-{
-    background-color: rgb(250,250,250);
-    border: 1px solid rgb(250,250,250);
-}
-
 a.readFollow:hover 
 {
-    background-color: rgb(250,250,250);
-    border: 1px solid rgb(250,250,250);
+    background-color: white;
+    border: 1px solid white;
+}
+
+a.unreadFollow:hover
+{
+    background-color: white;
+    border: 1px solid white;
 }
 
 .adDiv
 {
-    height: 250px;
+    height: auto;
     line-height: 250px;
     text-align: center;
     text-decoration: none;
@@ -442,4 +438,154 @@ a.readFollow:hover
 .advertForm
 {
     margin-top: 30px;
+}
+
+.adBlock
+{
+    border: 1px solid rgb(237, 237, 237);
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 13px;
+    overflow: auto;
+}
+
+.adBlock:hover
+{
+    background-color: rgba(190, 235, 195,0.5);
+    border: 1px solid rgba(180, 220, 180,0.4);
+}
+
+.adImage
+{
+    display: inline-block;
+    float: left;
+    width: 20%;
+}
+
+.adDetails
+{
+    display: inline-block;
+    float: right;
+    width: 40%;
+}
+
+.approved
+{
+    color: green;
+}
+
+.pending
+{
+    color: orange;
+}
+
+.activeNote
+{
+    padding: 5px;
+    background-color: green;
+    border-radius: 5px;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+}
+
+.pauseNote
+{
+    padding: 5px;
+    background-color: orange;
+    border-radius: 5px;
+    color: red;
+    text-align: center;
+    font-weight: bold;
+}
+
+.adBanner
+{
+    width: 167px;
+    height: 95px;
+    border-radius: 5px;
+}
+
+.centertinzAdTop
+{
+    text-align: center;
+    border-bottom: 1px solid rgb(225, 225, 225);
+    margin-bottom: 10px;
+}
+
+.centertinzAdBottom
+{
+    text-align: center;
+    border-top: 1px solid rgb(225, 225, 225);
+    padding-top: 10px;
+}
+
+.appLogo
+{
+    width: 50px;
+    height: 50px; 
+    border-radius: 50%;
+}
+
+.profileImage
+{
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+}
+
+.inlineDisp
+{
+    display: inline;
+}
+
+.inlineDispBlock
+{
+    display: inline-block;
+}
+
+.normalFont
+{
+    font-weight: normal;
+}
+
+.autoOverflow
+{
+    overflow: auto;
+}
+
+.roundImage
+{
+    border-radius: 50%;
+}
+
+.trendList
+{
+    width: 91%;
+}
+
+.floatRightLink
+{
+    width: 5%;
+    float: right;
+}
+
+.followePostList
+{
+    overflow: auto;
+    padding: 1px;
+}
+
+.adUpdateImg
+{
+    border-radius: 5px;
+    width: 250px;
+    height: 100px;
+}
+
+.alertNote
+{
+    background-color: red;
+    position: relative;
+    top: -5px;
 }

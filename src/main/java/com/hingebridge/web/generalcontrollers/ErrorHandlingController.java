@@ -1,5 +1,5 @@
 package com.hingebridge.web.generalcontrollers;
-
+/*
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.boot.web.servlet.error.ErrorController;
@@ -21,7 +21,7 @@ public class ErrorHandlingController implements ErrorController
     public String errorPath(HttpServletRequest req, ModelMap model)
     {
         model.addAttribute("error", "Page not available");
-        
+    */    
         /*
         Object status = req.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
         String ret = null;
@@ -42,7 +42,7 @@ public class ErrorHandlingController implements ErrorController
                 
             }
         }
-        */
+        
         return "errorpage/error";
     }
-}
+}*/

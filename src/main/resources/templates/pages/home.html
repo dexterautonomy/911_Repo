@@ -14,11 +14,18 @@
         <div class="col-sm-1"></div>
     
         <div class="col-sm-10">
+            
+            <div th:include="pages/adfragments :: headLogo"/>
+            <div th:include="pages/adfragments :: navigationHome"/>
+            <!--Fragment used to display top ad (simple and clean)-->
+            <div th:include="pages/adfragments :: adTop(${adObject}, ${top})"/>
+            <!--
             <div class="row">
                 <h1>
                     <a><img src="" th:src="@{/files/system_img/logo.jpg}" width="50" height="50" alt="onenaijalogo" style="border-radius: 50%;"/> 9jaForum</a>
                 </h1>
             </div>
+            
             
             <div class="row">
                 <nav class="navbar navbar-inverse container-fluid">
@@ -36,23 +43,18 @@
                     </ul>
                 </nav>
             </div>
-            
-            <!--
-            <div class="row" style="text-align: center;">
-                <div style="background-color: pink; width: 30%; height: 90px; margin-bottom: 10px; display: inline-block;">
-                    For normal advert
-                </div>
-            
-                <div style="background-color: blue; width: 30%; height: 90px; margin-bottom: 10px; display: inline-block;">
-                    For normal advert
-                </div>
-                
-                <div style="background-color: orange; width: 30%; height: 90px; margin-bottom: 10px; display: inline-block;">
-                    For normal advert
-                </div>
-            </div>
             -->
             
+            
+            <!--MAIN top advert markup just in case
+            <div class="centertinz" th:if="${adObject.size()} != 0">
+                <p th:each="counter : ${#numbers.sequence(0, top-1)}" style="display: inline-block;">
+                    <a th:href="@{/rdr(uk_=${adObject[counter].id})}">
+                        <img class="adBanner" th:src="@{'/files/ad_img/' + ${adObject[counter].adsImage}}" src="" th:alt="${adObject[counter].adsImage}" alt="advert"/>
+                    </a>&nbsp;&nbsp;
+                </p>
+            </div>
+            -->
         
             <div class="row">
                 <h1 class="well homewell">Trending</h1>
@@ -75,9 +77,23 @@
                     </div>
                 </div>
                 
-                <a th:href="${check}">Confirm registration</a>
+                <!--Fragment used to display bottom ad (simple and clean)-->
+                <div th:include="pages/adfragments :: adBottom(${adObject}, ${bottom})"/>
+                
+                <!--MAIN bottom advert markup just in case
+                <div class="centertinz" th:if="${adObject.size()} > 3">
+                    <p th:each="counter : ${#numbers.sequence(top, bottom-1)}" style="display: inline-block;">
+                        <a th:href="@{/rdr(uk_=${adObject[counter].id})}">
+                            <img class="adBanner" th:src="@{'/files/ad_img/' + ${adObject[counter].adsImage}}" src="" th:alt="${adObject[counter].adsImage}" alt="advert"/>
+                        </a>&nbsp;&nbsp;
+                    </p>
+                </div>
+                -->
                 
                 <!--
+                <a th:href="${check}">Confirm registration</a>
+                -->
+                
                 <div>
                     <div class="centertinz">
                         <ul class="pagination pagination-sm">
@@ -104,31 +120,8 @@
                         </ul>
                     </div>
                 </div>
-                -->
-            </div>            
+            </div><br/>           
             
-            
-            
-            <!--
-            <div class="row" style="text-align: center;">
-                <div style="background-color: pink; width: 30%; height: 90px; margin-bottom: 10px; display: inline-block;">
-                    For normal advert
-                </div>
-            
-                <div style="background-color: blue; width: 30%; height: 90px; margin-bottom: 10px; display: inline-block;">
-                    For normal advert
-                </div>
-                
-                <div style="background-color: orange; width: 30%; height: 90px; margin-bottom: 10px; display: inline-block;">
-                    For normal advert
-                </div>
-            </div>
-            
-            -->
-            
-            <div class="row">
-                <div style="background-color: rgb(0,88,52); height: 100px;"></div>
-            </div>
         </div>
         <div class="col-sm-1"></div>
     </body>

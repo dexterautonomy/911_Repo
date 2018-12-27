@@ -13,80 +13,18 @@
     <body class="container">
         <div class="col-sm-1"></div>
         <div class="col-sm-10">
-            <div class="row">
-                <h1>
-                    <a><img src="" th:src="@{/files/system_img/logo.jpg}" width="50" height="50" alt="onenaijalogo" style="border-radius: 50%;"/> 9jaForum</a>
-                </h1>
-            </div>
-        
-            <div class="row">
-                <nav class="navbar navbar-inverse container-fluid">
-                    <ul class="nav navbar-nav">
-                        <li><a th:href="@{/}">Switch</a></li>
-                        <li><a>Home</a></li>
-                        <li><a>Opinions</a></li>
-                        <li><a>Memelogic</a></li>
-                        <li><a>Poetic Justice</a></li>
-                        <li><a>Battle Of The Sexes</a></li>
-                    </ul>
-                </nav>
-            </div>
-            
-            <!--
-            <div class="row" style="text-align: center;">
-                <div style="background-color: pink; width: 30%; height: 90px; margin-bottom: 10px; display: inline-block;">
-                    For normal advert
-                </div>
-            
-                <div style="background-color: blue; width: 30%; height: 90px; margin-bottom: 10px; display: inline-block;">
-                    For normal advert
-                </div>
-                
-                <div style="background-color: orange; width: 30%; height: 90px; margin-bottom: 10px; display: inline-block;">
-                    For normal advert
-                </div>
-            </div>
-            -->
+            <div th:include="pages/adfragments :: headLogo"/>
+            <div th:include="pages/adfragments :: navigationUser"/>
+            <div th:include="pages/adfragments :: adTop(${adObject}, ${top})"/>
             
             <div class="row">
-                <div class="col-sm-3" style="padding: 8px; background-color: rgb(248,248,248);">
-                    <a class="smallfont2" th:href="@{/user/prf}">
-                        <div class="thumbNailX" style="background-color: rgb(247,247,247);">
-                            <img th:classappend="${user.colorclass}" class="roundImage" src="" th:src="@{'/files/profile_img/' + ${user.pix}}" width="80" height="80" th:alt="${user.username + ' pic'}" alt=""/><br/><br/>
-                            <div class="postcomment_username" th:text="${'@' + user.username + ' - ' + user.userrank}"></div>
-                        </div>
-                    </a><br/>
-                        
-                    <div>
-                        <a class="smallfont2" th:href="@{/user/login}">Compose</a><hr/>
-                        <a class="smallfont2" th:href="@{/user/inbox(pg=1)}">Inbox <span class="badge smallfont" th:text="${size}"></span></a><hr/>
-                        <a class="smallfont2" th:href="@{/user/flpost(pg=1)}">Followed Posts <span class="badge smallfont" th:text="${pize}"></span></a><hr/>
-                        <a class="smallfont2" th:href="@{/user/rcd(pg=1)}">My Trend <span class="badge smallfont" th:text="${tize}"></span></a><hr/>
-                        
-                        <a class="smallfont2" th:href="@{/user/ads}">Create Ad</a><hr/>
-                        <a class="smallfont2" th:href="@{/user/adm}">Manage Ad <span class="badge">125</span></a><hr/>
-            	        
-                        <form th:action="@{/j_spring_security_logout}" method="POST">
-                            <button class="btn btn-danger btn-sm" name="xx" value="logout"><span class="glyphicon glyphicon-user"></span> Logout</button>
-                            <input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
-                        </form>
-                    </div>
-                </div>
+                <div th:include="pages/adfragments :: leftPane(${user}, ${size}, ${pize}, ${tize})"/>
                 
                 <div class="col-sm-9" th:classappend="${firstBlock}">
-                    <!--
-                    <p class="centertinz smallfont" th:text="${alert}"></p>
-                    -->
                     
                     <div class="panel panel-primary">
                         <div class="panel-heading title centertinz">Followed Posts</div>
                     </div>
-                    
-                    <!--
-                    <div th:classappend="${theclass}">
-                        <span th:text="${clickagain}"></span>
-                    </div>
-                    -->
                     
                     <div th:classappend="${nothing}">
                         <span th:text="${alertFallback}"></span>
@@ -99,8 +37,8 @@
                         </div>
                     
                         <div class="list-group centertinz">
-                            <div th:each="post, status : ${followpost}" style="overflow: auto; padding: 1px;">
-                                <a class="list-group-item" th:classappend="${readFollowPost.get(status.index)}" style="display: inline-block; width:91%;" th:href="@{/s_ch(pos=${post.id}, t=${post.title}, p=1, pgn=${pgn}, apvVal=${post.approved}, spt=flp)}">
+                            <div th:each="post, status : ${followpost}" class="followePostList">
+                                <a class="list-group-item trendList inlineDispBlock" th:classappend="${readFollowPost.get(status.index)}" th:href="@{/s_ch(pos=${post.id}, t=${post.title}, p=1, pgn=${pgn}, apvVal=${post.approved}, spt=flp)}">
                                     <div>
                                         <div id="chead" class="list-group-item-text" th:text="${post.title}"></div>
                                     
@@ -119,7 +57,7 @@
                                     </div>
                                 </a>
                             
-                                <a th:href="@{/user/dlt_(pos=${post.id}, t=${post.title}, pgn=${pgn}, akt=dlt_ft)}" style="display: inline-block; width: 5%; float: right;">
+                                <a th:href="@{/user/dlt_(pos=${post.id}, t=${post.title}, pgn=${pgn}, akt=dlt_ft)}" class="floatRightLink inlineDispBlock">
                                     <span class="glyphicon glyphicon-trash deleteCan"></span>
                                 </a>
                             </div>
@@ -145,7 +83,7 @@
                         <div th:object="${unapprovedPost}" class="panel panel-success">
                             <div class="panel-heading title centertinz" th:text="*{title}"></div>
                             <div class="panel-body">
-                                <div style="overflow: auto;">
+                                <div class="autoOverflow">
                                     <span th:classappend="*{postrank} != 0 ? 'prclass' : 'hidden'" th:text="*{'PR: ' + postrank}"></span>
                                 </div>
                         
@@ -162,25 +100,8 @@
                 </div>
             </div>
             
-            <!--
-            <div class="row" style="text-align: center;">
-                <div style="background-color: pink; width: 30%; height: 90px; margin-bottom: 10px; display: inline-block;">
-                    For normal advert
-                </div>
+            <div th:include="pages/adfragments :: adBottom(${adObject}, ${bottom})"/>
             
-                <div style="background-color: blue; width: 30%; height: 90px; margin-bottom: 10px; display: inline-block;">
-                    For normal advert
-                </div>
-                
-                <div style="background-color: orange; width: 30%; height: 90px; margin-bottom: 10px; display: inline-block;">
-                    For normal advert
-                </div>
-            </div><br/><br/>
-            -->
-            
-            <div class="row">
-                <div style="background-color: rgb(0,88,52); height: 100px;"></div>
-            </div>
         </div>
         <div class="col-sm-1"></div>
     </body>

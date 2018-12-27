@@ -42,6 +42,7 @@ import com.hingebridge.repository.QuoteObjectRepo;
 import com.hingebridge.repository.SubCommentClassRepo;
 import com.hingebridge.repository.SubCommentReactionClassRepo;
 import com.hingebridge.repository.UserClassRepo;
+import com.hingebridge.utility.AdvertAlgorithmClass;
 @PreAuthorize("hasRole('USER')")
 @Controller
 @RequestMapping("/user")
@@ -49,6 +50,8 @@ public class UserController
 {
     @Autowired
     private UtilityClass utc;
+    @Autowired
+    private AdvertAlgorithmClass aac;
     @Autowired
     private UserClassRepo ucr;
     @Autowired
@@ -77,6 +80,8 @@ public class UserController
     @GetMapping("/login")
     public String userHomePage(Authentication auth, HttpServletRequest req, ModelMap model)
     {
+        aac.displayAdvert(model);   //This line is for adverts
+        
         String[] hideBlocks = {"secondBlock", "thirdBlock"};
         utc.dispBlock(model, "firstBlock", hideBlocks);
         utc.modelUser(model);
@@ -91,6 +96,8 @@ public class UserController
     public String userPostControl(@ModelAttribute("postclass")PostClass pc, HttpServletRequest req, 
     ModelMap model, RedirectAttributes ra) throws IOException
     {
+        aac.displayAdvert(model);   //This line is for adverts
+        
         String[] hideBlocks = {"secondBlock", "thirdBlock"};
         utc.dispBlock(model, "firstBlock", hideBlocks);
         utc.modelUser(model);
@@ -530,6 +537,8 @@ public class UserController
     @RequestParam("akt")Optional<String> action, HttpServletRequest req, RedirectAttributes ra, 
     @RequestParam("cid")Optional<Long> comment_id, @RequestParam("sid")Optional<Long> subcomment_id)
     {
+        aac.displayAdvert(model);   //This line is for adverts
+        
         String ret= null;
         utc.sessionUserDetails(req);    //Do not ever remove this
         Optional<PostClass> pc = pcr.findById(post_id.get());
@@ -1160,6 +1169,9 @@ public class UserController
     @RequestParam("cid")Optional<Long> comment_id, @RequestParam("sid")Optional<Long> subcomment_id)
     {
         //Do not forget to add provisions for those banned etc, they should not be able to write post, comment etc
+        
+        aac.displayAdvert(model);   //This line is for adverts
+        
         String ret = null;
         String path = utc.getFilePath()+"dist_img";
         String date = utc.getDate();
@@ -1735,6 +1747,8 @@ public class UserController
     public String getFollowedPost(@RequestParam("pg")Optional<Integer> page, HttpServletRequest req, 
     ModelMap model, RedirectAttributes ra)
     {
+        aac.displayAdvert(model);   //This line is for adverts
+        
         int init = 0;
         int end = 10;
         
@@ -1836,9 +1850,11 @@ public class UserController
     public String getInbox(ModelMap model, @RequestParam("pg")Optional<Integer> page,
     RedirectAttributes ra, HttpServletRequest req)
     {
+        aac.displayAdvert(model);   //This line is for adverts
+        
         utc.modelUser(model);
         int init = 0;
-        int end = 1;
+        int end = 5;
         List<MessageObject> mobj = new LinkedList<>();
         utc.modelTransfer(model);
         
@@ -1893,9 +1909,11 @@ public class UserController
     public String getRecord(ModelMap model, @RequestParam("pg")Optional<Integer> pgn, 
     RedirectAttributes ra, HttpServletRequest req)
     {
+        aac.displayAdvert(model);   //This line is for adverts
+        
         utc.modelUser(model);
         int init = 0;
-        int end = 1;
+        int end = 5;
         List<PostClass> tobj = new LinkedList<>();
         utc.modelTransfer(model);
         
@@ -1950,6 +1968,8 @@ public class UserController
     @RequestParam("akt")Optional<String> action, RedirectAttributes ra, HttpServletRequest req, ModelMap model, 
     @RequestParam("cid")Optional<Long> commentid)
     {
+        aac.displayAdvert(model);   //This line is for adverts
+        
         String ret = null;
         
         switch (action.get())
@@ -1977,7 +1997,7 @@ public class UserController
         
                 if(utc.getUser().getId().equals(mo.get().getRecipient_id()))
                 {
-                    mo.get().setFlag(0);
+                    mo.get().setFlag(1);
                     mobjr.save(mo.get());
                 }
                 else
@@ -1990,7 +2010,7 @@ public class UserController
             
             case "dlt_ft":
             {
-        
+                //Potential logic error
                 Optional<FollowedPostDeleteObject> fpdobj = fpdor.getDeletedPost(post_id.get(), utc.getUser().getId());
                 
                 if(fpdobj.orElse(null) != null)
@@ -2017,6 +2037,8 @@ public class UserController
     @GetMapping("/prf")
     public String editProfile(HttpServletRequest req, ModelMap model)
     {
+        aac.displayAdvert(model);   //This line is for adverts
+        
         String[] hideBlocks = {"firstBlock", "thirdBlock"};
         utc.dispBlock(model, "secondBlock", hideBlocks);
         utc.modelUser(model);
@@ -2028,18 +2050,20 @@ public class UserController
     
     
     @RequestMapping("/ads")
-    public String creatAds(HttpServletRequest req, ModelMap model, @RequestParam("ct_")Optional<String> cat, 
-    @RequestParam("pt_ad")Optional<String> postAd, @ModelAttribute("advertObject")Optional<AdvertObject> adObj, 
-    @RequestParam("pg")Optional<Integer> pgn, @RequestParam("edit")Optional<String> edit, @RequestParam("pos")Optional<Long> pos, 
-    @RequestParam("pt_adx")Optional<String> klass1, @RequestParam("edit_")Optional<String> klass2,
-    @ModelAttribute("editAdvert")AdvertObject adv, RedirectAttributes ra)
+    public String creatAds(HttpServletRequest req, ModelMap model, @RequestParam("ct_")Optional<String> ct_, 
+    @RequestParam("pt_ad")Optional<String> pt_ad, @ModelAttribute("advertObject")Optional<AdvertObject> advertObject, 
+    @RequestParam("pg")Optional<Integer> pg, @RequestParam("edit")Optional<String> edit, @RequestParam("pos")Optional<Long> pos, 
+    @RequestParam("pt_adx")Optional<String> pt_adx, @RequestParam("edit_")Optional<String> edit_, RedirectAttributes ra, 
+    @ModelAttribute("editAdvertObject")Optional<AdvertObject> editAdvertObject)
     {
+        aac.displayAdvert(model);   //This line is for adverts
+        
         utc.modelUser(model);
         utc.modelTransfer(model);
         
-        if(cat.orElse(null) != null)
+        if(ct_.orElse(null) != null)
         {
-            switch(cat.get())
+            switch(ct_.get())
             {
                 case "nw":
                 {
@@ -2059,13 +2083,13 @@ public class UserController
                     if(!ad.isEmpty())
                     {
                         int init = 0;
-                        int end = 1;
+                        int end = 5;
                         List<AdvertObject> selectedAd = new LinkedList<>();
                         
-                        if(pgn.get() > 1)
+                        if(pg.get() > 1)
                         {
-                            init = (pgn.get() - 1) * end;
-                            end = end * pgn.get();
+                            init = (pg.get() - 1) * end;
+                            end = end * pg.get();
                         }
                         
                         if(ad.size() < end)
@@ -2078,13 +2102,13 @@ public class UserController
                             selectedAd.add(ad.get(count));
                         }
                         
-                        model.addAttribute("pgn", pgn.get());//wait
+                        model.addAttribute("pgn", pg.get());
             
-                        model.addAttribute("prev", pgn.get()-1);
-                        model.addAttribute("next", pgn.get()+1);
+                        model.addAttribute("prev", pg.get()-1);
+                        model.addAttribute("next", pg.get()+1);
                         model.addAttribute("unExpiredAdObjList", selectedAd);
                     
-                        if(pgn.get() - 1 == 0)
+                        if(pg.get() - 1 == 0)
                         {
                             model.addAttribute("disp1", "none");
                         }
@@ -2105,7 +2129,7 @@ public class UserController
             
             }
         }
-        else if(postAd.orElse(null) != null)
+        else if(pt_ad.orElse(null) != null)
         {
             String[] hideBlocks = {"firstBlock", "thirdBlock", "fourthBlock"};
             utc.dispBlock(model, "secondBlock", hideBlocks);
@@ -2113,15 +2137,14 @@ public class UserController
             if(utc.checkCredit())
             {
                 String path = utc.getFilePath()+"ad_img";
-                String landingPage = adObj.get().getLandingPage().trim();
-                String payOption = adObj.get().getPayOption();
-                MultipartFile file = adObj.get().getFile();
+                String landingPage = advertObject.get().getLandingPage().trim();
+                String payOption = advertObject.get().getPayOption();
+                MultipartFile file = advertObject.get().getFile();
                 String fileName = file.getOriginalFilename();
                 long fileSize = file.getSize();
                 
-                adObj.get().setPayOption(adObj.get().getPayOption());   //In case of error/alert message, no need to start retyping
-                adObj.get().setLandingPage(adObj.get().getLandingPage());   //In case of error/alert message, no need to start retyping
-            
+                model.addAttribute("advertObject", advertObject.get());
+                
                 if(!file.isEmpty())
                 {
                     if(fileSize < 1000002)
@@ -2153,13 +2176,13 @@ public class UserController
                                             }
                                             break;
                                         }
-                                    
-                                        aor.save(ao);
-                                        model.addAttribute("alert", "Ad saved");
+                                        
+                                        aor.save(ao);   //Learnt my lesson from Long and long (reference vs primitive type between object wrapper classes) 
+                                        ra.addFlashAttribute("alert", "Ad saved");
                                         File pathToFile=new File(path, fileName);
                                         file.transferTo(pathToFile);
                                         
-                                        return "redirect:/user/ads?ct_=mn";
+                                        return "redirect:/user/ads?ct_=mn&pg=1";
                                     }
                                 }
                                 catch (IOException | IllegalStateException ex)
@@ -2197,41 +2220,42 @@ public class UserController
             
             if(ao.get().getUserId().equals(utc.getUser().getId()))
             {
-                model.addAttribute("editAdvert", ao.get());
-                model.addAttribute("pgn", pgn.get());
+                model.addAttribute("editAdvertObject", ao.get());
+                model.addAttribute("pgn", pg.get());
             }
             else
             {
                 model.addAttribute("alert", "Access denied");
             }
         }
-        else if(klass1.orElse(null) != null && klass2.orElse(null) != null)
+        else if(pt_adx.orElse(null) != null && edit_.orElse(null) != null && pos.orElse(null) != null)
         {
-            String[] hideBlocks = {"firstBlock", "secondBlock", "thirdBlock"};
-            utc.dispBlock(model, "fourthBlock", hideBlocks);
-            
-            model.addAttribute("pos", pos.get());
-            model.addAttribute("pgn", pgn.get());
-            
             Optional<AdvertObject> ao = aor.findById(pos.get());
             
             if(ao.get().getUserId().equals(utc.getUser().getId()))
             {
-                switch(adv.getActionButton())
+                String[] hideBlocks = {"firstBlock", "secondBlock", "thirdBlock"};
+                utc.dispBlock(model, "fourthBlock", hideBlocks);
+                
+                model.addAttribute("pos", pos.get());
+                model.addAttribute("pgn", pg.get());
+                model.addAttribute("editAdvertObject", ao.get());
+                
+                switch(editAdvertObject.get().getActionButton())
                 {
                     case "update":
                     {
-                        MultipartFile file = adv.getFile();
+                        MultipartFile file = editAdvertObject.get().getFile();
                         String fileName = file.getOriginalFilename();
                         long fileSize = file.getSize();
                         
                         String path = utc.getFilePath()+"ad_img";
                 
-                        ao.get().setPayOption(adv.getPayOption());
+                        ao.get().setPayOption(editAdvertObject.get().getPayOption());
                         
-                        if(adv.getLandingPage() != null && !adv.getLandingPage().matches("\\s*"))
+                        if(editAdvertObject.get().getLandingPage() != null && !editAdvertObject.get().getLandingPage().matches("\\s*"))
                         {
-                            ao.get().setLandingPage(adv.getLandingPage());
+                            ao.get().setLandingPage(editAdvertObject.get().getLandingPage());
                             
                             if(!file.isEmpty())
                             {
@@ -2247,13 +2271,13 @@ public class UserController
                                             try 
                                             {
                                                 ao.get().setAdsImage(fileName);
+                                                ao.get().setApprove(0); //If you change your ad image, approval becomes 0, just so admin cross-examines the new image and approve again
                                                 File pathToFile=new File(path, fileName);
                                                 file.transferTo(pathToFile);
                                                 
                                                 aor.save(ao.get());
-                                                model.addAttribute("editAdvert", ao.get());
+                                                //model.addAttribute("editAdvert", ao.get());
                                                 model.addAttribute("alert", "Ad updated successfully");
-                                                
                                             }
                                             catch (IOException | IllegalStateException ex)
                                             {
@@ -2277,16 +2301,14 @@ public class UserController
                             }
                             else
                             {
-                                 //model.addAttribute("editAdvert", ao.get());
+                                //model.addAttribute("editAdvert", ao.get());
                                 aor.save(ao.get());
-                                model.addAttribute("editAdvert", ao.get());
                                 model.addAttribute("alert", "Ad updated successfully");                
                             }
                         }
                         else
                         {
-                            
-                            model.addAttribute("editAdvert", ao.get());
+                            //model.addAttribute("editAdvertObject", ao.get());
                             model.addAttribute("alert", "Enter a URL");
                         }
                     }
@@ -2305,7 +2327,7 @@ public class UserController
                             model.addAttribute("alert", "Paused");
                         }
                         
-                        model.addAttribute("editAdvert", ao.get());
+                        model.addAttribute("editAdvertObject", ao.get());
                         model.addAttribute("pos", pos.get());
                         
                         aor.save(ao.get());
@@ -2317,15 +2339,17 @@ public class UserController
                         ao.get().setExpired(1);
                         aor.save(ao.get());
                         ra.addFlashAttribute("alert", "Ad terminated");
-                        return "redirect:/user/ads?ct_=mn&pg="+pgn.get();
+                        return "redirect:/user/ads?ct_=mn&pg="+pg.get();
                     }                    
                 }
             }
             else
             {
-                model.addAttribute("alert", "Access denied");
+                String[] hideBlocks = {"firstBlock", "secondBlock", "thirdBlock", "fourthBlock"};
+                utc.dispBlock(model, "", hideBlocks);
+                model.addAttribute("noAdsPostedYet", "realcentertinz");
+                model.addAttribute("alertFallback", "Access denied");
             }
-            
         }
         else
         {
@@ -2336,23 +2360,11 @@ public class UserController
         return "pages/adspage";
     }
     
-    /*
-    @GetMapping("/adm")
-    public String manageAds(HttpServletRequest req, HttpSession session, ModelMap model)
-    {
-        session = req.getSession();
-        final String[] blocks = {"firstblock", "secondblock", "thirdblock", "fourthblock", "fifthblock"};
-        utc.dispBlock(session, "sixthblock", blocks);
-        
-        model.addAttribute("postclass", new PostClass());
-        return "pages/userpage";
-    }
-    */
-    
     @PostMapping("/prfupd")
     public String updatePix(@ModelAttribute("postclass")PostClass pc, ModelMap model, RedirectAttributes ra)
     {
-        String ret = null;
+        aac.displayAdvert(model);   //This line is for adverts
+        
         String path = utc.getFilePath()+"profile_img";
         MultipartFile coverFile = pc.getCoverFile();
         if(coverFile.getSize() > 0 && coverFile.getSize() <= 4000000)

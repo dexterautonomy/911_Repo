@@ -400,18 +400,45 @@ public class UtilityClass
         model.addAttribute("user", getUser());
     }
     
-    public long getMessageObjSize()
+    public long getMessageObjSize(ModelMap model)
     {
+        long size;
         List<MessageObject> mo = mobjr.getMyMessage(getUser().getId());
-        return mo.size();
+        List<MessageObject> unReadMessagesList = new LinkedList<>();
+        if(!mo.isEmpty())
+        {
+            for(MessageObject mObj : mo)
+            {
+                if(mObj.getUnread().equals("unread"))
+                {
+                    unReadMessagesList.add(mObj);
+                }
+            }
+        
+            if(!unReadMessagesList.isEmpty())
+            {
+                size = unReadMessagesList.size();
+                model.addAttribute("unReadMessages", "alertNote");
+            }
+            else
+            {
+                size = mo.size();
+            }
+        }
+        else
+        {
+            size = 0l;
+        }
+        return size;
     }
     
-    public long getFollowedPostSize()
+    public long getFollowedPostSize(ModelMap model)
     {
         long size;
         LinkedList<PostClass> pcList = new LinkedList<>();
-        
+        LinkedList<PostClass> unReadPcList = new LinkedList<>();
         List<FollowerObject> followedObj = fobjr.getSelectedFollow(getUser().getId());
+        
         if(!followedObj.isEmpty())
         {
             List<PostClass> po = pcr.followersPost(followedObj);
@@ -426,7 +453,34 @@ public class UtilityClass
                 }
             }
             
-            size = pcList.size();
+            if(!pcList.isEmpty())
+            {
+                //size = pcList.size();
+                
+                for(PostClass pcObj : pcList)
+                {
+                    boolean var = fpdor.getReadPostObject(pcObj.getId(), getUser().getId());
+                    
+                    if(!var)
+                    {
+                        unReadPcList.add(pcObj);
+                    }
+                }
+        
+                if(!unReadPcList.isEmpty())
+                {
+                    size = unReadPcList.size();
+                    model.addAttribute("unReadPosts", "alertNote");
+                }
+                else
+                {
+                    size = pcList.size();
+                }
+            }
+            else
+            {
+                size = 0l;
+            }
         }
         else
         {
@@ -443,8 +497,8 @@ public class UtilityClass
     
     public void modelTransfer(ModelMap model)
     {
-        model.addAttribute("size", getMessageObjSize());
-        model.addAttribute("pize", getFollowedPostSize());
+        model.addAttribute("size", getMessageObjSize(model));
+        model.addAttribute("pize", getFollowedPostSize(model));
         model.addAttribute("tize", getMyTrendSize());
     }
     

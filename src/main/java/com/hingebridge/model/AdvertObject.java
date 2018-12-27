@@ -11,7 +11,7 @@ public class AdvertObject implements Serializable
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    private Long id;    //Learnt my lesson from Long and long (reference vs primitive type between object wrapper classes) 
     @Column(name = "user_id")
     private Long userId;
     @Column(name = "approve")
@@ -29,7 +29,7 @@ public class AdvertObject implements Serializable
     @Column(name = "landingpage")
     private String landingPage;
     @Column(name = "pause")
-    private int pause = 0;
+    private int pause = 1;
     @Column(name = "expired")
     private int expired = 0;
     
@@ -54,7 +54,8 @@ public class AdvertObject implements Serializable
         this.landingPage = landingPage;
     }
     
-    public Long getId()
+    
+    public Long getId() //Learnt my lesson from Long and long (reference vs primitive type between object wrapper classes) 
     {
         return id;
     }

@@ -13,9 +13,13 @@
     <body class="container">
         <div class="col-sm-1"></div>
         <div class="col-sm-10">
+            <div th:include="pages/adfragments :: headLogo"/>
+            <div th:include="pages/adfragments :: navigationUser"/>
+            <div th:include="pages/adfragments :: adTop(${adObject}, ${top})"/>
+            <!--
             <div class="row">
                 <h1>
-                    <a><img src="" th:src="@{/files/system_img/logo.jpg}" width="50" height="50" alt="onenaijalogo" style="border-radius: 50%;"/> 9jaForum</a>
+                    <a><img class="appLogo" src="" th:src="@{/files/system_img/logo.jpg}" alt="onenaijalogo"/> 9jaForum</a>
                 </h1>
             </div>
         
@@ -31,29 +35,16 @@
                     </ul>
                 </nav>
             </div>
-            
-            <!--
-            <div class="row" style="text-align: center;">
-                <div style="background-color: pink; width: 30%; height: 90px; margin-bottom: 10px; display: inline-block;">
-                    For normal advert
-                </div>
-            
-                <div style="background-color: blue; width: 30%; height: 90px; margin-bottom: 10px; display: inline-block;">
-                    For normal advert
-                </div>
-                
-                <div style="background-color: orange; width: 30%; height: 90px; margin-bottom: 10px; display: inline-block;">
-                    For normal advert
-                </div>
-            </div>
             -->
             
             
             <div class="row">
-                <div class="col-sm-3" style="padding: 8px; background-color: rgb(248,248,248);">
+                <div th:include="pages/adfragments :: leftPane(${user}, ${size}, ${pize}, ${tize})"/>
+                <!--
+                <div class="col-sm-3">
                     <a class="smallfont2" th:href="@{/user/prf}">
-                        <div class="thumbNailX" style="background-color: rgb(247,247,247);">
-                            <img th:classappend="${user.colorclass}" class="roundImage" src="" th:src="@{'/files/profile_img/' + ${user.pix}}" width="80" height="80" th:alt="${user.username + ' pic'}" alt=""/><br/><br/>
+                        <div class="thumbNailX">
+                            <img th:classappend="${user.colorclass}" class="profileImage" src="" th:src="@{'/files/profile_img/' + ${user.pix}}" th:alt="${user.username + ' pic'}" alt=""/><br/><br/>
                             <div class="postcomment_username" th:text="${'@' + user.username + ' - ' + user.userrank}"></div>
                         </div>
                     </a><br/>
@@ -63,16 +54,16 @@
                         <a class="smallfont2" th:href="@{/user/inbox(pg=1)}">Inbox <span class="badge smallfont" th:text="${size}"></span></a><hr/>
                         <a class="smallfont2" th:href="@{/user/flpost(pg=1)}">Followed Posts <span class="badge smallfont" th:text="${pize}"></span></a><hr/>
                         <a class="smallfont2" th:href="@{/user/rcd(pg=1)}">My Trend <span class="badge smallfont" th:text="${tize}"></span></a><hr/>
-                        
                         <a class="smallfont2" th:href="@{/user/ads}">Ads</a><hr/>
             	        
                         <form th:action="@{/j_spring_security_logout}" method="POST">
-                            <button class="btn btn-danger btn-sm" name="xx" value="logout"><span class="glyphicon glyphicon-user"></span> Logout</button>
                             <input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
+                            <button class="btn btn-link" name="xx" value="logout"><span class="glyphicon glyphicon-user"></span> Logout</button><br/><br/>
                         </form>
                     </div>
                 </div>
-            
+                -->
+                
                 <div class="col-sm-9" th:classappend="${firstBlock}">
                     <p class="smallfont centertinz" th:text="${alert}"></p>
                     
@@ -84,38 +75,38 @@
                             </div>
                             
                             <div class="form-group">
-                                <input id="addimg" class="btn btn-sm btn-default" th:field="*{contentFile}" type="file" style="display: inline"/>
-                                <button class="btn btn-sm btn-info" name="actionButton" value="add_img"><span class="glyphicon glyphicon-user" style="display: inline"></span> Upload</button>
+                                <input id="addimg" class="btn btn-sm btn-default" style="display: inline;" th:field="*{contentFile}" type="file"/>
+                                <button class="btn btn-sm btn-info"  style="display: inline;" name="actionButton" value="add_img"><span class="glyphicon glyphicon-user"></span> Upload</button>
                             </div>
                             
                             <div class="form-group">
-                                <input id="coverimg" class="btn btn-sm btn-default" th:field="*{coverFile}" type="file" style="display: inline"/>
-                                <label for="coverimg" style="display: inline; font-weight: normal;">Cover Image (Optional)</label>
+                                <input id="coverimg" class="btn btn-sm btn-default" style="display: inline;" th:field="*{coverFile}" type="file"/>
+                                <label for="coverimg" class="normalFont" style="display: inline;">Cover Image (Optional)</label>
                             </div><br/>
                             
-                            <div class="form-group" style="text-align: center;">
+                            <div class="form-group centertinz">
                                 <div class="radio-inline">
-                                    <label style="font-weight: normal;">
+                                    <label class="normalFont">
                                         <input type="radio" th:field="*{category}" value="mypost" checked=""/> Post
                                     </label>
                                 </div>
                                 <div class="radio-inline">
-                                    <label style="font-weight: normal;">
+                                    <label class="normalFont">
                                         <input type="radio" th:field="*{category}" value="opinion"/> Opinion
                                     </label>
                                 </div>
                                 <div class="radio-inline">
-                                    <label style="font-weight: normal;">
+                                    <label class="normalFont">
                                         <input type="radio" th:field="*{category}" value="memelogic"/> Memelogic
                                     </label>
                                 </div>
                                 <div class="radio-inline">
-                                    <label style="font-weight: normal;">
+                                    <label class="normalFont">
                                         <input type="radio" th:field="*{category}" value="poetic_justice"/> Poetic Justice
                                     </label>
                                 </div>
                                 <div class="radio-inline">
-                                    <label style="font-weight: normal;">
+                                    <label class="normalFont">
                                         <input type="radio" th:field="*{category}" value="zex_battle"/> Battle of the sexes
                                     </label>
                                 </div><br/>
@@ -140,13 +131,14 @@
                         
                         <form th:action="@{/user/prfupd}" method="post" th:object="${postclass}" enctype="multipart/form-data">
                             <div class="form-group">
-                                <input class="btn btn-sm btn-default" th:field="*{coverFile}" type="file" style="display: inline" required=""/>
-                                <button class="btn btn-primary" name="actionButton" value="post"><span class="glyphicon glyphicon-user"></span> Upload</button>
+                                <input class="btn btn-sm btn-default" style="display: inline;" th:field="*{coverFile}" type="file" required=""/>
+                                <button class="btn btn-primary"  style="display: inline;" name="actionButton" value="post"><span class="glyphicon glyphicon-user"></span> Upload</button>
                             </div>
                         </form>
                     </div>
                 </div>
                 
+                <!--find a way and put this thirdBlock where it belongs - mytrend page-->
                 <div class="col-sm-9" th:classappend="${thirdBlock}">
                     <p class="smallfont centertinz">Pending approval</p>
                     
@@ -154,7 +146,7 @@
                         <div th:object="${unapprovedPost}" class="panel panel-success">
                             <div class="panel-heading title centertinz" th:text="*{title}"></div>
                             <div class="panel-body">
-                                <div style="overflow: auto;">
+                                <div class="autoOverflow">
                                     <span th:classappend="*{postrank} != 0 ? 'prclass' : 'hidden'" th:text="*{'PR: ' + postrank}"></span>
                                 </div>
                         
@@ -171,25 +163,8 @@
                 </div>
             </div>
             
+            <div th:include="pages/adfragments :: adBottom(${adObject}, ${bottom})"/>
             
-            <!--
-            <div class="row" style="text-align: center;">
-                <div style="background-color: pink; width: 30%; height: 90px; margin-bottom: 10px; display: inline-block;">
-                    For normal advert
-                </div>
-            
-                <div style="background-color: blue; width: 30%; height: 90px; margin-bottom: 10px; display: inline-block;">
-                    For normal advert
-                </div>
-                
-                <div style="background-color: orange; width: 30%; height: 90px; margin-bottom: 10px; display: inline-block;">
-                    For normal advert
-                </div>
-            </div><br/><br/>
-            -->
-            <div class="row">
-                <div style="background-color: rgb(0,88,52); height: 100px;"></div>
-            </div>
         </div>
         <div class="col-sm-1"></div>
     </body>

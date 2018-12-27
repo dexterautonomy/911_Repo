@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>9jaForum</title>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    
+    <body>
+        
+        <div th:fragment="headLogo">
+            <div class="row">
+                <h1>
+                    <a><img class="appLogo" src="" th:src="@{/files/system_img/logo.jpg}" alt="onenaijalogo"/> 9jaForum</a>
+                </h1>
+            </div>
+        </div>
+        
+        <div th:fragment="navigationHome"> 
+            <div class="row">
+                <nav class="navbar navbar-inverse container-fluid">
+                    <ul class="nav navbar-nav">
+                        <li><a th:href="@{/user/login}">Switch</a></li>
+                        <li><a th:href="@{/}">Home</a></li>
+                        <li><a>Opinion</a></li>
+                        <li><a>Memelogic</a></li>
+                        <li><a>Poem/Sarcasm</a></li>
+                        <li><a>The Sexes</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a th:href="@{/user/login}"><span class="glyphicon glyphicon-user"></span> Login</a></li>
+                        <li><a th:href="@{/signup}"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+            
+        <div th:fragment="navigationUser"> 
+            <div class="row">
+                <nav class="navbar navbar-inverse container-fluid">
+                    <ul class="nav navbar-nav">
+                        <li><a th:href="@{/}">Switch</a></li>
+                        <li><a th:href="@{/user/login}">Home</a></li>
+                        <li><a>Opinion</a></li>
+                        <li><a>Memelogic</a></li>
+                        <li><a>Poem/Sarcasm</a></li>
+                        <li><a>The Sexes</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        
+        <div th:fragment="leftPane(userObject, sizeOfMessage, sizeOfFollowedPost, sizeOfTrend)">
+            <div class="col-sm-3">
+                <a class="smallfont2" th:href="@{/user/prf}">
+                    <div class="thumbNailX">
+                        <img th:classappend="${userObject.colorclass}" class="profileImage" src="" th:src="@{'/files/profile_img/' + ${userObject.pix}}" th:alt="${userObject.username + ' pic'}" alt=""/><br/><br/>
+                        <div class="postcomment_username" th:text="${'@' + userObject.username + ' - ' + userObject.userrank}"></div>
+                    </div>
+                </a><br/>
+                        
+                <div>
+                    <a class="smallfont2" th:href="@{/user/login}">Compose</a><hr/>
+                    <a class="smallfont2" th:href="@{/user/inbox(pg=1)}">Inbox <span class="badge smallfont" th:classappend="${unReadMessages}" th:text="${sizeOfMessage}"></span></a><hr/>
+                    <a class="smallfont2" th:href="@{/user/flpost(pg=1)}">Followed Posts <span class="badge smallfont" th:classappend="${unReadPosts}" th:text="${sizeOfFollowedPost}"></span></a><hr/>
+                    <a class="smallfont2" th:href="@{/user/rcd(pg=1)}">My Trend <span class="badge smallfont" th:text="${sizeOfTrend}"></span></a><hr/>
+                    <a class="smallfont2" th:href="@{/user/ads}">Ads</a><hr/>
+                    <a class="smallfont2" th:href="@{/user/ads}"><span class="glyphicon glyphicon-wrench"></span> Settings</a><hr/>
+            	        
+                    <form th:action="@{/j_spring_security_logout}" method="POST">
+                        <input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
+                        <button class="btn btn-link" name="xx" value="logout"><span class="glyphicon glyphicon-user"></span> Logout</button><br/><br/>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div th:fragment="adTop(adObjectVar, topVal)">
+            <div class="centertinzAdTop" th:if="${adObjectVar.size()} != 0">
+                <p th:each="counter : ${#numbers.sequence(0, topVal-1)}" style="display: inline-block;">
+                    <a th:href="@{/rdr(uk_=${adObjectVar[counter].id})}">
+                            <img class="adBanner" th:src="@{'/files/ad_img/' + ${adObjectVar[counter].adsImage}}" src="" th:alt="${adObjectVar[counter].adsImage}" alt="advert"/>
+                    </a>&nbsp;&nbsp;
+                </p>
+            </div>
+        </div>
+        
+        <div th:fragment="adBottom(adObjectVar, bottomVal)">
+            <div class="centertinzAdBottom" th:if="${adObjectVar.size()} > 3">
+                <p th:each="counter : ${#numbers.sequence(3, bottomVal-1)}" style="display: inline-block;">
+                    <a th:href="@{/rdr(uk_=${adObjectVar[counter].id})}">
+                        <img class="adBanner" th:src="@{'/files/ad_img/' + ${adObjectVar[counter].adsImage}}" src="" th:alt="${adObjectVar[counter].adsImage}" alt="advert"/>
+                    </a>&nbsp;&nbsp;
+                </p>
+            </div>
+        </div>
+    </body>
+</html>

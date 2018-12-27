@@ -13,80 +13,21 @@
     <body class="container">
         <div class="col-sm-1"></div>
         <div class="col-sm-10">
-            <div class="row">
-                <h1>
-                    <a><img src="" th:src="@{/files/system_img/logo.jpg}" width="50" height="50" alt="onenaijalogo" style="border-radius: 50%;"/> 9jaForum</a>
-                </h1>
-            </div>
-        
-            <div class="row">
-                <nav class="navbar navbar-inverse container-fluid">
-                    <ul class="nav navbar-nav">
-                        <li><a th:href="@{/}">Switch</a></li>
-                        <li><a>Home</a></li>
-                        <li><a>Opinions</a></li>
-                        <li><a>Memelogic</a></li>
-                        <li><a>Poetic Justice</a></li>
-                        <li><a>Battle Of The Sexes</a></li>
-                    </ul>
-                </nav>
-            </div>
+            <div th:include="pages/adfragments :: headLogo"/>
+            <div th:include="pages/adfragments :: navigationUser"/>
             
-            <!--
-            <div class="row" style="text-align: center;">
-                <div style="background-color: pink; width: 30%; height: 90px; margin-bottom: 10px; display: inline-block;">
-                    For normal advert
-                </div>
-            
-                <div style="background-color: blue; width: 30%; height: 90px; margin-bottom: 10px; display: inline-block;">
-                    For normal advert
-                </div>
-                
-                <div style="background-color: orange; width: 30%; height: 90px; margin-bottom: 10px; display: inline-block;">
-                    For normal advert
-                </div>
-            </div>
-            -->
+            <div th:include="pages/adfragments :: adTop(${adObject}, ${top})"/>
             
             <div class="row">
-                <div class="col-sm-3" style="padding: 8px; background-color: rgb(248,248,248);">
-                    <a class="smallfont2" th:href="@{/user/prf}">
-                        <div class="thumbNailX" style="background-color: rgb(247,247,247);">
-                            <img th:classappend="${user.colorclass}" class="roundImage" src="" th:src="@{'/files/profile_img/' + ${user.pix}}" width="80" height="80" th:alt="${user.username + ' pic'}" alt=""/><br/><br/>
-                            <div class="postcomment_username" th:text="${'@' + user.username + ' - ' + user.userrank}"></div>
-                        </div>
-                    </a><br/>
-                        
-                    <div>
-                        <a class="smallfont2" th:href="@{/user/login}">Compose</a><hr/>
-                        <a class="smallfont2" th:href="@{/user/inbox(pg=1)}">Inbox <span class="badge smallfont" th:text="${size}"></span></a><hr/>
-                        <a class="smallfont2" th:href="@{/user/flpost(pg=1)}">Followed Posts <span class="badge smallfont" th:text="${pize}"></span></a><hr/>
-                        <a class="smallfont2" th:href="@{/user/rcd(pg=1)}">My Trend <span class="badge smallfont" th:text="${tize}"></span></a><hr/>
-                        
-                        <a class="smallfont2" th:href="@{/user/ads}">Create Ad</a><hr/>
-                        <a class="smallfont2" th:href="@{/user/adm}">Manage Ad <span class="badge">125</span></a><hr/>
-            	        
-                        <form th:action="@{/j_spring_security_logout}" method="POST">
-                            <button class="btn btn-danger btn-sm" name="xx" value="logout"><span class="glyphicon glyphicon-user"></span> Logout</button>
-                            <input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
-                        </form>
-                    </div>
-                </div>
+                <div th:include="pages/adfragments :: leftPane(${user}, ${size}, ${pize}, ${tize})"/>
                 
                 <div class="col-sm-9">
-                    <!--
-                    <p class="centertinz" th:text="${alert}"></p>
-                    -->
-                    
                     <div class="panel panel-primary">
                         <div class="panel-heading title centertinz">Inbox</div>
                     </div>
-                    
-                    <!--
-                    <div th:classappend="${theclass}">
-                        <span th:text="${clickagain}"></span>
+                    <div class="centertinz smallfont">
+                        <p th:text="${alert}"></p>
                     </div>
-                    -->
                     
                     <div th:classappend="${nothing}">
                         <span th:text="${alertFallback}"></span>
@@ -100,7 +41,7 @@
                         <div class="list-group">
                             <div th:each="mo : ${messageobj}">
                                 <div class="list-group-item" th:classappend="${mo.unread}">
-                                    <div style="overflow: auto;">
+                                    <div class="autoOverflow">
                                         <span class="postcomment_username">Me</span>
                                         <span style="float: right;">
                                             <span class="smallfont" th:text="${mo.commentmessage.duration}"></span>&nbsp;&nbsp;&nbsp;&nbsp;
@@ -121,7 +62,7 @@
                                                 <img th:classappend="${mosubcomment.userthree.colorclass}" class="roundimg" src="" th:src="@{'/files/profile_img/' + ${mosubcomment.userthree.pix}}" width="35" height="35" alt="" th:alt="${mosubcomment.userthree.username + ' pic'}" />
                                             </div>
                                             <div class="col-xs-10 justify panel panel-body" th:classappend="${mosubcomment.unread} == 'unread' ? 'unreadSub' : 'postsubcomment_body2'">
-                                                <div style="overflow: auto;">
+                                                <div class="autoOverflow">
                                                     <span class="postcomment_username" th:text="${mosubcomment.userthree.username} == ${session.username} ? 'Me' : ${'@' + mosubcomment.userthree.username}"></span>
                                                     <span class="postcomment_duration smallfont" th:text="${mosubcomment.duration}"></span>
                                                 </div>
@@ -134,7 +75,7 @@
                                             </div>
                                         </div>
                                     </a>
-                                </div>
+                                </div><br/>
                             </div>
                         </div>
                     
@@ -152,25 +93,8 @@
                 </div>
             </div>
             
-            <!--
-            <div class="row" style="text-align: center;">
-                <div style="background-color: pink; width: 30%; height: 90px; margin-bottom: 10px; display: inline-block;">
-                    For normal advert
-                </div>
+            <div th:include="pages/adfragments :: adBottom(${adObject}, ${bottom})"/>
             
-                <div style="background-color: blue; width: 30%; height: 90px; margin-bottom: 10px; display: inline-block;">
-                    For normal advert
-                </div>
-                
-                <div style="background-color: orange; width: 30%; height: 90px; margin-bottom: 10px; display: inline-block;">
-                    For normal advert
-                </div>
-            </div><br/><br/>
-            -->
-            
-            <div class="row">
-                <div style="background-color: rgb(0,88,52); height: 100px;"></div>
-            </div>
         </div>
         <div class="col-sm-1"></div>
     </body>

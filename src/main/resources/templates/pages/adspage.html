@@ -13,81 +13,30 @@
     <body class="container">
         <div class="col-sm-1"></div>
         <div class="col-sm-10">
-            <div class="row">
-                <h1>
-                    <a><img src="" th:src="@{/files/system_img/logo.jpg}" width="50" height="50" alt="onenaijalogo" style="border-radius: 50%;"/> 9jaForum</a>
-                </h1>
-            </div>
-        
-            <div class="row">
-                <nav class="navbar navbar-inverse container-fluid">
-                    <ul class="nav navbar-nav">
-                        <li><a th:href="@{/}">Switch</a></li>
-                        <li><a th:href="@{/user/login}">Home</a></li>
-                        <li><a>Opinion</a></li>
-                        <li><a>Memelogic</a></li>
-                        <li><a>Poem/Sarcasm</a></li>
-                        <li><a>The Sexes</a></li>
-                    </ul>
-                </nav>
-            </div>
+            <div th:include="pages/adfragments :: headLogo"/>
+            <div th:include="pages/adfragments :: navigationUser"/>
             
-            <!--
-            <div class="row" style="text-align: center;">
-                <div style="background-color: pink; width: 30%; height: 90px; margin-bottom: 10px; display: inline-block;">
-                    For normal advert
-                </div>
-            
-                <div style="background-color: blue; width: 30%; height: 90px; margin-bottom: 10px; display: inline-block;">
-                    For normal advert
-                </div>
-                
-                <div style="background-color: orange; width: 30%; height: 90px; margin-bottom: 10px; display: inline-block;">
-                    For normal advert
-                </div>
-            </div>
-            -->
-            
+            <div th:include="pages/adfragments :: adTop(${adObject}, ${top})"/>
             
             <div class="row">
-                <div class="col-sm-3" style="padding: 8px; background-color: rgb(248,248,248);">
-                    <a class="smallfont2" th:href="@{/user/prf}">
-                        <div class="thumbNailX" style="background-color: rgb(247,247,247);">
-                            <img th:classappend="${user.colorclass}" class="roundImage" src="" th:src="@{'/files/profile_img/' + ${user.pix}}" width="80" height="80" th:alt="${user.username + ' pic'}" alt=""/><br/><br/>
-                            <div class="postcomment_username" th:text="${'@' + user.username + ' - ' + user.userrank}"></div>
-                        </div>
-                    </a><br/>
-                        
-                    <div>
-                        <a class="smallfont2" th:href="@{/user/login}">Compose</a><hr/>
-                        <a class="smallfont2" th:href="@{/user/inbox(pg=1)}">Inbox <span class="badge smallfont" th:text="${size}"></span></a><hr/>
-                        <a class="smallfont2" th:href="@{/user/flpost(pg=1)}">Followed Posts <span class="badge smallfont" th:text="${pize}"></span></a><hr/>
-                        <a class="smallfont2" th:href="@{/user/rcd(pg=1)}">My Trend <span class="badge smallfont" th:text="${tize}"></span></a><hr/>
-                        
-                        <a class="smallfont2" th:href="@{/user/ads}">Ads</a><hr/>
-            	        
-                        <form th:action="@{/j_spring_security_logout}" method="POST">
-                            <button class="btn btn-danger btn-sm" name="xx" value="logout"><span class="glyphicon glyphicon-user"></span> Logout</button>
-                            <input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
-                        </form>
-                    </div>
-                </div>
+                <div th:include="pages/adfragments :: leftPane(${user}, ${size}, ${pize}, ${tize})"/>
                 
                 <div class="col-sm-9">
                     <div class="panel panel-primary">
                         <div class="panel-heading title centertinz">Adverts</div>
                     </div>
-                    
-                    <div style="overflow: auto;">
+                    <div class="autoOverflow">
                         <a class="prclass" th:href="@{/}">Buy Credit</a>
                     </div>
-                    
                     <div class="smallfont centertinz" th:text="${alert}"></div>
-                    
                     <div th:classappend="${noAdsPostedYet}">
                         <span th:text="${alertFallback}"></span>
                     </div>
                     
+                    <!--firstBlock create new ad or manage ad
+                        @RequestParam: ct_= nw and
+                        @RequestParam: pg = 1
+                    -->
                     <div class="adDiv" th:classappend="${firstBlock}">
                         <div class="col-sm-6">
                             <a th:href="@{/user/ads(ct_=nw)}" class="newAd">Create New Ad</a>
@@ -98,8 +47,11 @@
                         </div>
                     </div>
                     
-                    <div class="advertForm" th:classappend="${secondBlock}" th:if="${advertObject} != null">
-                        <br/>
+                    <!--secondBlock new ad form
+                        post with
+                        @RequestParam: pt_ad
+                    -->
+                    <div class="advertForm" th:classappend="${secondBlock}" th:if="${advertObject} != null"><br/>
                         
                         <div>
                             <form th:action="@{/user/ads(pt_ad)}" method="post" th:object="${advertObject}" enctype="multipart/form-data">
@@ -114,12 +66,12 @@
                             
                                 <div class="form-group">
                                     <div class="radio-inline">
-                                        <label style="font-weight: normal;">
+                                        <label class="normalFont">
                                             <input type="radio" th:field="*{payOption}" value="CPM" checked=""/> Cost/Mille
                                         </label>
                                     </div>
                                     <div class="radio-inline">
-                                        <label style="font-weight: normal;">
+                                        <label class="normalFont">
                                             <input type="radio" th:field="*{payOption}" value="CPC"/> Cost/Click
                                         </label>
                                     </div><br/><br/>
@@ -130,33 +82,35 @@
                         </div><br/>
                     </div>
                     
-                    <div class="" th:classappend="${thirdBlock}" th:if="${unExpiredAdObjList} != null">
-                        <br/>
+                    <!--thirdBlock displays the ads as a list
+                        and gets each ad
+                        @RequestParam: edit, pos and pg
+                    -->
+                    <div class="" th:classappend="${thirdBlock}" th:if="${unExpiredAdObjList} != null"><br/>
                         
                         <div th:classappend="${theclass}">
                             <span th:text="${noAdAvailable}"></span>
                         </div>
                         
-                        <div class="list-group">
+                        <div>
                             <div th:each="adObj : ${unExpiredAdObjList}">
-                                <a class="list-group-item" th:href="@{/user/ads(edit, pos=${adObj.id}, pg=${pgn})}">
-                                    <div class="row">
-                                        <div class="col-xs-5">
-                                            <img src="" th:src="@{'/files/ad_img/' + ${adObj.adsImage}}" width="250" height="100" alt="" th:alt="${adObj.adsImage}"/>
+                                <a th:href="@{/user/ads(edit, pos=${adObj.id}, pg=${pgn})}">
+                                    <div class="adBlock">
+                                        <div class="adImage">
+                                            <img class="adUpdateImg" src="" th:src="@{'/files/ad_img/' + ${adObj.adsImage}}" alt="" th:alt="${adObj.adsImage}"/>
                                         </div>
-                                        <div class="col-xs-7">
+                                        <div class="adDetails">
                                             <div>
-                                                <span>Admin approval: </span>
-                                                <span th:text="${adObj.approve} == 0 ? 'Pending' : 'Active'"></span>
+                                                <span>Approved: </span>
+                                                <span th:classappend="${adObj.approve} == 1 ? 'approved glyphicon glyphicon-ok' : 'pending glyphicon glyphicon-exclamation-sign'"></span>
                                             </div>
-                                            
                                             <div>
-                                                <span>Date started: </span>
+                                                <span>Date: </span>
                                                 <span th:text="${adObj.startDate}"></span>
                                             </div>
                                             <div>
-                                                <span>Pay option: </span>
-                                                <span th:text="${adObj.payOption} == 'CPC' ? 'Pay per click' : 'Pay per mille'"></span>
+                                                <span>Option: </span>
+                                                <span th:text="${adObj.payOption} == 'CPC' ? 'Cost/Click' : 'Cost/Mille'"></span>
                                             </div>
                                             <div th:if="${adObj.payOption} == 'CPC'">
                                                 <span>Total clicks: </span>
@@ -166,10 +120,8 @@
                                                 <span>Total views: </span>
                                                 <span th:text="${adObj.views}"></span>
                                             </div>
-                                            
-                                            <div>
-                                                <span>On hold: </span>
-                                                <span th:text="${adObj.pause} == 1 ? 'Yes' : 'No'"></span>
+                                            <div th:classappend="${adObj.pause} == 1 ? 'pauseNote' : 'activeNote'">
+                                                <span th:text="${adObj.pause} == 1 ? 'Paused' : 'Active'"></span>
                                             </div>
                                         </div>
                                     </div>
@@ -189,15 +141,18 @@
                         </div><br/>
                     </div>
                     
-                    <div class="" th:classappend="${fourthBlock}" th:if="${editAdvert} != null">
-                        <br/>
-                        
-                        <div>
-                            <form th:action="@{/user/ads(pt_adx, edit_, pos=*{id}, pg=${pgn})}" method="post" th:object="${editAdvert}" enctype="multipart/form-data">
-                                
-                                <div style="text-align: center;">
+                    
+                    <!--fourthBlock post edited ad
+                    post with    
+                    @RequestParam: pt_adx, edit_, posx and pg
+                    -->
+                    
+                    <div class="" th:classappend="${fourthBlock}" th:if="${editAdvertObject} != null"><br/>                        
+                        <div>                            
+                            <form th:action="@{/user/ads(pt_adx, edit_, pos=*{id}, pg=${pgn})}" method="post" th:object="${editAdvertObject}" enctype="multipart/form-data">
+                                <div class="centertinz">
                                     <span>
-                                        <img src="" th:src="@{'/files/ad_img/' + *{adsImage}}" width="250" height="100" th:alt="*{adsImage}" alt=""/><br/><br/>
+                                        <img class="adUpdateImg" src="" th:src="@{'/files/ad_img/' + *{adsImage}}" th:alt="*{adsImage}" alt=""/><br/><br/>
                                     </span>
                                 </div>
                                 
@@ -205,22 +160,23 @@
                                     <input class="form-control" th:field="*{landingPage}" type="url" placeholder="Target URL: http://www.domainname.com" required="" maxlength="254"/><br/>
                                 </div>
                            
-                                <div class="form-group" style="text-align: center;">
+                                <div class="form-group centertinz">
                                     <input id="adsImg2" class="btn btn-sm btn-default" th:field="*{file}" type="file" style="display: inline"/>
                                     <label for="adsImg2" style="display: inline; font-weight: normal;"> Update ad photo</label>
                                 </div><br/>
                             
-                                <div class="form-group" style="text-align: center;">
+                                <div class="form-group centertinz">
                                     <div class="radio-inline">
-                                        <label style="font-weight: normal;">
+                                        <label class="normalFont">
                                             <input type="radio" th:field="*{payOption}" value="CPM"/> Cost/Mille
                                         </label>
                                     </div>
                                     <div class="radio-inline">
-                                        <label style="font-weight: normal;">
+                                        <label class="normalFont">
                                             <input type="radio" th:field="*{payOption}" value="CPC"/> Cost/Click
                                         </label>
                                     </div><br/><br/>
+                                    
                                     
                                     <div class="btn-group btn-group-justified">                                        
                                         <div class="btn-group">
@@ -247,31 +203,15 @@
                                     </div><br/>
                                 </div>
                             </form>
+                            
                         </div><br/>
-                           
                     </div>
+                    
                 </div>
             </div>
             
+            <div th:include="pages/adfragments :: adBottom(${adObject}, ${bottom})"/>
             
-            <!--
-            <div class="row" style="text-align: center;">
-                <div style="background-color: pink; width: 30%; height: 90px; margin-bottom: 10px; display: inline-block;">
-                    For normal advert
-                </div>
-            
-                <div style="background-color: blue; width: 30%; height: 90px; margin-bottom: 10px; display: inline-block;">
-                    For normal advert
-                </div>
-                
-                <div style="background-color: orange; width: 30%; height: 90px; margin-bottom: 10px; display: inline-block;">
-                    For normal advert
-                </div>
-            </div><br/><br/>
-            -->
-            <div class="row">
-                <div style="background-color: rgb(0,88,52); height: 100px;"></div>
-            </div>
         </div>
         <div class="col-sm-1"></div>
     </body>

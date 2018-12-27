@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MessageObjectRepo extends JpaRepository<MessageObject, Long>
 {
-    @Query("SELECT mo FROM MessageObject mo WHERE mo.recipient_id = :user_id AND mo.flag = 1 ORDER BY mo.id DESC")
+    @Query("SELECT mo FROM MessageObject mo WHERE mo.recipient_id = :user_id AND mo.flag = 0 ORDER BY mo.id DESC")
     public List<MessageObject> getMyMessage(@Param("user_id")long user_id);
     
     public Optional<MessageObject> findByCommentid(long commentid);

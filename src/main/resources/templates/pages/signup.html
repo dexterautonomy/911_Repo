@@ -13,27 +13,8 @@
     <body class="container">
         <div class="col-sm-1"></div>
         <div class="col-sm-10">
-            <div class="row">
-                <h1>
-                    <a><img src="" th:src="@{/files/system_img/logo.jpg}" width="50" height="50" alt="onenaijalogo" style="border-radius: 50%;"/> 9jaForum</a>
-                </h1>
-            </div>
-            
-            <div class="row">
-                <nav class="navbar navbar-inverse container-fluid">
-                    <ul class="nav navbar-nav">
-                        <li><a th:href="@{/}">Home</a></li>
-                        <li><a>Opinions</a></li>
-                        <li><a>Memelogic</a></li>
-                        <li><a>Poetic Justice</a></li>
-                        <li><a>Battle Of The Sexes</a></li>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a th:href="@{/user/login}"><span class="glyphicon glyphicon-user"></span> Login</a></li>
-                        <li><a th:href="@{/signup}"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                    </ul>
-                </nav>
-            </div>
+            <div th:include="pages/adfragments :: headLogo"/>
+            <div th:include="pages/adfragments :: navigationHome"/>
         
             <div>
               <h2 style="text-align: center; color: blue;">Sign up is free!</h2><br/>
@@ -65,10 +46,6 @@
                 <div class="col-sm-3"></div>
             </div>
             
-            
-            <div class="row">
-                <div style="background-color: rgb(0,88,52); height: 100px;"></div>
-            </div>
         </div>
         <div class="col-sm-1"></div>
     </body>
