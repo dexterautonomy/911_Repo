@@ -12,7 +12,7 @@
         <div th:fragment="headLogo">
             <div class="row">
                 <h1>
-                    <a><img class="appLogo" src="" th:src="@{/files/system_img/logo.jpg}" alt="onenaijalogo"/> 9jaForum</a>
+                    <a><img class="appLogo" src="" th:src="@{/files/system_img/logo.jpg}" alt="onenaijalogo"/> DropBy</a>
                 </h1>
             </div>
         </div>
@@ -21,16 +21,16 @@
             <div class="row">
                 <nav class="navbar navbar-inverse container-fluid">
                     <ul class="nav navbar-nav">
-                        <li><a th:href="@{/user/login}">Switch</a></li>
-                        <li><a th:href="@{/}">Home</a></li>
-                        <li><a>Opinion</a></li>
-                        <li><a>Memelogic</a></li>
-                        <li><a>Poem/Sarcasm</a></li>
-                        <li><a>The Sexes</a></li>
+                        <li><a th:href="@{/user/login}"><span class="glyphicon glyphicon-random"></span>&nbsp;Switch</a></li>
+                        <li><a th:href="@{/}"><span class="glyphicon glyphicon-home"></span>&nbsp;Home</a></li>
+                        <li><a><span class="glyphicon glyphicon-info-sign"></span>&nbsp;Opinion</a></li>
+                        <li><a><span class="glyphicon glyphicon-stats"></span>&nbsp;Memelogic</a></li>
+                        <li><a><span class="glyphicon glyphicon-bookmark"></span>&nbsp;Poem/Sarcasm</a></li>
+                        <li><a><span class="glyphicon glyphicon-adjust"></span>&nbsp;The Sexes</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a th:href="@{/user/login}"><span class="glyphicon glyphicon-user"></span> Login</a></li>
-                        <li><a th:href="@{/signup}"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                        <li><a th:href="@{/user/login}"><span class="glyphicon glyphicon-log-in"></span>&nbsp;Login</a></li>
+                        <li><a th:href="@{/signup}"><span class="glyphicon glyphicon-user"></span>&nbsp;Sign Up</a></li>
                     </ul>
                 </nav>
             </div>
@@ -40,12 +40,12 @@
             <div class="row">
                 <nav class="navbar navbar-inverse container-fluid">
                     <ul class="nav navbar-nav">
-                        <li><a th:href="@{/}">Switch</a></li>
-                        <li><a th:href="@{/user/login}">Home</a></li>
-                        <li><a>Opinion</a></li>
-                        <li><a>Memelogic</a></li>
-                        <li><a>Poem/Sarcasm</a></li>
-                        <li><a>The Sexes</a></li>
+                        <li><a th:href="@{/}"><span class="glyphicon glyphicon-random"></span>&nbsp;Switch</a></li>
+                        <li><a th:href="@{/user/login}"><span class="glyphicon glyphicon-home"></span>&nbsp;Home</a></li>
+                        <li><a><span class="glyphicon glyphicon-info-sign"></span>&nbsp;Opinion</a></li>
+                        <li><a><span class="glyphicon glyphicon-stats"></span>&nbsp;Memelogic</a></li>
+                        <li><a><span class="glyphicon glyphicon-bookmark"></span>&nbsp;Poem/Sarcasm</a></li>
+                        <li><a><span class="glyphicon glyphicon-adjust"></span>&nbsp;The Sexes</a></li>
                     </ul>
                 </nav>
             </div>
@@ -58,19 +58,31 @@
                         <img th:classappend="${userObject.colorclass}" class="profileImage" src="" th:src="@{'/files/profile_img/' + ${userObject.pix}}" th:alt="${userObject.username + ' pic'}" alt=""/><br/><br/>
                         <div class="postcomment_username" th:text="${'@' + userObject.username + ' - ' + userObject.userrank}"></div>
                     </div>
-                </a><br/>
+                </a><br/><br/>
                         
                 <div>
-                    <a class="smallfont2" th:href="@{/user/login}">Compose</a><hr/>
-                    <a class="smallfont2" th:href="@{/user/inbox(pg=1)}">Inbox <span class="badge smallfont" th:classappend="${unReadMessages}" th:text="${sizeOfMessage}"></span></a><hr/>
-                    <a class="smallfont2" th:href="@{/user/flpost(pg=1)}">Followed Posts <span class="badge smallfont" th:classappend="${unReadPosts}" th:text="${sizeOfFollowedPost}"></span></a><hr/>
-                    <a class="smallfont2" th:href="@{/user/rcd(pg=1)}">My Trend <span class="badge smallfont" th:text="${sizeOfTrend}"></span></a><hr/>
-                    <a class="smallfont2" th:href="@{/user/ads}">Ads</a><hr/>
-                    <a class="smallfont2" th:href="@{/user/ads}"><span class="glyphicon glyphicon-wrench"></span> Settings</a><hr/>
+                    <a th:if="${userObject.postban} != 1" class="smallfont2" th:href="@{/user/login}">
+                        <div><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Compose<hr/></div>
+                    </a>
+                    <a class="smallfont2" th:href="@{/user/inbox(pg=1)}">
+                        <div><span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;Inbox <span class="badge smallfont" th:classappend="${unReadMessages}" th:text="${sizeOfMessage}"></span><hr/></div>
+                    </a>
+                    <a class="smallfont2" th:href="@{/user/flpost(pg=1)}">
+                        <div><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Followed Posts <span class="badge smallfont" th:classappend="${unReadPosts}" th:text="${sizeOfFollowedPost}"></span><hr/></div>
+                    </a>
+                    <a class="smallfont2" th:href="@{/user/rcd(pg=1)}">
+                        <div><span class="glyphicon glyphicon-briefcase"></span>&nbsp;&nbsp;My Trend <span class="badge smallfont" th:text="${sizeOfTrend}"></span><hr/></div>
+                    </a>
+                    <a class="smallfont2" th:href="@{/user/ads}">
+                        <div><span class="glyphicon glyphicon-bullhorn"></span>&nbsp;&nbsp;Ads<hr/></div>
+                    </a>
+                    <a class="smallfont2" th:href="@{/user/ads}">
+                        <div><span class="glyphicon glyphicon-wrench"></span>&nbsp;&nbsp;Settings<hr/></div>
+                    </a>
             	        
                     <form th:action="@{/j_spring_security_logout}" method="POST">
                         <input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
-                        <button class="btn btn-link" name="xx" value="logout"><span class="glyphicon glyphicon-user"></span> Logout</button><br/><br/>
+                        <button class="btn btn-link" name="xx" value="logout"><span class="glyphicon glyphicon-log-out"></span>&nbsp;&nbsp;Logout</button><br/><br/>
                     </form>
                 </div>
             </div>

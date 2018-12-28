@@ -8,16 +8,6 @@ div.col-sm-10
     background-color: white;
 }
 
-#login_error
-{
-    color: red;
-}
-
-#form_login, #signup_form
-{
-    margin: 0 auto;
-}
-
 #chead
 {
     font-size: 14px; color: blue;
@@ -585,7 +575,12 @@ a.unreadFollow:hover
 
 .alertNote
 {
-    background-color: red;
+    background-color: orange;
     position: relative;
     top: -5px;
+}
+
+.redColor
+{
+    color: red;
 }

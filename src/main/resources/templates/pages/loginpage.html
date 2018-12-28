@@ -25,11 +25,11 @@
             <div class="row">
                 <div class="col-sm-3"></div>
                 <div class="col-sm-6">
-                    <p id="login_error" th:text="${error}"></p>
+                    <p class="smallfont redColor" th:text="${error}"></p>
                                 
-                    <form id="form_login" th:action="@{/j_spring_security_check}" method="POST">
+                    <form th:action="@{/j_spring_security_check}" method="POST">
                         <div class="form-group">
-                            <input class="form-control" type="text" name="user" placeholder="Username" required=""/><br/>
+                            <input class="form-control" type="text" name="user" placeholder="Username(lower-case)" required=""/><br/>
                             <input class="form-control" type="password" name="pswd" placeholder="Password" required=""/><br/>
                             <input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
                             <input class="btn btn-success" type="submit" value="Login"/>

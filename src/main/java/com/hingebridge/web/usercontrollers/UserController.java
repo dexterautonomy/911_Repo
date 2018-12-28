@@ -89,6 +89,11 @@ public class UserController
         utc.modelTransfer(model);
         model.addAttribute("postclass", new PostClass());
         
+        if(utc.checkPostBan())
+        {
+            return "redirect:/user/inbox?pg=1";
+        }
+        
         return "pages/userpage";
     }
     
@@ -97,6 +102,12 @@ public class UserController
     ModelMap model, RedirectAttributes ra) throws IOException
     {
         aac.displayAdvert(model);   //This line is for adverts
+        
+        if(utc.checkPostBan())
+        {
+            //You cannot make a post when you are postbanned
+            return "redirect:/user/inbox?pg=1";
+        }
         
         String[] hideBlocks = {"secondBlock", "thirdBlock"};
         utc.dispBlock(model, "firstBlock", hideBlocks);
@@ -549,24 +560,29 @@ public class UserController
         {
             case "cmt":
             {
-                //check if the commenter userrank is equal or greater than the postrank
-                //if its true, grank access
-                //else, do not grant access
-                long userrank = utc.getUser().getUserrank();
-                
-                if(userrank >= pc.get().getPostrank())
+                if(!utc.checkCommentBan())
                 {
-                    model.addAttribute("postclass", new PostClass());
-                    model.addAttribute("pos", post_id.get());
-                    model.addAttribute("t", title.get());
-                    model.addAttribute("p", pg.get());
-                    model.addAttribute("page", commentPaginate.get());
-                    ret = "pages/commentpage";
+                    long userrank = utc.getUser().getUserrank();
+                
+                    if(userrank >= pc.get().getPostrank())
+                    {
+                        model.addAttribute("postclass", new PostClass());
+                        model.addAttribute("pos", post_id.get());
+                        model.addAttribute("t", title.get());
+                        model.addAttribute("p", pg.get());
+                        model.addAttribute("page", commentPaginate.get());
+                        ret = "pages/commentpage";
+                    }
+                    else
+                    {
+                        //ra.addFlashAttribute("alertx", "Your rank is lesser than the post rank");
+                        String alert = "Your rank is lesser than the post rank";
+                        ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                    }
                 }
                 else
                 {
-                    //ra.addFlashAttribute("alertx", "Your rank is lesser than the post rank");
-                    String alert = "Your rank is lesser than the post rank";
+                    String alert = "No access";
                     ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
                 }
             }
@@ -698,22 +714,30 @@ public class UserController
             
             case "cmt_s":
             {
-                long userrank = utc.getUser().getUserrank();
-                
-                if(userrank >= pc.get().getPostrank())
+                if(!utc.checkCommentBan())
                 {
-                    model.addAttribute("postclass", new PostClass());
-                    model.addAttribute("pos", post_id.get());
-                    model.addAttribute("cid", comment_id.get());
-                    model.addAttribute("t", title.get());
-                    model.addAttribute("p", pg.get());
-                    model.addAttribute("page", commentPaginate.get());
-                    ret = "pages/subcommentpage";
+                    long userrank = utc.getUser().getUserrank();
+                
+                    if(userrank >= pc.get().getPostrank())
+                    {
+                        model.addAttribute("postclass", new PostClass());
+                        model.addAttribute("pos", post_id.get());
+                        model.addAttribute("cid", comment_id.get());
+                        model.addAttribute("t", title.get());
+                        model.addAttribute("p", pg.get());
+                        model.addAttribute("page", commentPaginate.get());
+                        ret = "pages/subcommentpage";
+                    }
+                    else
+                    {
+                        //ra.addFlashAttribute("alertx", "Your rank is lesser than the post rank");
+                        String alert = "Your rank is lesser than the post rank";
+                        ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                    }
                 }
                 else
                 {
-                    //ra.addFlashAttribute("alertx", "Your rank is lesser than the post rank");
-                    String alert = "Your rank is lesser than the post rank";
+                    String alert = "No access";
                     ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
                 }
             }
@@ -721,32 +745,40 @@ public class UserController
             
             case "qte_s":
             {
-                long userrank = utc.getUser().getUserrank();
-                
-                if(userrank >= pc.get().getPostrank())
+                if(!utc.checkCommentBan())
                 {
-                    Optional<CommentClass> ccid = ccr.findById(comment_id.get());
-                    PostClass poc = new PostClass();
-                    String quotedText = ccid.get().getContent();
+                    long userrank = utc.getUser().getUserrank();
+                
+                    if(userrank >= pc.get().getPostrank())
+                    {
+                        Optional<CommentClass> ccid = ccr.findById(comment_id.get());
+                        PostClass poc = new PostClass();
+                        String quotedText = ccid.get().getContent();
                     
-                    quotedText = quotedText.replaceAll("<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/", "<_");
-                    quotedText = quotedText.replaceAll("'/><br/><br/>", "_>");
+                        quotedText = quotedText.replaceAll("<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/", "<_");
+                        quotedText = quotedText.replaceAll("'/><br/><br/>", "_>");
                     
-                    poc.setContent_2(quotedText);
+                        poc.setContent_2(quotedText);
                     
-                    model.addAttribute("postclass", poc);
+                        model.addAttribute("postclass", poc);
                     
-                    model.addAttribute("pos", post_id.get());
-                    model.addAttribute("cid", comment_id.get());
-                    model.addAttribute("t", title.get());
-                    model.addAttribute("p", pg.get());
-                    model.addAttribute("page", commentPaginate.get());
-                    ret = "pages/quotepage";
+                        model.addAttribute("pos", post_id.get());
+                        model.addAttribute("cid", comment_id.get());
+                        model.addAttribute("t", title.get());
+                        model.addAttribute("p", pg.get());
+                        model.addAttribute("page", commentPaginate.get());
+                        ret = "pages/quotepage";
+                    }
+                    else
+                    {
+                        //ra.addFlashAttribute("alertx", "Your rank is lesser than the post rank");
+                        String alert = "Your rank is lesser than the post rank";
+                        ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                    }
                 }
                 else
                 {
-                    //ra.addFlashAttribute("alertx", "Your rank is lesser than the post rank");
-                    String alert = "Your rank is lesser than the post rank";
+                    String alert = "No access";
                     ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
                 }
             }
@@ -872,66 +904,81 @@ public class UserController
             
             case "shr_s":
             {
-                Optional<CommentClass> cc = ccr.findById(comment_id.get());
-                String check = crcr.sharedBefore(comment_id.get(), id);  //has this user liked this comment before now?
-                long shares = cc.get().getShare();
-                
-                switch(check)
+                if(!utc.checkCommentBan())
                 {
-                    case "":
-                    {
-                        shares = shares + 1;
-                        cc.get().setShare(shares);
-                        utc.alterUserRankingParameters(cc.get().getUser_id(), "save_share", ucr);
-                    }
-                    break;
-                    
-                    case "shared":
-                    {
-                        shares = shares - 1;
-                        cc.get().setShare(shares);
-                        utc.alterUserRankingParameters(cc.get().getUser_id(), "save_unshare", ucr);
-                    }
-                    break;
-                    
-                    case "unshared":
-                    {
-                        shares = shares + 1;
-                        cc.get().setShare(shares);
-                        utc.alterUserRankingParameters(cc.get().getUser_id(), "save_share", ucr);
-                    }
-                    break;
-                }
+                    Optional<CommentClass> cc = ccr.findById(comment_id.get());
+                    String check = crcr.sharedBefore(comment_id.get(), id);  //has this user liked this comment before now?
+                    long shares = cc.get().getShare();
                 
-                ccr.save(cc.get());
-                utc.alterCommentRankingParameters(cc, ccr);
-                ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                    switch(check)
+                    {
+                        case "":
+                        {
+                            shares = shares + 1;
+                            cc.get().setShare(shares);
+                            utc.alterUserRankingParameters(cc.get().getUser_id(), "save_share", ucr);
+                        }
+                        break;
+                    
+                        case "shared":
+                        {
+                            shares = shares - 1;
+                            cc.get().setShare(shares);
+                            utc.alterUserRankingParameters(cc.get().getUser_id(), "save_unshare", ucr);
+                        }
+                        break;
+                    
+                        case "unshared":
+                        {
+                            shares = shares + 1;
+                            cc.get().setShare(shares);
+                            utc.alterUserRankingParameters(cc.get().getUser_id(), "save_share", ucr);
+                        }
+                        break;
+                    }
+                
+                    ccr.save(cc.get());
+                    utc.alterCommentRankingParameters(cc, ccr);
+                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                }
+                else
+                {
+                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                }
             }
             break;
             
             case "edit_s":
             {
-                Optional<CommentClass> cc = ccr.findById(comment_id.get());
-                String content = cc.get().getContent();
-                
-                content=content.replaceAll("<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/", "<_");
-                content=content.replaceAll("'/><br/><br/>", "_>");
-                
-                if(utc.getUser().getId().equals(cc.get().getUser_id()))
+                if(!utc.checkCommentBan())
                 {
-                    PostClass pClass = new PostClass();
-                    pClass.setContent(content);
-                    model.addAttribute("postclass", pClass);
-                    model.addAttribute("pos", post_id.get());
-                    model.addAttribute("cid", comment_id.get());
-                    model.addAttribute("t", title.get());
-                    model.addAttribute("p", pg.get());
-                    model.addAttribute("page", commentPaginate.get());
-                    ret = "pages/editcommentpage";
+                    Optional<CommentClass> cc = ccr.findById(comment_id.get());
+                    String content = cc.get().getContent();
+                
+                    content=content.replaceAll("<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/", "<_");
+                    content=content.replaceAll("'/><br/><br/>", "_>");
+                
+                    if(utc.getUser().getId().equals(cc.get().getUser_id()))
+                    {
+                        PostClass pClass = new PostClass();
+                        pClass.setContent(content);
+                        model.addAttribute("postclass", pClass);
+                        model.addAttribute("pos", post_id.get());
+                        model.addAttribute("cid", comment_id.get());
+                        model.addAttribute("t", title.get());
+                        model.addAttribute("p", pg.get());
+                        model.addAttribute("page", commentPaginate.get());
+                        ret = "pages/editcommentpage";
+                    }
+                    else
+                    {
+                        String alert = "Cannot edit comment";
+                        ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                    }
                 }
                 else
                 {
-                    String alert = "Cannot edit comment";
+                    String alert = "No access";
                     ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
                 }
             }
@@ -1168,9 +1215,14 @@ public class UserController
     @ModelAttribute("postclass")PostClass pc, RedirectAttributes ra, @RequestParam("akt")Optional<String> action, 
     @RequestParam("cid")Optional<Long> comment_id, @RequestParam("sid")Optional<Long> subcomment_id)
     {
-        //Do not forget to add provisions for those banned etc, they should not be able to write post, comment etc
-        
         aac.displayAdvert(model);   //This line is for adverts
+        
+        if(utc.checkCommentBan())
+        {
+            //It won't come to this but just leave am there
+            //Do not forget to add provisions for those banned etc, they should not be able to write post, comment etc
+            return "redirect:/";
+        }
         
         String ret = null;
         String path = utc.getFilePath()+"dist_img";

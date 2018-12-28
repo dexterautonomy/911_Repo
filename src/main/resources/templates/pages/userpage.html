@@ -64,8 +64,8 @@
                 </div>
                 -->
                 
-                <div class="col-sm-9" th:classappend="${firstBlock}">
-                    <p class="smallfont centertinz" th:text="${alert}"></p>
+                <div th:if="${user.postban} != 1" class="col-sm-9" th:classappend="${firstBlock}">
+                    <p class="smallfont centertinz redColor" th:text="${alert}"></p>
                     
                     <div>
                         <form th:action="@{/user/postcontrol}" method="post" th:object="${postclass}" enctype="multipart/form-data">
@@ -124,7 +124,7 @@
                 </div>
                 
                 <div class="col-sm-9" th:classappend="${secondBlock}">
-                    <p class="smallfont centertinz" th:text="${alert}"></p>
+                    <p class="smallfont centertinz redColor" th:text="${alert}"></p>
                     
                     <div class="prfdiv">
                         <img th:classappend="${user.colorclass}" class="roundImage" src="" th:src="@{'/files/profile_img/' + ${user.pix}}" width="130" height="130" th:alt="${user.username + ' pic'}" alt=""/><br/><br/>

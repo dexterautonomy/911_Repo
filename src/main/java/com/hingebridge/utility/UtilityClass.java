@@ -393,6 +393,7 @@ public class UtilityClass
         HttpSession session = req.getSession();
         session.setAttribute("username", getUser().getUsername());
         session.setAttribute("usercolorclass", getUser().getColorclass());
+        session.setAttribute("commentBan", getUser().getCommentban());
     }
     
     public void modelUser(ModelMap model)
@@ -557,5 +558,99 @@ public class UtilityClass
         }
         
         return gotCredit;
+    }
+    
+    public boolean usernameExists(String username)  //Makes sure we have no duplicate usernames
+    {
+        boolean itExists = false;
+        Optional<UserClass> uc = ucr.findByUsername(username);
+        
+        if(uc.orElse(null) != null)
+        {
+            itExists = true;
+        }
+        
+        return itExists;
+    }
+    
+    public boolean invalidEntry(String value)  //Makes sure we have no spaces
+    {
+        boolean containsNonAlphabet = false;
+        char[] userNameArray = value.toCharArray();
+        
+        for(char c1 : userNameArray)
+        {
+            if(!Character.isLetterOrDigit(c1))
+            {
+                containsNonAlphabet = true;
+            }
+        }
+        
+        return containsNonAlphabet;
+    }
+    
+    public boolean emailExists(String email)  //Makes sure we have no duplicate emails
+    {
+        boolean itExists = false;
+        Optional<UserClass> uc = ucr.findByEmail(email);
+        
+        if(uc.orElse(null) != null)
+        {
+            itExists = true;
+        }
+        
+        return itExists;
+    }
+    
+    public boolean passwordCheck(String password)
+    {
+        boolean shortPassword = false;
+        
+        if(password.length() < 8)
+        {
+            shortPassword = true;
+        }
+        
+        return shortPassword;
+    }
+    /*
+    public boolean appBan()    //If true, you cannot make comments
+    {
+        boolean banned = false;
+        Optional<UserClass> uc = ucr.findById(getUser().getId());
+        
+        if(uc.get().getAppban()== 1)
+        {
+            banned = true;
+        }
+        
+        return banned;
+    }
+    */    
+
+    public boolean checkPostBan()   //If true, you cannot make posts
+    {
+        boolean banned = false;
+        Optional<UserClass> uc = ucr.findById(getUser().getId());
+        
+        if(uc.get().getPostban() == 1)
+        {
+            banned = true;
+        }
+        
+        return banned;
+    }
+    
+    public boolean checkCommentBan()    //If true, you cannot make comments
+    {
+        boolean banned = false;
+        Optional<UserClass> uc = ucr.findById(getUser().getId());
+        
+        if(uc.get().getCommentban() == 1)
+        {
+            banned = true;
+        }
+        
+        return banned;
     }
 }

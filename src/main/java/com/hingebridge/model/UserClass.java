@@ -237,10 +237,16 @@ public class UserClass implements Serializable
     	return username;
     }
 	
-    public void setPassword(String value)
+    /*
+    public void setPassword(String value)   //setters are associated with form backing object not constructors
     {
     	this.password = new BCryptPasswordEncoder().encode(value);
-        
+    }
+    */
+    
+    public void setPassword(String value)
+    {
+    	this.password = value;
     }
 	
     public String getPassword()

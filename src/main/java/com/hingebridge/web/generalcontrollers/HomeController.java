@@ -111,45 +111,74 @@ public class HomeController
     public String register(@ModelAttribute("signupobject")UserClass uc, HttpServletRequest req, HttpSession session, ModelMap model)
     {
         aac.displayAdvert(model);   //This line is for adverts
+        session = req.getSession();
         
-	String confirmemail = new BCryptPasswordEncoder().encode(uc.getUsername());
-	session = req.getSession();
-	session.setAttribute("confirmemail", confirmemail);
-	session.setAttribute("username", uc.getUsername());
-	session.setAttribute("password", uc.getPassword());
-	session.setAttribute("gender", uc.getGender());
-	session.setAttribute("email", uc.getEmail());
+        String ret = "pages/signup";
+        String username = uc.getUsername().trim().toLowerCase();
+        String password = uc.getPassword();
+        String email = uc.getEmail();
+        String gender = uc.getGender();
+        String encodedPassword = new BCryptPasswordEncoder().encode(password);
+        String encodedUsernameAsEmail = new BCryptPasswordEncoder().encode(username);
+        
+        model.addAttribute("signupobject", uc);
+        
+        if(!utc.invalidEntry(username))
+        {
+            if(!utc.usernameExists(username))
+            {
+                if(!utc.emailExists(email))
+                {
+                    if(!utc.passwordCheck(password))
+                    {
+                        if(!utc.invalidEntry(password))
+                        {
+                            session.setAttribute("username", username);
+                            session.setAttribute("password", encodedPassword);
+                            session.setAttribute("email", email);
+                            session.setAttribute("gender", gender);
+                            session.setAttribute("confirmemail", encodedUsernameAsEmail);
 		
-	/*
-		For JAVA MAIL SERVICE:
-		Here, the username, password, email and gender are gotten, added as parameters and sent to the provided mail.
-		the 'active' parameter is set to 1 here.
-		String confirmation= "http://localhost:8090/9jaforum/reg_2/"+uc.getUsername()+"/"+uc.getPassword()+"/"+uc.getEmail()+"/"+"/"+uc.getConfirmemail()+"/"+uc.getGender();
-	*/
-		
-	/*
-	try
-	{
-		String url = "id_tk="+ URLEncoder.encode(uc.getUsername(), "UTF-8") + 
-		"&u_tk=" + URLEncoder.encode(uc.getPassword(), "UTF-8") + "&e_tk=" + 
-		URLEncoder.encode(uc.getEmail(), "UTF-8") + "&c_tk=" + 
-		URLEncoder.encode(confirmemail, "UTF-8") + "&x_tk=" + 
-		URLEncoder.encode(uc.getGender(), "UTF-8");
-		
-		String confirmation = "http://localhost:8090/9jaforum/reg_2/?" + url;
-		model.addAttribute("check", confirmation);
-	} 
-	catch (UnsupportedEncodingException e) 
-	{
-		e.printStackTrace();
-	}
-	*/
-		
-	String url = "id_tk="+uc.getUsername()+"&u_tk="+uc.getPassword()+"&e_tk="+uc.getEmail()+"&c_tk="+confirmemail+"&x_tk="+uc.getGender();
-	String confirmation = "http://localhost:8090/9jaforum/reg_2/?" + url;
-	model.addAttribute("check", confirmation);
+                            /*
+                                For JAVA MAIL SERVICE:
+                                Here, the username, password, email and gender are gotten, added as parameters and sent to the provided mail.
+                                the 'active' parameter is set to 1 here.
+                                String confirmation= "http://localhost:8090/9jaforum/reg_2/"+uc.getUsername()+"/"+uc.getPassword()+"/"+uc.getEmail()+"/"+"/"+uc.getConfirmemail()+"/"+uc.getGender();
+                            */
+                            
+                            String url = "id_tk="+username+"&u_tk="+encodedPassword+"&e_tk="+email+"&c_tk="+encodedUsernameAsEmail+"&x_tk="+gender;
+                            String confirmation = "http://localhost:8090/9jaforum/reg_2/?" + url;
+                            model.addAttribute("check", confirmation);  //This is for testing purpose
+                        
+                            ret = "pages/home";
+                        }
+                        else
+                        {
+                            model.addAttribute("error", "Password contains invalid character(s)");
+                        }
+                    }
+                    else
+                    {
+                        model.addAttribute("error", "Password must be atleast 8 characters long");
+                    }
+                }
+                else
+                {
+                    model.addAttribute("error", "E-mail is in use");
+                }
+            }
+            else
+            {
+                model.addAttribute("error", "Username already exists");
+            }
+        }
+        else
+        {
+            model.addAttribute("error", "Username contains invalid characters");
+        }
+        
 	
-	return "pages/home";
+	return ret;
     }
 	
     @GetMapping("reg_2")
