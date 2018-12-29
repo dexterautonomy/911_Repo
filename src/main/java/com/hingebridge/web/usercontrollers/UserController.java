@@ -2062,7 +2062,6 @@ public class UserController
             
             case "dlt_ft":
             {
-                //Potential logic error
                 Optional<FollowedPostDeleteObject> fpdobj = fpdor.getDeletedPost(post_id.get(), utc.getUser().getId());
                 
                 if(fpdobj.orElse(null) != null)
@@ -2416,7 +2415,7 @@ public class UserController
     public String updatePix(@ModelAttribute("postclass")PostClass pc, ModelMap model, RedirectAttributes ra)
     {
         aac.displayAdvert(model);   //This line is for adverts
-        
+        Optional<UserClass> uc = ucr.findById(utc.getUser().getId());
         String path = utc.getFilePath()+"profile_img";
         MultipartFile coverFile = pc.getCoverFile();
         if(coverFile.getSize() > 0 && coverFile.getSize() <= 4000000)
@@ -2431,7 +2430,7 @@ public class UserController
                 {
                     try
                     {
-                        Optional<UserClass> uc = ucr.findById(utc.getUser().getId());
+                        
                         uc.get().setPix(coverFileName);
                         ucr.save(uc.get());
                         
@@ -2456,10 +2455,89 @@ public class UserController
         }
         else if(coverFile.getSize() == 0)   //why not use coverFile.isEmpty()
         {
-            Optional<UserClass> uc = ucr.findById(utc.getUser().getId());
             uc.get().setPix("empty.png");
             ucr.save(uc.get());
         }
         return "redirect:/user/prf";
     }
+    
+    @RequestMapping(value="/src")
+    public String search(@RequestParam("uts")String username, ModelMap model)
+    {
+        aac.displayAdvert(model);   //This line is for adverts
+        utc.modelUser(model);
+        utc.modelTransfer(model);
+        Optional<UserClass> uc = ucr.findByUsername(username);
+        
+        if(uc.orElse(null) != null)
+        {
+            if(!username.equals(utc.getUser().getUsername()))
+            {
+                model.addAttribute("searchedUser", uc.get());
+                boolean following = fobjr.followOrNot(utc.getUser().getId(), uc.get().getId());
+                if(following)
+                {
+                    model.addAttribute("following", "Yes");
+                }
+                else
+                {
+                    model.addAttribute("following", "No");
+                }
+            }
+            else
+            {
+                model.addAttribute("alert", "This is me");
+                model.addAttribute("nothing", "realcentertinz");
+            }
+        }
+        else
+        {
+            model.addAttribute("alert", "Username does not exist");
+            model.addAttribute("nothing", "realcentertinz");
+        }
+        
+        return "pages/profilesearch";
+    }
+    
+    @GetMapping(value="/prf_src")
+    public String followAndUnfollow(@RequestParam("usr")Optional<Long> followerUserId, @RequestParam("akt")Optional<Integer> action, ModelMap model)
+    {
+        aac.displayAdvert(model);   //This line is for adverts
+        utc.modelUser(model);
+        utc.modelTransfer(model);
+        
+        Optional<FollowerObject> fobj = fobjr.followOrNotObject(utc.getUser().getId(), followerUserId.get());
+        Optional<UserClass> uc = ucr.findById(followerUserId.get());
+        
+        if(fobj.orElse(null) != null)
+        {
+            switch(action.get())
+            {
+                case 1:
+                {
+                    fobj.get().setFlag(1);
+                }
+                break;
+            
+                case 2:
+                {
+                    fobj.get().setFlag(0);
+                }
+                break;
+            }
+            
+            fobjr.save(fobj.get());
+        }
+        else
+        {
+            if(action.get() == 1)   //Not necessary but then, leave am like that
+            {
+                FollowerObject fo = new FollowerObject(utc.getUser().getId(), followerUserId.get());
+                fobjr.save(fo);
+            }
+        }
+        
+        return "redirect:/user/src?uts=" + uc.get().getUsername();
+    }
+    
 }

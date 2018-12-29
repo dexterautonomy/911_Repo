@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>9jaForum</title>
+        <link rel="shortcut icon" type="image/x-icon" th:href="@{/files/system_img/logo.jpg}" href=""/>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+        <link rel="stylesheet" th:href="@{/css/app_style.css}" href=""/>
+    </head>
+    
+    <body class="container">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+            
+            
+            <div th:include="pages/adfragments :: headLogo"/>
+            <div th:if="${user} != null" th:include="pages/adfragments :: navigationUser"/>
+            <div th:if="${user} == null" th:include="pages/adfragments :: navigationHome"/>
+            <div th:include="pages/adfragments :: adTop(${adObject}, ${top})"/>
+            
+            
+            <!--purely for registered search-->
+            <div class="row" th:if="${user} != null">
+                <div th:include="pages/adfragments :: leftPane(${user}, ${size}, ${pize}, ${tize})"/>
+                
+                <div class="col-sm-9">
+                    <div th:classappend="${nothing}">
+                        <span th:text="${alert}"></span>
+                    </div>
+                    
+                    <div class="prfdiv" th:if="${searchedUser} != null">
+                        
+                        <img th:classappend="${searchedUser.colorclass}" class="profileImageUpdate" src="" th:src="@{'/files/profile_img/' + ${searchedUser.pix}}" th:alt="${searchedUser.username + ' pic'}" alt=""/><br/><br/>
+                        <div class="autoOverflow">
+                            <div style="float: left;" class="postcomment_username" th:text="${'@' + searchedUser.username + ' - ' + searchedUser.userrank}"></div>
+                            
+                            <div style="float: right;">
+                                <a class="btn btn-danger" th:href="@{/user/prf_src(usr=${searchedUser.id}, akt=2)}" th:if="${following} == 'Yes'">
+                                    <span class="glyphicon glyphicon-minus-sign"></span>&nbsp;Unfollow 
+                                </a>
+                                
+                                <a class="btn btn-success" th:href="@{/user/prf_src(usr=${searchedUser.id}, akt=1)}" th:if="${following} == 'No'">
+                                    <span class="glyphicon glyphicon-plus-sign"></span>&nbsp;Follow 
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                </div>
+            </div>
+               
+                
+           <!--purely for link profile search, I mean those profile pictures and names, when you click am-->
+           <div class="row" th:if="${user} == null">
+                <div class="col-sm-9">
+                    
+                    <div class="prfdiv" th:if="${searchedUser} != null">
+                        <img th:classappend="${searchedUser.colorclass}" class="profileImageUpdate" src="" th:src="@{'/files/profile_img/' + ${searchedUser.pix}}" th:alt="${searchedUser.username + ' pic'}" alt=""/><br/><br/>
+                        <div style="float: left;" class="postcomment_username" th:text="${'@' + searchedUser.username + ' - ' + searchedUser.userrank}"></div>
+                    </div><br/><br/>
+                    
+                </div>
+            </div>
+            
+            <div th:include="pages/adfragments :: adBottom(${adObject}, ${bottom})"/>
+            
+        </div>
+        <div class="col-sm-1"></div>
+    </body>
+</html>

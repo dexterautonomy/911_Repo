@@ -35,20 +35,20 @@ public class UtilityClass
     @Value("${file.path}")
     String filePath;
     
+    @Value("${value.a}")
+    private int a;
     @Value("${value.b}")
     private int b;
     @Value("${value.c}")
     private int c;
+    @Value("${value.e}")
+    private int e;
     @Value("${users.size}")
     private int userSize;
     
     /*
-    @Value("${value.a}")
-    private int a;
     @Value("${value.d}")
     private int d;
-    @Value("${value.e}")
-    private int e;
     @Value("${value.f}")
     private int f;
     @Value("${value.g}")
@@ -154,103 +154,101 @@ public class UtilityClass
         pcr.save(pc.get());
     }
     
-    public void userRankSetting(Optional<UserClass> uc)
+    public void userRankSetting(UserClass uc, long rank)
     {
-        long likes, red, star, share, followers, rank;
-        
-        likes = uc.get().getGreenlike();
-        red = 10 * uc.get().getRedflag();
-        star = 2 * uc.get().getYellowstar();
-        share = 2 * uc.get().getBlueshare();
-        followers = uc.get().getFollowers();
-        
-        rank = (likes + star + share + followers) - red;
-        
-        if(rank < 0)
-        {
-            rank = 0l;
-        }
-        
         if(rank < 1500)
         {
-            uc.get().setColorclass("user_low");
+            uc.setColorclass("user_low");
         }
         else if(rank > 1500 && rank < 5000)
         {
-            uc.get().setColorclass("user_beginner");
+            uc.setColorclass("user_beginner");
         }
         else if(rank > 5000 && rank < 10000)
         {
-            uc.get().setColorclass("user_pro");
+            uc.setColorclass("user_pro");
         }
         else if(rank > 10000 && rank < 15000)
         {
-            uc.get().setColorclass("user_master");
+            uc.setColorclass("user_master");
         }
         else if(rank > 15000 && rank < 20000)
         {
-            uc.get().setColorclass("user_legend");
+            uc.setColorclass("user_legend");
         }
         else if(rank > 20000 && rank < 25000)
         {
-            uc.get().setColorclass("user_genius");
+            uc.setColorclass("user_genius");
         }
         else if(rank > 25000 && rank < 30000)
         {
-            uc.get().setColorclass("user_guru");
+            uc.setColorclass("user_guru");
         }
         else if(rank > 30000 && rank < 30020)
         {
-            uc.get().setColorclass("user_mod");
+            uc.setColorclass("user_mod");
         }
         else
         {
-            uc.get().setColorclass("user_god");
+            uc.setColorclass("user_god");
         }
-        
-        
-        uc.get().setUserrank(rank);
-        ucr.save(uc.get());
     }
     
     
     public void alterUserRankingParameters(long user_id, String action, UserClassRepo ucr)
     {
         Optional<UserClass> uc = ucr.findById(user_id);
+        long rank = uc.get().getUserrank();
         
         switch (action)
         {
             case "save_like":
             {
+                rank = rank + a;
                 long likes = uc.get().getGreenlike();
                 likes = likes + 1;
                 uc.get().setGreenlike(likes);
+                userRankSetting(uc.get(), rank);
             }
             break;
             
             case "save_unlike":
             {
+                rank = rank - a;
                 long likes = uc.get().getGreenlike();
                 likes = likes - 1;
                 
+                if(rank < 0)
+                {
+                    rank = 0;
+                }
                 if(likes < 0)
                 {
                     likes = 0;
                 }
+                userRankSetting(uc.get(), rank);
                 uc.get().setGreenlike(likes);
             }
             break;
             
             case "save_redflag":
             {
+                rank = rank - e;
+                
+                if(rank < 0)
+                {
+                    rank = 0;
+                }
                 long redflag = uc.get().getRedflag();
                 redflag = redflag + 1;
+                userRankSetting(uc.get(), rank);
                 uc.get().setRedflag(redflag);
             }
             break;
             
             case "save_unredflag":
             {
+                //rank = rank + e;
                 long redflag = uc.get().getRedflag();
                 redflag = redflag - 1;
                 
@@ -258,48 +256,65 @@ public class UtilityClass
                 {
                     redflag = 0;
                 }
+                userRankSetting(uc.get(), rank);
                 uc.get().setRedflag(redflag);
             }
             break;
             
             case "save_star":
             {
+                rank = rank + c;
                 long star = uc.get().getYellowstar();
                 star = star + 1;
+                userRankSetting(uc.get(), rank);
                 uc.get().setYellowstar(star);
             }
             break;
             
             case "save_unstar":
             {
+                rank = rank - c;
                 long star = uc.get().getYellowstar();
                 star = star - 1;
                 
+                if(rank < 0)
+                {
+                    rank = 0;
+                }
                 if(star < 0)
                 {
                     star = 0;
                 }
+                userRankSetting(uc.get(), rank);
                 uc.get().setYellowstar(star);
             }
             break;
             
             case "save_share":
             {
+                rank = rank + b;
                 long share = uc.get().getBlueshare();
                 share = share + 1;
+                userRankSetting(uc.get(), rank);
                 uc.get().setBlueshare(share);
             }
             break;
             
             case "save_unshare":
             {
+                rank = rank - b;
                 long share = uc.get().getBlueshare();
                 share = share - 1;
                 
+                if(rank < 0)
+                {
+                    rank = 0;
+                }
                 if(share < 0)
                 {
                     share = 0;
                 }
+                userRankSetting(uc.get(), rank);
                 uc.get().setBlueshare(share);
             }
             break;
@@ -313,8 +328,8 @@ public class UtilityClass
             break;
         }
         
+        uc.get().setUserrank(rank);
         ucr.save(uc.get());
-        userRankSetting(uc);
     }
     
     public void alterCommentRankingParameters(Optional<CommentClass> cc, CommentClassRepo ccr)

@@ -15,7 +15,7 @@
     
         <div class="col-sm-10">
             <div th:include="pages/adfragments :: headLogo"/>
-            <div th:include="pages/adfragments :: navigationUser"/>
+            <div th:include="pages/adfragments :: navigationComment"/>
             <div th:include="pages/adfragments :: adTop(${adObject}, ${top})"/>
         
             <div class="row">
@@ -36,11 +36,11 @@
                             
                         <div class="form-group">
                             <input id="addimg" class="btn btn-sm btn-default" th:field="*{contentFile}" type="file" style="display: inline"/>
-                            <button class="btn btn-sm btn-info" name="actionButton" value="add_img"><span class="glyphicon glyphicon-user" style="display: inline"></span> Upload</button>
+                            <button class="btn btn-sm btn-info" name="actionButton" value="add_img"><span class="glyphicon glyphicon-cloud-upload" style="display: inline"></span> Upload</button>
                         </div>
                             
                         <div class="form-group" style="text-align: center;">
-                            <button class="btn btn-success btn-block" name="actionButton" value="post"><span class="glyphicon glyphicon-user"></span> Post</button>    
+                            <button class="btn btn-success btn-block" name="actionButton" value="post"><span class="glyphicon glyphicon-send"></span> Post</button>    
                         </div>
                     </form>
                     

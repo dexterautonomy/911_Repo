@@ -35,6 +35,21 @@
                 </nav>
             </div>
         </div>
+        
+        <div th:fragment="navigationComment"> 
+            <div class="row">
+                <nav class="navbar navbar-inverse container-fluid">
+                    <ul class="nav navbar-nav">
+                        <li><a th:href="@{/user/login}"><span class="glyphicon glyphicon-random"></span>&nbsp;Switch</a></li>
+                        <li><a th:href="@{/}"><span class="glyphicon glyphicon-home"></span>&nbsp;Home</a></li>
+                        <li><a><span class="glyphicon glyphicon-info-sign"></span>&nbsp;Opinion</a></li>
+                        <li><a><span class="glyphicon glyphicon-stats"></span>&nbsp;Memelogic</a></li>
+                        <li><a><span class="glyphicon glyphicon-bookmark"></span>&nbsp;Poem/Sarcasm</a></li>
+                        <li><a><span class="glyphicon glyphicon-adjust"></span>&nbsp;The Sexes</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
             
         <div th:fragment="navigationUser"> 
             <div class="row">
@@ -46,6 +61,19 @@
                         <li><a><span class="glyphicon glyphicon-stats"></span>&nbsp;Memelogic</a></li>
                         <li><a><span class="glyphicon glyphicon-bookmark"></span>&nbsp;Poem/Sarcasm</a></li>
                         <li><a><span class="glyphicon glyphicon-adjust"></span>&nbsp;The Sexes</a></li>
+                    </ul>
+                    
+                    <ul class="nav navbar-nav navbar-right">
+                        <form class="navbar-form navbar-left" method="POST" th:action="@{/user/prf_src}">
+                            <div class="input-group">
+                                <input type="text" name="uts" class="form-control" placeholder="Search by username" required=""/>
+                                <div class="input-group-btn">
+                                    <button class="btn btn-default" type="submit">
+                                        <i class="glyphicon glyphicon-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
                     </ul>
                 </nav>
             </div>
@@ -62,22 +90,19 @@
                         
                 <div>
                     <a th:if="${userObject.postban} != 1" class="smallfont2" th:href="@{/user/login}">
-                        <div><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Compose<hr/></div>
+                        <div><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Make A Post<hr/></div>
                     </a>
                     <a class="smallfont2" th:href="@{/user/inbox(pg=1)}">
-                        <div><span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;Inbox <span class="badge smallfont" th:classappend="${unReadMessages}" th:text="${sizeOfMessage}"></span><hr/></div>
+                        <div><span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;Notification&nbsp;<span class="badge smallfont" th:classappend="${unReadMessages}" th:text="${sizeOfMessage}"></span><hr/></div>
                     </a>
                     <a class="smallfont2" th:href="@{/user/flpost(pg=1)}">
-                        <div><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Followed Posts <span class="badge smallfont" th:classappend="${unReadPosts}" th:text="${sizeOfFollowedPost}"></span><hr/></div>
+                        <div><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Followed Posts&nbsp;<span class="badge smallfont" th:classappend="${unReadPosts}" th:text="${sizeOfFollowedPost}"></span><hr/></div>
                     </a>
                     <a class="smallfont2" th:href="@{/user/rcd(pg=1)}">
-                        <div><span class="glyphicon glyphicon-briefcase"></span>&nbsp;&nbsp;My Trend <span class="badge smallfont" th:text="${sizeOfTrend}"></span><hr/></div>
+                        <div><span class="glyphicon glyphicon-briefcase"></span>&nbsp;&nbsp;My Trend&nbsp;<span class="badge smallfont" th:text="${sizeOfTrend}"></span><hr/></div>
                     </a>
                     <a class="smallfont2" th:href="@{/user/ads}">
-                        <div><span class="glyphicon glyphicon-bullhorn"></span>&nbsp;&nbsp;Ads<hr/></div>
-                    </a>
-                    <a class="smallfont2" th:href="@{/user/ads}">
-                        <div><span class="glyphicon glyphicon-wrench"></span>&nbsp;&nbsp;Settings<hr/></div>
+                        <div><span class="glyphicon glyphicon-bullhorn"></span>&nbsp;&nbsp;My Ads<hr/></div>
                     </a>
             	        
                     <form th:action="@{/j_spring_security_logout}" method="POST">

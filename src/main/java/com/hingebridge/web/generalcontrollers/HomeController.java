@@ -90,13 +90,45 @@ public class HomeController
     	return "pages/home";
     }
 	
-    @GetMapping("login")
-    public String login(@RequestParam(value="error", required=false)String error, ModelMap model)
+    @GetMapping("/login")
+    public String login(@RequestParam(value="error", required=false)String error, HttpServletRequest req, ModelMap model)
     {
-    	if(error!=null)
+        String[] hideBlocks = {"secondBlock"};
+        utc.dispBlock(model, "firstBlock", hideBlocks);
+        
+    	if(error != null)
 	{
             model.addAttribute("error", "Invalid username/password");
+            
 	}
+	return "pages/loginpage";
+    }
+    
+    @GetMapping("rtv")
+    public String retrieve(ModelMap model)
+    {
+        String[] hideBlocks = {"firstBlock"};
+        utc.dispBlock(model, "secondBlock", hideBlocks);
+        
+	return "pages/loginpage";
+    }
+    
+    @PostMapping("rtv_")
+    public String retrieveDetails(@RequestParam("email")String email, ModelMap model)
+    {
+        String[] hideBlocks = {"secondBlock"};
+        utc.dispBlock(model, "firstBlock", hideBlocks);
+        
+        if(utc.emailExists(email))
+        {
+            //This is where you use the Java mail API again to send the details to the provided mail
+            model.addAttribute("error", "A message has been sent to your mail");
+        }
+        else
+        {
+            model.addAttribute("error", "E-mail does not exist");
+        }
+        
 	return "pages/loginpage";
     }
 	
@@ -437,5 +469,27 @@ public class HomeController
     public String updateClick(@RequestParam("uk_")long adId)
     {
         return "redirect:"+ aac.perClick(adId);
+    }
+    
+    @GetMapping(value="/prf_src")
+    public String searchUserClass(@RequestParam("usr")Optional<Long> userId, ModelMap model, HttpServletRequest req)
+    {
+        String ret;
+        aac.displayAdvert(model);   //This line is for adverts
+        HttpSession session = req.getSession();
+        Optional<UserClass> uc = ucr.findById(userId.get());
+        String myUsername = (String)session.getAttribute("username");
+        
+        if(myUsername != null)
+        {
+            ret = "redirect:/user/src?uts=" + uc.get().getUsername();
+        }
+        else
+        {
+            model.addAttribute("searchedUser", uc.get());
+            ret = "pages/profilesearch";
+        }
+        
+        return ret;
     }
 }

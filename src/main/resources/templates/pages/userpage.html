@@ -76,7 +76,7 @@
                             
                             <div class="form-group">
                                 <input id="addimg" class="btn btn-sm btn-default" style="display: inline;" th:field="*{contentFile}" type="file"/>
-                                <button class="btn btn-sm btn-info"  style="display: inline;" name="actionButton" value="add_img"><span class="glyphicon glyphicon-user"></span> Upload</button>
+                                <button class="btn btn-sm btn-info"  style="display: inline;" name="actionButton" value="add_img"><span class="glyphicon glyphicon-cloud-upload"></span> Upload</button>
                             </div>
                             
                             <div class="form-group">
@@ -117,7 +117,7 @@
                                     </label>
                                 </div><br/>
                                 
-                                <button class="btn btn-success btn-block" name="actionButton" value="post"><span class="glyphicon glyphicon-user"></span> Post</button>    
+                                <button class="btn btn-success btn-block" name="actionButton" value="post"><span class="glyphicon glyphicon-send"></span> Post</button>    
                             </div>
                         </form>
                     </div><br/>	
@@ -127,12 +127,12 @@
                     <p class="smallfont centertinz redColor" th:text="${alert}"></p>
                     
                     <div class="prfdiv">
-                        <img th:classappend="${user.colorclass}" class="roundImage" src="" th:src="@{'/files/profile_img/' + ${user.pix}}" width="130" height="130" th:alt="${user.username + ' pic'}" alt=""/><br/><br/>
+                        <img th:classappend="${user.colorclass}" class="profileImageUpdate" src="" th:src="@{'/files/profile_img/' + ${user.pix}}" th:alt="${user.username + ' pic'}" alt=""/><br/><br/>
                         
                         <form th:action="@{/user/prfupd}" method="post" th:object="${postclass}" enctype="multipart/form-data">
                             <div class="form-group">
                                 <input class="btn btn-sm btn-default" style="display: inline;" th:field="*{coverFile}" type="file" required=""/>
-                                <button class="btn btn-primary"  style="display: inline;" name="actionButton" value="post"><span class="glyphicon glyphicon-user"></span> Upload</button>
+                                <button class="btn btn-primary"  style="display: inline;" name="actionButton" value="post"><span class="glyphicon glyphicon-cloud-upload"></span> Upload</button>
                             </div>
                         </form>
                     </div>

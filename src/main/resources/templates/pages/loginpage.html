@@ -2,7 +2,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title>9jaForum</title>
+        <title>Login</title>
         <link rel="shortcut icon" type="image/x-icon" th:href="@{/files/system_img/logo.jpg}" href=""/>
         <meta charset="UTF-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -26,16 +26,28 @@
                 <div class="col-sm-3"></div>
                 <div class="col-sm-6">
                     <p class="smallfont redColor" th:text="${error}"></p>
-                                
-                    <form th:action="@{/j_spring_security_check}" method="POST">
-                        <div class="form-group">
-                            <input class="form-control" type="text" name="user" placeholder="Username(lower-case)" required=""/><br/>
-                            <input class="form-control" type="password" name="pswd" placeholder="Password" required=""/><br/>
-                            <input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
-                            <input class="btn btn-success" type="submit" value="Login"/>
-                        </div>
-                        <a>Forgot username/password?</a><br/><br/>
-                    </form>
+                      
+                    <div th:classappend="${firstBlock}">
+                        <form th:action="@{/j_spring_security_check}" method="POST">
+                            <div class="form-group">
+                                <input class="form-control" type="text" name="user" placeholder="Username(lower-case)" required=""/><br/>
+                                <input class="form-control" type="password" name="pswd" placeholder="Password" required=""/><br/>
+                                <input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
+                                <input class="btn btn-success" type="submit" value="Login"/>
+                            </div>
+                            <a th:href="@{/rtv}" class="smallfont redColor">Forgot username/password?</a><br/><br/>
+                        </form>
+                    </div>
+                    
+                    <div th:classappend="${secondBlock}">
+                        <form th:action="@{/rtv_}" method="POST">
+                            <div class="form-group">
+                                <input class="form-control" type="email" name="email" placeholder="Enter your e-mail" required=""/><br/>
+                                <input class="btn btn-primary" type="submit" value="Retrieve"/>
+                            </div><br/><br/>
+                        </form>
+                    </div>
+
                 </div>
                 <div class="col-sm-3"></div>
             </div>
