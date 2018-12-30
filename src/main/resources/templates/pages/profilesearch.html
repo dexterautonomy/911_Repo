@@ -31,11 +31,8 @@
                     </div>
                     
                     <div class="prfdiv" th:if="${searchedUser} != null">
-                        
-                        <img th:classappend="${searchedUser.colorclass}" class="profileImageUpdate" src="" th:src="@{'/files/profile_img/' + ${searchedUser.pix}}" th:alt="${searchedUser.username + ' pic'}" alt=""/><br/><br/>
+                        <img th:classappend="${searchedUser.colorclass}" class="profileImageUpdate" src="" th:src="@{'/files/profile_img/' + ${searchedUser.pix}}" th:alt="${searchedUser.username + ' pic'}" alt=""/>
                         <div class="autoOverflow">
-                            <div style="float: left;" class="postcomment_username" th:text="${'@' + searchedUser.username + ' - ' + searchedUser.userrank}"></div>
-                            
                             <div style="float: right;">
                                 <a class="btn btn-danger" th:href="@{/user/prf_src(usr=${searchedUser.id}, akt=2)}" th:if="${following} == 'Yes'">
                                     <span class="glyphicon glyphicon-minus-sign"></span>&nbsp;Unfollow 
@@ -48,21 +45,128 @@
                         </div>
                     </div>
                     
-                    
+                    <div th:if="${searchedUser} != null">
+                        <p>
+                            <table class="table table-striped">
+                                <tr>
+                                    <td><span  class="postcomment_username" th:text="${'@' + searchedUser.username}"></span></td>
+                                    <td></td><td></td><td></td><td></td><td></td>
+                                </tr>
+                                <tr>
+                                    <td>Gender:</td>
+                                    <td><span th:text="${searchedUser.gender}"></span></td>
+                                    <td></td><td></td><td></td><td></td>
+                                </tr>
+                                <tr>
+                                    <td>Rank:</td>
+                                    <td><span th:text="${searchedUser.userrank}"></span></td>
+                                    <td></td><td></td><td></td><td></td>
+                                </tr>
+                                <tr>
+                                    <td>Post views:</td>
+                                    <td><span th:text="${searchedUser.blackview}"></span></td>
+                                    <td></td><td></td><td></td><td></td>
+                                </tr>
+                                <tr>
+                                    <td>Total likes:</td>
+                                    <td><span th:text="${searchedUser.greenlike}"></span></td>
+                                    <td></td><td></td><td></td><td></td>
+                                </tr>
+                                <tr>
+                                    <td>Total post shares:</td>
+                                    <td><span th:text="${searchedUser.blueshare}"></span></td>
+                                    <td></td><td></td><td></td><td></td>
+                                </tr>
+                                <tr>
+                                    <td>Total redflags:</td>
+                                    <td><span th:text="${searchedUser.redflag}"></span></td>
+                                    <td></td><td></td><td></td><td></td>
+                                </tr>
+                                <tr>
+                                    <td>Total star:</td>
+                                    <td><span th:text="${searchedUser.yellowstar}"></span></td>
+                                    <td></td><td></td><td></td><td></td>
+                                </tr>
+                                <tr>
+                                    <td>Total post:</td>
+                                    <td><span th:text="${searchedUser.myposts}"></span></td>
+                                    <td></td><td></td><td></td><td></td>
+                                </tr>
+                                <tr>
+                                    <td>Total followers:</td>
+                                    <td><span th:text="${searchedUser.followers}"></span></td>
+                                    <td></td><td></td><td></td><td></td>
+                                </tr>
+                            </table>
+                        </p>
+                    </div>
                 </div>
             </div>
-               
                 
            <!--purely for link profile search, I mean those profile pictures and names, when you click am-->
-           <div class="row" th:if="${user} == null">
-                <div class="col-sm-9">
-                    
+           <div class="row" th:unless="${user} != null">
+               <div class="col-sm-1"></div>
+               
+                <div class="col-sm-10">
                     <div class="prfdiv" th:if="${searchedUser} != null">
-                        <img th:classappend="${searchedUser.colorclass}" class="profileImageUpdate" src="" th:src="@{'/files/profile_img/' + ${searchedUser.pix}}" th:alt="${searchedUser.username + ' pic'}" alt=""/><br/><br/>
-                        <div style="float: left;" class="postcomment_username" th:text="${'@' + searchedUser.username + ' - ' + searchedUser.userrank}"></div>
-                    </div><br/><br/>
+                        <img th:classappend="${searchedUser.colorclass}" class="profileImageUpdate" src="" th:src="@{'/files/profile_img/' + ${searchedUser.pix}}" th:alt="${searchedUser.username + ' pic'}" alt=""/>
+                    </div>
                     
+                    <p>
+                        <table class="table table-striped">
+                            <tr>
+                                <td><span  class="postcomment_username" th:text="${'@' + searchedUser.username}"></span></td>
+                                <td></td><td></td><td></td><td></td><td></td>
+                            </tr>
+                            <tr>
+                                <td>Gender:</td>
+                                <td><span th:text="${searchedUser.gender}"></span></td>
+                                <td></td><td></td><td></td><td></td>
+                            </tr>
+                            <tr>
+                                <td>Rank:</td>
+                                <td><span th:text="${searchedUser.userrank}"></span></td>
+                                <td></td><td></td><td></td><td></td>
+                            </tr>
+                            <tr>
+                                <td>Post views:</td>
+                                <td><span th:text="${searchedUser.blackview}"></span></td>
+                                <td></td><td></td><td></td><td></td>
+                            </tr>
+                            <tr>
+                                <td>Total likes:</td>
+                                <td><span th:text="${searchedUser.greenlike}"></span></td>
+                                <td></td><td></td><td></td><td></td>
+                            </tr>
+                            <tr>
+                                <td>Total post shares:</td>
+                                <td><span th:text="${searchedUser.blueshare}"></span></td>
+                                <td></td><td></td><td></td><td></td>
+                            </tr>
+                            <tr>
+                                <td>Total redflags:</td>
+                                <td><span th:text="${searchedUser.redflag}"></span></td>
+                                <td></td><td></td><td></td><td></td>
+                            </tr>
+                            <tr>
+                                <td>Total star:</td>
+                                <td><span th:text="${searchedUser.yellowstar}"></span></td>
+                                <td></td><td></td><td></td><td></td>
+                            </tr>
+                            <tr>
+                                <td>Total post:</td>
+                                <td><span th:text="${searchedUser.myposts}"></span></td>
+                                <td></td><td></td><td></td><td></td>
+                            </tr>
+                            <tr>
+                                <td>Total followers:</td>
+                                <td><span th:text="${searchedUser.followers}"></span></td>
+                                <td></td><td></td><td></td><td></td>
+                            </tr>
+                        </table>
+                    </p>
                 </div>
+               <div class="col-sm-1"></div>
             </div>
             
             <div th:include="pages/adfragments :: adBottom(${adObject}, ${bottom})"/>

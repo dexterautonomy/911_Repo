@@ -388,7 +388,7 @@ public class HomeController
                 pc = pcr.getPostReader(id.get(), title.get(), 1);
                 
                 utc.updateViews(pc);
-                utc.alterUserRankingParameters(pc.get().getUser_id(), "save_view", ucr);
+                utc.alterUserRankingParameters(pc.get().getUser_id(), "save_view");
                 
                 Page<CommentClass> cc = ccr.getApprovedComments(id.get(), PageRequest.of(page, INITIAL_PAGE_SIZE));
                 PagerModel pgn = new PagerModel(cc.getTotalPages(), cc.getNumber());

@@ -43,6 +43,7 @@ import com.hingebridge.repository.SubCommentClassRepo;
 import com.hingebridge.repository.SubCommentReactionClassRepo;
 import com.hingebridge.repository.UserClassRepo;
 import com.hingebridge.utility.AdvertAlgorithmClass;
+
 @PreAuthorize("hasRole('USER')")
 @Controller
 @RequestMapping("/user")
@@ -271,6 +272,7 @@ public class UserController
                                             }
                                         
                                             pcr.save(postClass);
+                                            utc.updatePosts(); //Updates your number of posts
                                             File pathToFile=new File(path, coverFileName);
                                             coverFile.transferTo(pathToFile);
                                             /*
@@ -347,6 +349,7 @@ public class UserController
                                     }
                     
                                     pcr.save(postClass);
+                                    utc.updatePosts(); //Updates your number of posts
                                     /*
                                     PostClass postklass = pcr.getOnePost(user_id, date, title);
                                     mor.save(new MessageObject(postklass.getId(), user_id));
@@ -433,6 +436,7 @@ public class UserController
                                             }
                                         
                                             pcr.save(postClass);
+                                            utc.updatePosts(); //Updates your number of posts
                                             File pathToFile=new File(path, coverFileName);
                                             coverFile.transferTo(pathToFile);
                                             /*
@@ -509,6 +513,7 @@ public class UserController
                                     }
                     
                                     pcr.save(postClass);
+                                    utc.updatePosts(); //Updates your number of posts
                                     /*
                                     PostClass postklass = pcr.getOnePost(user_id, date, title);
                                     mor.save(new MessageObject(postklass.getId(), user_id));
@@ -601,7 +606,7 @@ public class UserController
                         pc.get().setLikes(likes);
                         pcr.save(pc.get());
                         //increase the overall likes of the owner of the post by 1
-                        utc.alterUserRankingParameters(pc.get().getUser_id(), "save_like", ucr);
+                        utc.alterUserRankingParameters(pc.get().getUser_id(), "save_like");
                     }
                     break;
                     
@@ -611,7 +616,7 @@ public class UserController
                         pc.get().setLikes(likes);
                         //decrease the overall likes of the owner of the post by 1
                         //check if his overall likes == 0 first, if its 0, leave it like that
-                        utc.alterUserRankingParameters(pc.get().getUser_id(), "save_unlike", ucr);
+                        utc.alterUserRankingParameters(pc.get().getUser_id(), "save_unlike");
                     }
                     break;
                     
@@ -620,7 +625,7 @@ public class UserController
                         likes = likes + 1;
                         pc.get().setLikes(likes);
                         //increase the overall likes of the owner of the post by 1
-                        utc.alterUserRankingParameters(pc.get().getUser_id(), "save_like", ucr);
+                        utc.alterUserRankingParameters(pc.get().getUser_id(), "save_like");
                     }
                     break;
                 }
@@ -642,7 +647,7 @@ public class UserController
                         redflag = redflag + 1;
                         pc.get().setRedflag(redflag);
                         //increase the overall redflags of the owner of the post by 1
-                        utc.alterUserRankingParameters(pc.get().getUser_id(), "save_redflag", ucr);
+                        utc.alterUserRankingParameters(pc.get().getUser_id(), "save_redflag");
                     }
                     break;
                     
@@ -652,7 +657,7 @@ public class UserController
                         pc.get().setRedflag(redflag);
                         //decrease the overall redflags of the owner of the post by 1
                         //check if his overall redflags == 0 first, if its 0, leave it like that
-                        utc.alterUserRankingParameters(pc.get().getUser_id(), "save_unredflag", ucr);
+                        utc.alterUserRankingParameters(pc.get().getUser_id(), "save_unredflag");
                     }
                     break;
                     
@@ -661,7 +666,7 @@ public class UserController
                         redflag = redflag + 1;
                         pc.get().setRedflag(redflag);
                         //increase the overall redflags of the owner of the post by 1
-                        utc.alterUserRankingParameters(pc.get().getUser_id(), "save_redflag", ucr);
+                        utc.alterUserRankingParameters(pc.get().getUser_id(), "save_redflag");
                     }
                     break;
                 }
@@ -683,7 +688,7 @@ public class UserController
                         star = star + 1;
                         pc.get().setStar(star);
                         //increase the overall star of the owner of the post by 1
-                        utc.alterUserRankingParameters(pc.get().getUser_id(), "save_star", ucr);
+                        utc.alterUserRankingParameters(pc.get().getUser_id(), "save_star");
                     }
                     break;
                     
@@ -693,7 +698,7 @@ public class UserController
                         pc.get().setStar(star);
                         //decrease the overall star of the owner of the post by 1
                         //check if his overall star == 0 first, if its 0, leave it like that
-                        utc.alterUserRankingParameters(pc.get().getUser_id(), "save_unstar", ucr);
+                        utc.alterUserRankingParameters(pc.get().getUser_id(), "save_unstar");
                     }
                     break;
                     
@@ -702,7 +707,7 @@ public class UserController
                         star = star + 1;
                         pc.get().setStar(star);
                         //increase the overall star of the owner of the post by 1
-                        utc.alterUserRankingParameters(pc.get().getUser_id(), "save_star", ucr);
+                        utc.alterUserRankingParameters(pc.get().getUser_id(), "save_star");
                     }
                     break;
                 }
@@ -796,7 +801,7 @@ public class UserController
                     {
                         likes = likes + 1;
                         cc.get().setLikes(likes);
-                        utc.alterUserRankingParameters(cc.get().getUser_id(), "save_like", ucr);
+                        utc.alterUserRankingParameters(cc.get().getUser_id(), "save_like");
                     }
                     break;
                     
@@ -804,7 +809,7 @@ public class UserController
                     {
                         likes = likes - 1;
                         cc.get().setLikes(likes);
-                        utc.alterUserRankingParameters(cc.get().getUser_id(), "save_unlike", ucr);
+                        utc.alterUserRankingParameters(cc.get().getUser_id(), "save_unlike");
                     }
                     break;
                     
@@ -812,13 +817,13 @@ public class UserController
                     {
                         likes = likes + 1;
                         cc.get().setLikes(likes);
-                        utc.alterUserRankingParameters(cc.get().getUser_id(), "save_like", ucr);
+                        utc.alterUserRankingParameters(cc.get().getUser_id(), "save_like");
                     }
                     break;
                 }
                 
                 ccr.save(cc.get());
-                utc.alterCommentRankingParameters(cc, ccr);
+                utc.alterCommentRankingParameters(cc);
                 
                 ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
             }
@@ -836,7 +841,7 @@ public class UserController
                     {
                         redflag = redflag + 1;
                         cc.get().setRedflag(redflag);
-                        utc.alterUserRankingParameters(cc.get().getUser_id(), "save_redflag", ucr);
+                        utc.alterUserRankingParameters(cc.get().getUser_id(), "save_redflag");
                     }
                     break;
                     
@@ -844,7 +849,7 @@ public class UserController
                     {
                         redflag = redflag - 1;
                         cc.get().setRedflag(redflag);
-                        utc.alterUserRankingParameters(cc.get().getUser_id(), "save_unredflag", ucr);
+                        utc.alterUserRankingParameters(cc.get().getUser_id(), "save_unredflag");
                     }
                     break;
                     
@@ -852,13 +857,13 @@ public class UserController
                     {
                         redflag = redflag + 1;
                         cc.get().setRedflag(redflag);
-                        utc.alterUserRankingParameters(cc.get().getUser_id(), "save_redflag", ucr);
+                        utc.alterUserRankingParameters(cc.get().getUser_id(), "save_redflag");
                     }
                     break;
                 }
                 
                 ccr.save(cc.get());
-                utc.alterCommentRankingParameters(cc, ccr);
+                utc.alterCommentRankingParameters(cc);
                 ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
             }
             break;
@@ -875,7 +880,7 @@ public class UserController
                     {
                         star = star + 1;
                         cc.get().setStar(star);
-                        utc.alterUserRankingParameters(cc.get().getUser_id(), "save_star", ucr);
+                        utc.alterUserRankingParameters(cc.get().getUser_id(), "save_star");
                     }
                     break;
                     
@@ -883,7 +888,7 @@ public class UserController
                     {
                         star = star - 1;
                         cc.get().setStar(star);
-                        utc.alterUserRankingParameters(cc.get().getUser_id(), "save_unstar", ucr);
+                        utc.alterUserRankingParameters(cc.get().getUser_id(), "save_unstar");
                     }
                     break;
                     
@@ -891,13 +896,13 @@ public class UserController
                     {
                         star = star + 1;
                         cc.get().setStar(star);
-                        utc.alterUserRankingParameters(cc.get().getUser_id(), "save_star", ucr);
+                        utc.alterUserRankingParameters(cc.get().getUser_id(), "save_star");
                     }
                     break;
                 }
                 
                 ccr.save(cc.get());
-                utc.alterCommentRankingParameters(cc, ccr);
+                utc.alterCommentRankingParameters(cc);
                 ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
             }
             break;
@@ -916,7 +921,7 @@ public class UserController
                         {
                             shares = shares + 1;
                             cc.get().setShare(shares);
-                            utc.alterUserRankingParameters(cc.get().getUser_id(), "save_share", ucr);
+                            utc.alterUserRankingParameters(cc.get().getUser_id(), "save_share");
                         }
                         break;
                     
@@ -924,7 +929,7 @@ public class UserController
                         {
                             shares = shares - 1;
                             cc.get().setShare(shares);
-                            utc.alterUserRankingParameters(cc.get().getUser_id(), "save_unshare", ucr);
+                            utc.alterUserRankingParameters(cc.get().getUser_id(), "save_unshare");
                         }
                         break;
                     
@@ -932,13 +937,13 @@ public class UserController
                         {
                             shares = shares + 1;
                             cc.get().setShare(shares);
-                            utc.alterUserRankingParameters(cc.get().getUser_id(), "save_share", ucr);
+                            utc.alterUserRankingParameters(cc.get().getUser_id(), "save_share");
                         }
                         break;
                     }
                 
                     ccr.save(cc.get());
-                    utc.alterCommentRankingParameters(cc, ccr);
+                    utc.alterCommentRankingParameters(cc);
                     ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
                 }
                 else
@@ -1034,7 +1039,7 @@ public class UserController
                     {
                         likes = likes + 1;
                         scc.get().setLikes(likes);
-                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_like", ucr);
+                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_like");
                     }
                     break;
                     
@@ -1042,7 +1047,7 @@ public class UserController
                     {
                         likes = likes - 1;
                         scc.get().setLikes(likes);
-                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_unlike", ucr);
+                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_unlike");
                     }
                     break;
                     
@@ -1050,7 +1055,7 @@ public class UserController
                     {
                         likes = likes + 1;
                         scc.get().setLikes(likes);
-                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_like", ucr);
+                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_like");
                     }
                     break;
                 }
@@ -1073,7 +1078,7 @@ public class UserController
                     {
                         redflag = redflag + 1;
                         scc.get().setRedflag(redflag);
-                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_redflag", ucr);
+                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_redflag");
                     }
                     break;
                     
@@ -1081,7 +1086,7 @@ public class UserController
                     {
                         redflag = redflag - 1;
                         scc.get().setRedflag(redflag);
-                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_unredflag", ucr);
+                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_unredflag");
                     }
                     break;
                     
@@ -1089,7 +1094,7 @@ public class UserController
                     {
                         redflag = redflag + 1;
                         scc.get().setRedflag(redflag);
-                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_redflag", ucr);
+                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_redflag");
                     }
                     break;
                 }
@@ -1112,7 +1117,7 @@ public class UserController
                     {
                         starred = starred + 1;
                         scc.get().setStar(starred);
-                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_star", ucr);
+                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_star");
                     }
                     break;
                     
@@ -1120,7 +1125,7 @@ public class UserController
                     {
                         starred = starred - 1;
                         scc.get().setStar(starred);
-                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_unstar", ucr);
+                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_unstar");
                     }
                     break;
                     
@@ -1128,7 +1133,7 @@ public class UserController
                     {
                         starred = starred + 1;
                         scc.get().setStar(starred);
-                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_star", ucr);
+                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_star");
                     }
                     break;
                 }
@@ -1778,7 +1783,7 @@ public class UserController
                     }
                     break;
                 }
-                ret = "pages/editcommentpage";
+                ret = "pages/editsubcommentpage";
             }
             break;
         }
@@ -2467,11 +2472,12 @@ public class UserController
         aac.displayAdvert(model);   //This line is for adverts
         utc.modelUser(model);
         utc.modelTransfer(model);
-        Optional<UserClass> uc = ucr.findByUsername(username);
+        String usernameParam = username.trim().toLowerCase();
+        Optional<UserClass> uc = ucr.findByUsername(usernameParam);
         
         if(uc.orElse(null) != null)
         {
-            if(!username.equals(utc.getUser().getUsername()))
+            if(!usernameParam.equals(utc.getUser().getUsername()))
             {
                 model.addAttribute("searchedUser", uc.get());
                 boolean following = fobjr.followOrNot(utc.getUser().getId(), uc.get().getId());
@@ -2516,12 +2522,14 @@ public class UserController
                 case 1:
                 {
                     fobj.get().setFlag(1);
+                    utc.followUnfollow(followerUserId.get(), "follow");
                 }
                 break;
             
                 case 2:
                 {
                     fobj.get().setFlag(0);
+                    utc.followUnfollow(followerUserId.get(), "unfollow");
                 }
                 break;
             }
@@ -2534,6 +2542,7 @@ public class UserController
             {
                 FollowerObject fo = new FollowerObject(utc.getUser().getId(), followerUserId.get());
                 fobjr.save(fo);
+                utc.followUnfollow(followerUserId.get(), "follow");
             }
         }
         

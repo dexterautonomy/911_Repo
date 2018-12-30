@@ -56,4 +56,13 @@ public interface PostClassRepo extends JpaRepository<PostClass, Long>
     
     @Query("SELECT pc FROM PostClass pc WHERE pc.user_id = :user_id AND pc.flag = 1 ORDER BY pc.id DESC")
     public List<PostClass> getAllMyPost(@Param("user_id")Long user_id);
+    
+    
+    //FOR ADMIN
+    @Query("SELECT pc FROM PostClass pc ORDER BY pc.id DESC")
+    public Page<PostClass> getAdminApprovedPost(Pageable pageable);
+    
+    @Query("SELECT pc FROM PostClass pc WHERE pc.id = :id AND LOWER(pc.title) LIKE LOWER(CONCAT('%', :title, '%'))")
+    public Optional<PostClass> getAdminPostReader(@Param("id")Long id, @Param("title")String title);
+
 }

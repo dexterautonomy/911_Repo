@@ -3,6 +3,7 @@ package com.hingebridge.model;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.*;
 
@@ -64,10 +65,12 @@ public class UserClass implements Serializable
     @Column(name="confirmemail")
     private String confirmemail;
 
-    // UserClass ---> Role Relationship
-    @OneToOne(targetEntity = Role.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    // UserClass ---> Role Relationship  //I should have made Role to map the relationship o! SO that 
+    // instead of using a third table and the @JoinTable annotation, it would have been just 2 tables and the
+    // @JoinColumn on thr Role side>>>>>>>>> But its ok
+    @OneToMany(targetEntity = Role.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "userrole", joinColumns = {@JoinColumn(name = "userid")}, inverseJoinColumns = {@JoinColumn(name = "roleid")})
-    private Role role;
+    private Set<Role> role;
     
     // UserClass ---> PostClass Relationship
     @OneToMany(mappedBy = "userone")
@@ -117,12 +120,12 @@ public class UserClass implements Serializable
     	return id;
     }
 	
-    public void setMypost(Long value)
+    public void setMyposts(Long value)
     {
     	this.myposts = value;
     }
 	
-    public Long getMypost()
+    public Long getMyposts()
     {
     	return myposts;
     }
@@ -265,12 +268,12 @@ public class UserClass implements Serializable
     }
 	
     // RELATIONSHIP METHODS
-    public void setRole(Role role)
+    public void setRole(Set<Role> role)
     {
         this.role = role;
     }
 	
-    public Role getRole()
+    public Set<Role> getRole()
     {
     	return role;
     }

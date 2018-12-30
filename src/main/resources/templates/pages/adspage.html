@@ -110,18 +110,30 @@
                                             </div>
                                             <div>
                                                 <span>Option: </span>
-                                                <span th:text="${adObj.payOption} == 'CPC' ? 'Cost/Click' : 'Cost/Mille'"></span>
+                                                <!--<span th:text="${adObj.payOption} == 'CPC' ? 'Cost/Click' : 'Cost/Mille'"></span>-->
+                                                
+                                                <span th:if="${adObj.payOption} == 'CPC'">
+                                                    <span>Cost/Click @</span>
+                                                    <span th:text="${adObj.userAdvert.cpc} + 'pts/click'"></span>
+                                                </span>
+                                                <span th:unless="${adObj.payOption} == 'CPC'">
+                                                    <span>Cost/Mille @</span>
+                                                    <span th:text="${adObj.userAdvert.cpm} + 'pts/mille'"></span>
+                                                </span>
+                                                
                                             </div>
                                             <div th:if="${adObj.payOption} == 'CPC'">
                                                 <span>Total clicks: </span>
                                                 <span th:text="${adObj.clicks}"></span>
                                             </div>
-                                            <div th:if="${adObj.payOption} == 'CPM'">
+                                            <div th:unless="${adObj.payOption} == 'CPC'">
                                                 <span>Total views: </span>
                                                 <span th:text="${adObj.views}"></span>
                                             </div>
-                                            <div th:classappend="${adObj.pause} == 1 ? 'pauseNote' : 'activeNote'">
-                                                <span th:text="${adObj.pause} == 1 ? 'Paused' : 'Active'"></span>
+                                            <div class="maj">
+                                                <span th:classappend="${adObj.pause} == 1 ? 'pauseNote' : 'activeNote'">
+                                                    <span th:text="${adObj.pause} == 1 ? 'Paused' : 'Active'"></span>
+                                                </span>
                                             </div>
                                         </div>
                                     </div>

@@ -18,4 +18,8 @@ public interface CommentClassRepo extends JpaRepository<CommentClass, Long>
     
     @Query("SELECT cc FROM CommentClass cc WHERE cc.user_id = :user_id AND cc.post_id = :post_id AND LOWER(cc.postdate) LIKE LOWER(CONCAT('%', :postdate, '%'))")
     public Optional<CommentClass> getExactPost(@Param("user_id")long user_id, @Param("post_id")long post_id, @Param("postdate")String postdate);
+    
+    //FOR ADMIN
+    @Query("SELECT cc FROM CommentClass cc WHERE cc.post_id = :id AND cc.approved = 1")
+    public Page<CommentClass> getCommentsForAdmin(@Param("id")Long id, Pageable pageable);
 }

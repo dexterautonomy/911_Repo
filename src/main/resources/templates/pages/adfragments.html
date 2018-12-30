@@ -27,6 +27,8 @@
                         <li><a><span class="glyphicon glyphicon-stats"></span>&nbsp;Memelogic</a></li>
                         <li><a><span class="glyphicon glyphicon-bookmark"></span>&nbsp;Poem/Sarcasm</a></li>
                         <li><a><span class="glyphicon glyphicon-adjust"></span>&nbsp;The Sexes</a></li>
+                        
+                        <li><a th:href="@{/securedadminLogin/entry}"><span class="glyphicon glyphicon-adjust"></span>&nbsp;RemoveLater</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li><a th:href="@{/user/login}"><span class="glyphicon glyphicon-log-in"></span>&nbsp;Login</a></li>
@@ -64,7 +66,7 @@
                     </ul>
                     
                     <ul class="nav navbar-nav navbar-right">
-                        <form class="navbar-form navbar-left" method="POST" th:action="@{/user/prf_src}">
+                        <form class="navbar-form navbar-left" method="POST" th:action="@{/user/src}">
                             <div class="input-group">
                                 <input type="text" name="uts" class="form-control" placeholder="Search by username" required=""/>
                                 <div class="input-group-btn">
@@ -130,6 +132,57 @@
                         <img class="adBanner" th:src="@{'/files/ad_img/' + ${adObjectVar[counter].adsImage}}" src="" th:alt="${adObjectVar[counter].adsImage}" alt="advert"/>
                     </a>&nbsp;&nbsp;
                 </p>
+            </div>
+        </div>
+        
+        
+        <!--THIS PART FOR ADMIN-->
+            
+        <div th:fragment="navigationAdmin"> 
+            <div class="row">
+                <nav class="navbar navbar-inverse container-fluid">
+                    <ul class="nav navbar-nav">
+                        <li><a th:href="@{/securedadminLogin/home}"><span class="glyphicon glyphicon-home"></span>&nbsp;Admin</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav">
+                        <li><a th:href="@{/user/login}"><span class="glyphicon glyphicon-user"></span>&nbsp;User</a></li>
+                    </ul>
+                    
+                    <ul class="nav navbar-nav navbar-right">
+                        <form class="navbar-form navbar-left" method="POST" th:action="@{/}">
+                            <div class="input-group">
+                                <input type="text" name="uts" class="form-control" placeholder="Search by username" required=""/>
+                                <div class="input-group-btn">
+                                    <button class="btn btn-default" type="submit">
+                                        <i class="glyphicon glyphicon-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        
+        <div th:fragment="adminLeftPane(userObject, sizeOfMessage, sizeOfFollowedPost, sizeOfTrend)">
+            <div class="col-sm-3">
+                <a class="smallfont2" th:href="@{/user/prf}">
+                    <div class="thumbNailX">
+                        <img th:classappend="${userObject.colorclass}" class="profileImage" src="" th:src="@{'/files/profile_img/' + ${userObject.pix}}" th:alt="${userObject.username + ' pic'}" alt=""/><br/><br/>
+                        <div class="postcomment_username" th:text="${'@' + userObject.username + ' - ' + userObject.userrank}"></div>
+                    </div>
+                </a><br/><br/>
+                        
+                <div>
+                    <a class="smallfont2" th:href="@{/user/ads}">
+                        <div><span class="glyphicon glyphicon-bullhorn"></span>&nbsp;&nbsp;Ads<hr/></div>
+                    </a>
+            	        
+                    <form th:action="@{/j_spring_security_logout}" method="POST">
+                        <input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
+                        <button class="btn btn-link" name="xx" value="logout"><span class="glyphicon glyphicon-log-out"></span>&nbsp;&nbsp;Logout</button><br/><br/>
+                    </form>
+                </div>
             </div>
         </div>
     </body>

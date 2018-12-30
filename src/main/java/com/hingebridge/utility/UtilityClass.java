@@ -68,6 +68,8 @@ public class UtilityClass
     @Autowired
     private PostClassRepo pcr;
     @Autowired
+    private CommentClassRepo ccr;
+    @Autowired
     private FollowerObjectRepo fobjr;
     @Autowired
     private FollowedPostDeleteObjectRepo fpdor;
@@ -154,6 +156,43 @@ public class UtilityClass
         pcr.save(pc.get());
     }
     
+    public void updatePosts()
+    {
+        Optional<UserClass> uc = ucr.findById(getUser().getId());
+        Long posts = uc.get().getMyposts();
+        posts = posts + 1;
+        uc.get().setMyposts(posts);
+        ucr.save(uc.get());
+    }
+    
+    public void followUnfollow(long userfollowedId, String action)
+    {
+        Optional<UserClass> uc = ucr.findById(userfollowedId);
+        Long followers = uc.get().getFollowers();
+        switch(action)
+        {
+            case "follow":
+            {
+                followers = followers + 1;
+            }
+            break;
+            
+            case "unfollow":
+            {
+                followers = followers - 1;
+                if(followers < 0)
+                {
+                    followers = 0l;
+                }
+                
+            }
+            break;
+        }
+        
+        uc.get().setFollowers(followers);
+        ucr.save(uc.get());
+    }
+    
     public void userRankSetting(UserClass uc, long rank)
     {
         if(rank < 1500)
@@ -195,7 +234,7 @@ public class UtilityClass
     }
     
     
-    public void alterUserRankingParameters(long user_id, String action, UserClassRepo ucr)
+    public void alterUserRankingParameters(long user_id, String action)
     {
         Optional<UserClass> uc = ucr.findById(user_id);
         long rank = uc.get().getUserrank();
@@ -332,7 +371,7 @@ public class UtilityClass
         ucr.save(uc.get());
     }
     
-    public void alterCommentRankingParameters(Optional<CommentClass> cc, CommentClassRepo ccr)
+    public void alterCommentRankingParameters(Optional<CommentClass> cc)
     {
         long likes, redflag, star, share, rank;
         
@@ -340,6 +379,7 @@ public class UtilityClass
         redflag = cc.get().getRedflag();
         star = cc.get().getStar();
         share = cc.get().getShare();
+        int reactedUsers = cc.get().getCommentreact().size();
         
         rank = likes + (b * star) + (c * share);
         redflag = c * redflag;
@@ -347,7 +387,12 @@ public class UtilityClass
         
         if(rankDiff > 0)
         {
-            rankDiff = (rankDiff * 100)/cc.get().getCommentreact().size();
+            if(reactedUsers == 0)
+            {
+                reactedUsers = 1;
+            }
+            
+            rankDiff = (rankDiff / reactedUsers) * 100;
             
             if(rankDiff > 100)
             {
@@ -375,14 +420,19 @@ public class UtilityClass
         likes = scc.get().getLikes();
         redflag = scc.get().getRedflag();
         star = scc.get().getStar();
-        
         rank = likes + (b * star);
-        
         Long rankDiff = rank - redflag;
+        
+        int reactedUsers = scc.get().getSubcommentreact().size();
         
         if(rankDiff > 0)
         {
-            rankDiff = (rankDiff * 100)/scc.get().getSubcommentreact().size();
+            if(reactedUsers == 0)
+            {
+                reactedUsers = 1;
+            }
+            
+            rankDiff = (rankDiff / reactedUsers ) * 100;
             
             if(rankDiff > 100)
             {

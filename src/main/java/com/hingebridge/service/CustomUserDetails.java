@@ -1,5 +1,6 @@
 package com.hingebridge.service;
 
+import com.hingebridge.model.Role;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -9,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.hingebridge.model.UserClass;
+import java.util.Set;
 
 @SuppressWarnings("serial")
 public class CustomUserDetails implements UserDetails
@@ -24,7 +26,13 @@ public class CustomUserDetails implements UserDetails
     public Collection<? extends GrantedAuthority> getAuthorities()
     {
 	List<SimpleGrantedAuthority> gaList=new ArrayList<>();
-        gaList.add(new SimpleGrantedAuthority("ROLE_" + uc.getRole().getRolename()));
+        Set<Role> roleSet = uc.getRole();
+        
+        for(Role role : roleSet)
+        {
+            gaList.add(new SimpleGrantedAuthority("ROLE_" + role.getRolename()));
+        }
+        
         return gaList;
     }
 

@@ -180,20 +180,9 @@ div.commentBck2 a:hover
 .prclass
 {
     float: right;
-    font-size: 10px;
-    padding: 2px;
-    background-color: rgb(0, 165, 255);
-    border: 1px solid rgb(0, 171, 226);
-    border-radius: 5px;
-    color: black;
+    margin-bottom: 10px;
 }
 
-.prclass:hover
-{
-    text-decoration: none;
-    color: black;
-    font-weight: bold;
-}
 
 .quotedCover
 {
@@ -463,6 +452,11 @@ a.unreadFollow:hover
     color: orange;
 }
 
+.maj
+{
+    margin-top: 5px;
+}
+
 .activeNote
 {
     padding: 5px;
@@ -470,7 +464,6 @@ a.unreadFollow:hover
     border-radius: 5px;
     color: white;
     text-align: center;
-    font-weight: bold;
 }
 
 .pauseNote
@@ -478,9 +471,8 @@ a.unreadFollow:hover
     padding: 5px;
     background-color: orange;
     border-radius: 5px;
-    color: red;
+    color: white;
     text-align: center;
-    font-weight: bold;
 }
 
 .adBanner
@@ -600,14 +592,14 @@ a.unreadFollow:hover
     color: red;
 }
 
-a:hover
-{
-    text-decoration: none;
-}
-
 .greenBack
 {
     color: green;
+}
+
+a:hover
+{
+    text-decoration: none;
 }
 
 .follow
@@ -640,4 +632,31 @@ a:hover
     background-color: red;
     color: white;
     border: 1px solid red;
+}
+
+
+
+
+
+
+
+/*ADMIN SPECIAL STYLES*/
+
+.adminBk
+{
+    background-image: url("../files/system_img/bkimg2.jpg");
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+.unApproved
+{
+    background-color: pink;
+    border: 1px solid white;
+}
+
+.postApproval
+{
+    float: left;
+    margin-bottom: 10px;
 }

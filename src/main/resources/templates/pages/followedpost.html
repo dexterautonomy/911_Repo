@@ -88,6 +88,9 @@
                                 </div>
                         
                                 <div class="justify" th:utext="*{content}"></div><br/>
+                                <div>
+                                    <a th:href="@{/user/src(uts=*{userone.username})}" class="postcomment_username smallfont"><span th:text="*{userone.username} == ${session.username} ? '' : *{'By @' + userone.username}"></span></a><br/>
+                                </div>
                             </div>
                         </div>
                     </div>
