@@ -649,14 +649,31 @@ a:hover
     background-attachment: fixed;
 }
 
-.unApproved
+.approvedPost
 {
-    background-color: pink;
-    border: 1px solid white;
+    border-left: 3px solid rgb(0, 80, 45);
+}
+
+.unApprovedPost
+{
+    border-right: 3px solid rgb(240, 0, 0);
 }
 
 .postApproval
 {
     float: left;
     margin-bottom: 10px;
+}
+
+.adminHomewell
+{
+    color: white;
+    text-align: center;
+    background-color: rgb(0, 50, 100);
+    font-size: 36px;
+}
+
+.floatLeft
+{
+    float: left;
 }

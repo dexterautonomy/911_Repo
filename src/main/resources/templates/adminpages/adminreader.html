@@ -35,7 +35,7 @@
                         <div class="justify" th:utext="*{content}"></div><br/>
 
                         <div>
-                            <a th:href="@{/adminprf_src(usr=*{userone.id})}" class="postcomment_username smallfont"><span th:text="*{userone.username} == ${session.username} ? 'Admin' : *{'By @' + userone.username}"></span></a><br/>
+                            <a th:href="@{_src_admin_math_physics(usr=*{userone.id})}" class="postcomment_username smallfont"><span th:text="*{userone.username} == ${session.username} ? 'Admin' : *{'By @' + userone.username}"></span></a><br/>
                         </div>
                         
                         <div class="centertinz">
@@ -55,13 +55,13 @@
                         <div th:each="comment : ${commentsExt}">
                             <div class="row">
                                 <div class="col-xs-1">
-                                    <a th:href="@{/adminprf_src(usr=${comment.usertwo.id})}">
+                                    <a th:href="@{_src_admin_math_physics(usr=${comment.usertwo.id})}">
                                         <img th:classappend="${comment.usertwo.colorclass}" class="readerImage1" src="" th:src="@{'/files/profile_img/' + ${comment.usertwo.pix}}" th:alt="${comment.usertwo.username + ' pic'}"/>
                                     </a>
                                 </div>
                                 <div class="col-xs-10 justify panel panel-body postcomment_body">
                                     <div style="overflow: auto;">
-                                        <a th:href="@{/adminprf_src(usr=${comment.usertwo.id})}">
+                                        <a th:href="@{_src_admin_math_physics(usr=${comment.usertwo.id})}">
                                             <span class="postcomment_username" th:text="${comment.usertwo.username} == ${session.username} ? 'Admin' : ${'@' + comment.usertwo.username}"></span>&nbsp;&nbsp;&nbsp;
                                         </a>
                                         <span class="smallfontRank" th:text="${comment.commentrank} != 0 ? ${'CR: ' + comment.commentrank + '%'} : ''"></span>
@@ -117,13 +117,13 @@
                                     <div>
                                         <div class="row" th:each="subcom : ${comment.subcomment}">
                                             <div class="col-xs-1">
-                                                <a th:href="@{/adminprf_src(usr=${subcom.userthree.id})}">
+                                                <a th:href="@{_src_admin_math_physics(usr=${subcom.userthree.id})}">
                                                     <img th:classappend="${subcom.userthree.colorclass}" class="readerImage2" src="" th:src="@{'/files/profile_img/' + ${subcom.userthree.pix}}" th:alt="${subcom.userthree.username + ' pic'}"/>
                                                 </a>
                                             </div>
                                             <div class="col-xs-10 justify panel panel-body postsubcomment_body">
                                                 <div style="overflow: auto;">
-                                                    <a th:href="@{/adminprf_src(usr=${subcom.userthree.id})}">
+                                                    <a th:href="@{_src_admin_math_physics(usr=${subcom.userthree.id})}">
                                                         <span class="postcomment_username" th:text="${subcom.userthree.username} == ${session.username} ? 'Admin' : ${'@' + subcom.userthree.username}"></span>&nbsp;&nbsp;&nbsp;
                                                     </a>
                                                     <span class="smallfontRank" th:text="${subcom.subcommentrank} != 0 ? ${'CR: ' + subcom.subcommentrank + '%'} : ''"></span>

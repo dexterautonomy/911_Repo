@@ -185,4 +185,28 @@ create table advertobject
     expired int not null,
     constraint `fk_user_ads` foreign key (`user_id`) references `userclass` (`id`)
 );
+
+create table inboxobject
+(
+    id int unsigned not null auto_increment primary key,
+    user_id int unsigned not null,
+    deleteUserFlag int not null,
+    deleteAdminFlag int not null,
+    admin_read int not null,
+    content text not null,
+    date_sent varchar(50) not null,
+    constraint `fk_user_admin_inbox` foreign key (`user_id`) references `userclass` (`id`)
+);
+
+create table replyobject
+(
+    id int unsigned not null auto_increment primary key,
+    inbox_id int unsigned not null,
+    deleteUserFlag int not null,
+    deleteAdminFlag int not null,
+    user_read int not null,
+    content text not null,
+    date_sent varchar(50) not null,
+    constraint `fk_user_admin_reply` foreign key (`inbox_id`) references `inboxobject` (`id`)
+);
 */

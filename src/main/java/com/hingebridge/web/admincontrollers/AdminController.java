@@ -1,5 +1,6 @@
 package com.hingebridge.web.admincontrollers;
 
+import com.hingebridge.model.AdvertObject;
 import com.hingebridge.model.CommentClass;
 import com.hingebridge.model.FollowedPostDeleteObject;
 import com.hingebridge.model.MessageObject;
@@ -7,6 +8,7 @@ import com.hingebridge.model.PagerModel;
 import com.hingebridge.model.PostClass;
 import com.hingebridge.model.QuoteObject;
 import com.hingebridge.model.SubCommentClass;
+import com.hingebridge.model.UserClass;
 import com.hingebridge.repository.AdvertObjectRepo;
 import com.hingebridge.repository.CommentClassRepo;
 import com.hingebridge.repository.CommentReactionClassRepo;
@@ -91,13 +93,12 @@ public class AdminController
         utc.dispBlock(model, "firstBlock", hideBlocks);
         model.addAttribute("postclass", new PostClass());
         */
-        
-        utc.modelUser(model);
+        utc.adminModel(model);
         utc.sessionUserDetails(req);
-        utc.modelTransfer(model);
+        //utc.modelTransfer(model);
         
         final int INITIAL_PAGE = 0;
-        final int INITIAL_PAGE_SIZE = 15;
+        final int INITIAL_PAGE_SIZE = 10;
         int page = (page_1.orElse(0) < 1 ? INITIAL_PAGE : page_1.get() - 1);
         
         Page<PostClass> postpage = pcr.getAdminApprovedPost(PageRequest.of(page, INITIAL_PAGE_SIZE));
@@ -1079,5 +1080,141 @@ public class AdminController
         model.addAttribute("alertx", alert.orElse(""));
         
         return "adminpages/adminreader";
+    }
+    
+    //This one takes name
+    @RequestMapping(value="/_src_admin_math_chem")
+    public String searchUser2(@RequestParam("uts")String username, ModelMap model)
+    {
+        aac.displayAdvert(model);   //This line is for adverts
+        utc.adminModel(model);
+        
+        //utc.modelTransfer(model);
+        String usernameParam = username.trim().toLowerCase();
+        Optional<UserClass> uc = ucr.findByUsername(usernameParam);
+        
+        if(uc.orElse(null) != null)
+        {
+            if(!usernameParam.equals(utc.getUser().getUsername()))
+            {
+                model.addAttribute("searchedUser", uc.get());
+            }
+            else
+            {
+                model.addAttribute("alert", "System Administrator");
+                model.addAttribute("nothing", "realcentertinz");
+            }
+        }
+        else
+        {
+            model.addAttribute("alert", "Username does not exist");
+            model.addAttribute("nothing", "realcentertinz");
+        }
+        
+        return "adminpages/adminprofilesearch";
+    }
+    
+    //This one takes id
+    @GetMapping(value="/_src_admin_math_physics")
+    public String searchUser1(@RequestParam("usr")Optional<Long> userId, ModelMap model)
+    {
+        aac.displayAdvert(model);   //This line is for adverts
+        //utc.modelTransfer(model);
+        utc.adminModel(model);
+        Optional<UserClass> uc = ucr.findById(userId.get());
+        if(!uc.get().getUsername().equals(utc.getUser().getUsername()))
+        {
+            model.addAttribute("searchedUser", uc.get());
+        }
+        else
+        {
+            model.addAttribute("alert", "System Administrator");
+            model.addAttribute("nothing", "realcentertinz");
+        }
+        
+        return "adminpages/adminprofilesearch";
+    }
+    
+    /*
+    @GetMapping("/home_of_admin")
+    public String userHomePage(HttpServletRequest req, ModelMap model)
+    {
+        aac.displayAdvert(model);   //This line is for adverts
+        
+        //String[] hideBlocks = {"secondBlock", "thirdBlock"};
+        //utc.dispBlock(model, "firstBlock", hideBlocks);
+        utc.adminModel(model);
+        utc.sessionUserDetails(req);    //very important
+        //utc.modelTransfer(model);
+        model.addAttribute("postclass", new PostClass());
+        
+        if(utc.checkPostBan())
+        {
+            return "redirect:/user/inbox?pg=1";
+        }
+        
+        return "pages/userpage";
+    }
+    */
+    
+    @GetMapping("/_manage_ads_toon")
+    public String viewAllAds(HttpServletRequest req, ModelMap model, @RequestParam("pg")Optional<Integer> pg)
+    {
+        aac.displayAdvert(model);   //This line is for adverts
+        utc.adminModel(model);
+        utc.sessionUserDetails(req);    //very important
+        
+        final int INITIAL_PAGE = 0;
+        final int INITIAL_PAGE_SIZE = 5;
+        int page = (pg.orElse(0) < 1 ? INITIAL_PAGE : pg.get() - 1);
+        
+        Page<AdvertObject> advertObj = aor.getAdminAdvert(PageRequest.of(page, INITIAL_PAGE_SIZE));
+        PagerModel pgn = new PagerModel(advertObj.getTotalPages(), advertObj.getNumber());
+        
+        model.addAttribute("unExpiredAdObjList", advertObj);
+	model.addAttribute("pgn", pgn);
+        
+        if(advertObj.getNumber() == 0)
+        {
+            model.addAttribute("disp1", "none");
+        }
+        if(advertObj.getNumber() + 1 == advertObj.getTotalPages())
+        {
+            model.addAttribute("disp2", "none");
+        }
+        
+        return "adminpages/adminadspage";
+    }
+    
+    @GetMapping("/_manage_edit_ad")
+    public String editAds(HttpServletRequest req, ModelMap model, @RequestParam("pos")Optional<Long> pos,
+    @RequestParam("pg")Optional<Integer> pg)
+    {
+        aac.displayAdvert(model);   //This line is for adverts
+        utc.adminModel(model);
+        utc.sessionUserDetails(req);    //very important
+        
+        Optional<AdvertObject> ao = aor.findById(pos.get());
+        
+        if(ao.orElse(null) != null)
+        {
+            switch(ao.get().getApprove())
+            {
+                case 0:
+                {
+                    ao.get().setApprove(1);
+                }
+                break;
+                
+                case 1:
+                {
+                    ao.get().setApprove(0);
+                }
+                break;
+            }
+            aor.save(ao.get());
+        }
+        
+        return "redirect:_manage_ads_toon?pg="+pg.get();
     }
 }

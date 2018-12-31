@@ -23,7 +23,7 @@
                 
                 <div class="col-sm-9">
                     <div class="panel panel-primary">
-                        <div class="panel-heading title centertinz">Inbox</div>
+                        <div class="panel-heading title centertinz">Notifications</div>
                     </div>
                     <div class="centertinz smallfont redColor">
                         <p th:text="${alert}"></p>
@@ -59,7 +59,7 @@
                                     <a th:href="@{'/' + ${mo.postlink}}">
                                         <div class="row list-group-item-text" th:each="mosubcomment: ${mo.commentmessage.subcomment}">
                                             <div class="col-xs-1">
-                                                <img th:classappend="${mosubcomment.userthree.colorclass}" class="roundimg" src="" th:src="@{'/files/profile_img/' + ${mosubcomment.userthree.pix}}" width="35" height="35" alt="" th:alt="${mosubcomment.userthree.username + ' pic'}" />
+                                                <img th:classappend="${mosubcomment.userthree.colorclass}" class="readerImage2" src="" th:src="@{'/files/profile_img/' + ${mosubcomment.userthree.pix}}" alt="" th:alt="${mosubcomment.userthree.username + ' pic'}" />
                                             </div>
                                             <div class="col-xs-10 justify panel panel-body" th:classappend="${mosubcomment.unread} == 'unread' ? 'unreadSub' : 'postsubcomment_body2'">
                                                 <div class="autoOverflow">

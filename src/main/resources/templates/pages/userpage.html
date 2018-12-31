@@ -161,6 +161,22 @@
                         </li>
                     </ul>
                 </div>
+                
+                <div class="col-sm-9" th:classappend="${fourthBlock}">
+                    <p class="smallfont centertinz redColor" th:text="${alert}"></p>
+                    
+                    <div>
+                        <form th:action="@{/user/mail_us_postcontrol}" method="post" th:object="${postclass}" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <textarea class="form-control" th:field="*{content}" placeholder="Compose" cols="20" rows="10" required="" maxlength="10000"></textarea><br/>
+                            </div>
+                            
+                            <div class="form-group centertinz">
+                                <button class="btn btn-primary btn-block" name="actionButton" value="post"><span class="glyphicon glyphicon-send"></span> Post</button>    
+                            </div>
+                        </form>
+                    </div><br/>	
+                </div>
             </div>
             
             <div th:include="pages/adfragments :: adBottom(${adObject}, ${bottom})"/>

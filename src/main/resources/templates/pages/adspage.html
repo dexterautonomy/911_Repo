@@ -26,7 +26,8 @@
                         <div class="panel-heading title centertinz">Adverts</div>
                     </div>
                     <div class="autoOverflow">
-                        <a class="prclass" th:href="@{/}">Buy Credit</a>
+                        <span class="btn btn-xs floatLeft" th:classappend="${user.adscredit &lt; 1000} ? 'btn-danger' : 'btn-success'" th:text="${'Credit: ' + user.adscredit + 'pts'}"></span>
+                        <a class="btn btn-info btn-xs prclass" th:href="@{/}">Buy Credit</a>
                     </div>
                     <div class="smallfont centertinz redColor" th:text="${alert}"></div>
                     <div th:classappend="${noAdsPostedYet}">

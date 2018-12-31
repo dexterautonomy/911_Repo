@@ -104,6 +104,10 @@ public class UserClass implements Serializable
     @OneToMany(mappedBy = "userAdvert")
     private List<AdvertObject> advertObject;
     
+    // UserClass ---> InboxObject Relationship
+    @OneToMany(mappedBy = "userInbox")
+    private List<InboxObject> inboxObject;
+    
     public UserClass(){}
 	
     public UserClass(String email, String gender, String username, String password, String confirmemail)
@@ -445,5 +449,23 @@ public class UserClass implements Serializable
             }
         }
         return unExpiredAdObjList;
+    }
+    
+    public void setInboxObject(List<InboxObject> inboxObject)
+    {
+        this.inboxObject = inboxObject;
+    }
+	
+    public List<InboxObject> getInboxObject()
+    {
+        List<InboxObject> inboxObj = new LinkedList<>();
+        for(InboxObject io : inboxObject)
+        {
+            if(io.getDeleteUserFlag() == 0)
+            {
+                inboxObj.add(io);
+            }
+        }
+        return inboxObj;
     }
 }

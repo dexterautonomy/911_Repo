@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Admin</title>
+        <link rel="shortcut icon" type="image/x-icon" th:href="@{/files/system_img/logo.jpg}" href=""/>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+        <link rel="stylesheet" th:href="@{/css/app_style.css}" href=""/>
+    </head>
+    
+    <body class="container">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+            <div th:include="pages/adfragments :: headLogo"/>
+            <div th:include="pages/adfragments :: navigationAdmin"/>
+            
+            <div class="row">
+                <div th:include="pages/adfragments :: adminLeftPane(${user}, ${allusers}, ${allAds})"/>
+                
+                <div class="col-sm-9">
+                    <div class="well adminHomewell">Adverts</div>
+                    
+                    
+                    <div class="smallfont centertinz redColor" th:text="${alert}"></div>
+                    <div th:classappend="${noAdsPostedYet}">
+                        <span th:text="${alertFallback}"></span>
+                    </div>
+                    
+                    <div><br/>
+                        
+                        <div th:classappend="${theclass}">
+                            <span th:text="${noAdAvailable}"></span>
+                        </div>
+                        
+                        <div>
+                            <div th:each="adObj : ${unExpiredAdObjList}">
+                                <div class="adBlock">
+                                    <div class="adImage">
+                                        <img class="adUpdateImg" src="" th:src="@{'/files/ad_img/' + ${adObj.adsImage}}" alt="" th:alt="${adObj.adsImage}"/>
+                                    </div>
+                                    <div class="adDetails">
+                                        <div>
+                                            <a th:href="@{_manage_edit_ad(pos=${adObj.id}, pg=${unExpiredAdObjList.number + 1})}">
+                                                <span>Approved: </span>
+                                                <span th:classappend="${adObj.approve} == 1 ? 'approved glyphicon glyphicon-ok' : 'pending glyphicon glyphicon-exclamation-sign'"></span>
+                                            </a>
+                                        </div>
+                                        <div>
+                                            <span>Owner: </span>
+                                            <a th:href="@{_src_admin_math_physics(usr=${adObj.userAdvert.id})}">
+                                                <span th:text="${'@' + adObj.userAdvert.username}"></span>
+                                            </a>
+                                            <span th:text="${' >> Credit: ' + adObj.userAdvert.adscredit + 'pts'}"></span>
+                                        </div>
+                                        <div>
+                                            <span>Date: </span>
+                                            <span th:text="${adObj.startDate}"></span>
+                                        </div>
+                                        <div>
+                                            <span>Option: </span>
+                                            <span th:if="${adObj.payOption} == 'CPC'">
+                                                <span>Cost/Click @</span>
+                                                <span th:text="${adObj.userAdvert.cpc} + 'pts/click'"></span>
+                                            </span>
+                                            <span th:unless="${adObj.payOption} == 'CPC'">
+                                                <span>Cost/Mille @</span>
+                                                <span th:text="${adObj.userAdvert.cpm} + 'pts/mille'"></span>
+                                            </span>
+                                        </div>
+                                        <div th:if="${adObj.payOption} == 'CPC'">
+                                            <span>Total clicks: </span>
+                                                <span th:text="${adObj.clicks}"></span>
+                                        </div>
+                                        <div th:unless="${adObj.payOption} == 'CPC'">
+                                            <span>Total views: </span>
+                                            <span th:text="${adObj.views}"></span>
+                                        </div>
+                                        <div class="maj">
+                                            <span th:classappend="${adObj.pause} == 1 ? 'pauseNote' : 'activeNote'">
+                                                <span th:text="${adObj.pause} == 1 ? 'Paused' : 'Active'"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><br/>
+                        
+                        <div>
+                            <div class="centertinz">
+                                <ul class="pagination pagination-sm">
+                                    <li th:style="'display:'+@{${disp1}}+';'">
+                                        <a class="btn" th:href="@{_manage_ads_toon(pg=1)}"> « </a>
+                                    </li>
+                                    <li th:style="'display:'+@{${disp1}}+';'">
+                                        <a class="btn" th:href="@{_manage_ads_toon(pg=${unExpiredAdObjList.number})}"> ← </a>
+                                    </li>
+                    
+                    
+                                    <li th:each="page : ${#numbers.sequence(pgn.startPage, pgn.endPage)}" 
+                                        th:class="${unExpiredAdObjList.number == (page - 1)} ? 'active pointerx'">
+                                        <a class="btn" th:href="@{_manage_ads_toon(pg=${page})}" th:text="${page}"></a>
+                                    </li>
+                    
+                    
+                                    <li th:style="'display:'+@{${disp2}}+';'">
+                                        <a class="btn" th:href="@{_manage_ads_toon(pg=${unExpiredAdObjList.number + 2})}"> → </a>
+                                    </li>
+                                    <li th:style="'display:'+@{${disp2}}+';'">
+                                        <a class="btn" th:href="@{_manage_ads_toon(pg=${unExpiredAdObjList.totalPages})}"> » </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div><br/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-1"></div>
+    </body>
+</html>

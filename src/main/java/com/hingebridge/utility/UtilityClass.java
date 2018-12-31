@@ -6,6 +6,7 @@ import com.hingebridge.model.MessageObject;
 import com.hingebridge.model.PostClass;
 import com.hingebridge.model.SubCommentClass;
 import com.hingebridge.model.UserClass;
+import com.hingebridge.repository.AdvertObjectRepo;
 import com.hingebridge.repository.CommentClassRepo;
 import com.hingebridge.repository.FollowedPostDeleteObjectRepo;
 import com.hingebridge.repository.FollowerObjectRepo;
@@ -73,6 +74,8 @@ public class UtilityClass
     private FollowerObjectRepo fobjr;
     @Autowired
     private FollowedPostDeleteObjectRepo fpdor;
+    @Autowired
+    private AdvertObjectRepo aor;
     
     public UserClass getUser()
     {
@@ -717,5 +720,15 @@ public class UtilityClass
         }
         
         return banned;
+    }
+    
+    
+    //For admin
+    public void adminModel(ModelMap model)
+    {
+        model.addAttribute("allusers", ucr.findAll().size());
+        model.addAttribute("user", getUser());
+        model.addAttribute("allAds", aor.getAdminAdvertList().size());
+        
     }
 }

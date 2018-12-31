@@ -27,7 +27,6 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -79,7 +78,7 @@ public class UserController
     private AdvertObjectRepo aor;
     
     @GetMapping("/login")
-    public String userHomePage(Authentication auth, HttpServletRequest req, ModelMap model)
+    public String userHomePage(HttpServletRequest req, ModelMap model)
     {
         aac.displayAdvert(model);   //This line is for adverts
         
@@ -94,6 +93,21 @@ public class UserController
         {
             return "redirect:/user/inbox?pg=1";
         }
+        
+        return "pages/userpage";
+    }
+    
+    @GetMapping("/mail_us")
+    public String mailUs(HttpServletRequest req, ModelMap model)
+    {
+        aac.displayAdvert(model);   //This line is for adverts
+        
+        String[] hideBlocks = {"firstBlock", "secondBlock", "thirdBlock"};
+        utc.dispBlock(model, "fourthBlock", hideBlocks);
+        utc.modelUser(model);
+        utc.sessionUserDetails(req);    //very important
+        utc.modelTransfer(model);
+        model.addAttribute("postclass", new PostClass());
         
         return "pages/userpage";
     }
@@ -2548,5 +2562,4 @@ public class UserController
         
         return "redirect:/user/src?uts=" + uc.get().getUsername();
     }
-    
 }

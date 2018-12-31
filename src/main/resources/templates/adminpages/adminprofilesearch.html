@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>9jaForum</title>
+        <link rel="shortcut icon" type="image/x-icon" th:href="@{/files/system_img/logo.jpg}" href=""/>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+        <link rel="stylesheet" th:href="@{/css/app_style.css}" href=""/>
+    </head>
+    
+    <body class="container adminBk">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+            <div th:include="pages/adfragments :: headLogo"/>
+            <div th:include="pages/adfragments :: navigationAdmin"/>
+            
+            <div class="row" th:if="${user} != null">
+                <div th:include="pages/adfragments :: adminLeftPane(${user}, ${allusers}, ${allAds})"/>
+                
+                <div class="col-sm-9">
+                    <div th:classappend="${nothing}">
+                        <span th:text="${alert}"></span>
+                    </div>
+                    
+                    <div class="prfdiv" th:if="${searchedUser} != null">
+                        <img th:classappend="${searchedUser.colorclass}" class="profileImageUpdate" src="" th:src="@{'/files/profile_img/' + ${searchedUser.pix}}" th:alt="${searchedUser.username + ' pic'}" alt=""/>
+                        <div class="autoOverflow">
+                            <div style="float: right;">
+                                <a class="btn btn-primary btn-xs" th:href="@{/user/prf_src(usr=${searchedUser.id}, akt=2)}">
+                                    <span class="glyphicon glyphicon-envelope"></span>&nbsp;Message 
+                                </a>
+                                <a class="btn btn-success  btn-xs" th:href="@{/user/prf_src(usr=${searchedUser.id}, akt=1)}">
+                                    <span class="glyphicon glyphicon-plus-sign"></span>&nbsp;CommentBan 
+                                </a>
+                                <a class="btn btn-danger btn-xs" th:href="@{/user/prf_src(usr=${searchedUser.id}, akt=2)}">
+                                    <span class="glyphicon glyphicon-envelope"></span>&nbsp;PostBan 
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div th:if="${searchedUser} != null">
+                        <p>
+                            <table class="table table-striped">
+                                <tr>
+                                    <td><span  class="postcomment_username" th:text="${'@' + searchedUser.username}"></span></td>
+                                    <td></td><td></td><td></td><td></td><td></td>
+                                </tr>
+                                <tr>
+                                    <td>Credit:</td>
+                                    <td><span th:text="${searchedUser.adscredit + 'pts'}"></span></td>
+                                    <td></td><td></td><td></td><td></td>
+                                </tr>
+                                <tr>
+                                    <td>Gender:</td>
+                                    <td><span th:text="${searchedUser.gender}"></span></td>
+                                    <td></td><td></td><td></td><td></td>
+                                </tr>
+                                <tr>
+                                    <td>Rank:</td>
+                                    <td><span th:text="${searchedUser.userrank}"></span></td>
+                                    <td></td><td></td><td></td><td></td>
+                                </tr>
+                                <tr>
+                                    <td>Post views:</td>
+                                    <td><span th:text="${searchedUser.blackview}"></span></td>
+                                    <td></td><td></td><td></td><td></td>
+                                </tr>
+                                <tr>
+                                    <td>Total likes:</td>
+                                    <td><span th:text="${searchedUser.greenlike}"></span></td>
+                                    <td></td><td></td><td></td><td></td>
+                                </tr>
+                                <tr>
+                                    <td>Total post shares:</td>
+                                    <td><span th:text="${searchedUser.blueshare}"></span></td>
+                                    <td></td><td></td><td></td><td></td>
+                                </tr>
+                                <tr>
+                                    <td>Total redflags:</td>
+                                    <td><span th:text="${searchedUser.redflag}"></span></td>
+                                    <td></td><td></td><td></td><td></td>
+                                </tr>
+                                <tr>
+                                    <td>Total star:</td>
+                                    <td><span th:text="${searchedUser.yellowstar}"></span></td>
+                                    <td></td><td></td><td></td><td></td>
+                                </tr>
+                                <tr>
+                                    <td>Total post:</td>
+                                    <td><span th:text="${searchedUser.myposts}"></span></td>
+                                    <td></td><td></td><td></td><td></td>
+                                </tr>
+                                <tr>
+                                    <td>Total followers:</td>
+                                    <td><span th:text="${searchedUser.followers}"></span></td>
+                                    <td></td><td></td><td></td><td></td>
+                                </tr>
+                            </table>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-1"></div>
+    </body>
+</html>

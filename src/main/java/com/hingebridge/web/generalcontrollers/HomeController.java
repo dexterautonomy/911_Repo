@@ -472,7 +472,7 @@ public class HomeController
     }
     
     @GetMapping(value="/prf_src")
-    public String searchUserClass(@RequestParam("usr")Optional<Long> userId, ModelMap model, HttpServletRequest req)
+    public String searchUserMethod(@RequestParam("usr")Optional<Long> userId, ModelMap model, HttpServletRequest req)
     {
         String ret;
         aac.displayAdvert(model);   //This line is for adverts
