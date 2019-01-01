@@ -28,18 +28,20 @@
                         <img th:classappend="${searchedUser.colorclass}" class="profileImageUpdate" src="" th:src="@{'/files/profile_img/' + ${searchedUser.pix}}" th:alt="${searchedUser.username + ' pic'}" alt=""/>
                         <div class="autoOverflow">
                             <div style="float: right;">
-                                <a class="btn btn-success  btn-xs" th:href="@{/user/prf_src(usr=${searchedUser.id}, akt=1)}">
-                                    <span class="glyphicon glyphicon-plus-sign"></span>&nbsp;CommentBan 
+                                <a class="btn btn-success  btn-xs" th:href="@{_banUser(usr=${searchedUser.id}, akt=1)}">
+                                    <span th:if="${searchedUser.commentban} == 0">Comment Ban</span>
+                                    <span th:unless="${searchedUser.commentban} == 0">Lift Comment Ban</span>
                                 </a>
-                                <a class="btn btn-danger btn-xs" th:href="@{/user/prf_src(usr=${searchedUser.id}, akt=2)}">
-                                    <span class="glyphicon glyphicon-envelope"></span>&nbsp;PostBan 
+                                <a class="btn btn-danger btn-xs" th:href="@{_banUser(usr=${searchedUser.id}, akt=2)}">
+                                    <span th:if="${searchedUser.postban} == 0">Post Ban</span>
+                                    <span th:unless="${searchedUser.postban} == 0">Lift Post Ban</span>
                                 </a>
                             </div>
                         </div>
                     </div>
                     
                     <div th:if="${searchedUser} != null">
-                        <p>
+                        <div><br/>
                             <table class="table table-striped">
                                 <tr>
                                     <td><span  class="postcomment_username" th:text="${'@' + searchedUser.username}"></span></td>
@@ -96,7 +98,7 @@
                                     <td></td><td></td><td></td><td></td>
                                 </tr>
                             </table>
-                        </p>
+                        </div>
                     </div>
                 </div>
             </div>

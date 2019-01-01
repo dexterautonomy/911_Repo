@@ -1284,6 +1284,7 @@ public class AdminController
                 if(inboxObj.orElse(null) != null)
                 {
                     inboxObj.get().setDeleteAdminFlag(1);
+                    inboxObj.get().setAdminRead(1);
                     ior.save(inboxObj.get());
                 }
                 else
@@ -1336,5 +1337,66 @@ public class AdminController
         }
         
         return "redirect:_inbox_admin?pg="+page.get();
+    }
+    
+    @RequestMapping("/_banUser")
+    public String banUser(ModelMap model, @RequestParam("usr")Optional<Long> userId,
+    @RequestParam("akt")Optional<Integer> action)
+    {
+        aac.displayAdvert(model);   //This line is for adverts
+        utc.adminModel(model);
+        
+        Optional<UserClass> uc = ucr.findById(userId.get());
+        if(uc.orElse(null) != null)
+        {
+            switch(action.get())
+            {
+                case 1:
+                {
+                    switch(uc.get().getCommentban())
+                    {
+                        case 0:
+                        {
+                            uc.get().setCommentban(1);
+                        }
+                        break;
+                        
+                        case 1:
+                        {
+                            uc.get().setCommentban(0);
+                        }
+                        break;
+                    }
+                }
+                break;
+            
+                case 2:
+                {
+                    switch(uc.get().getPostban())
+                    {
+                        case 0:
+                        {
+                            uc.get().setPostban(1);
+                        }
+                        break;
+                        
+                        case 1:
+                        {
+                            uc.get().setPostban(0);
+                        }
+                        break;
+                    }
+                }
+                break;
+            }
+            
+            ucr.save(uc.get());
+        }
+        else
+        {
+            
+        }
+        
+        return "redirect:_src_admin_math_physics?usr="+userId.get();
     }
 }
