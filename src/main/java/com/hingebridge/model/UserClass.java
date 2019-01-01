@@ -459,11 +459,22 @@ public class UserClass implements Serializable
     public List<InboxObject> getInboxObject()
     {
         List<InboxObject> inboxObj = new LinkedList<>();
+        /*
         for(InboxObject io : inboxObject)
         {
             if(io.getDeleteUserFlag() == 0)
             {
                 inboxObj.add(io);
+            }
+        }
+        */
+        
+        //Reverse order
+        for(int count = inboxObject.size() - 1; count >= 0;  count--)
+        {
+            if(inboxObject.get(count).getDeleteUserFlag() == 0)
+            {
+                inboxObj.add(inboxObject.get(count));
             }
         }
         return inboxObj;

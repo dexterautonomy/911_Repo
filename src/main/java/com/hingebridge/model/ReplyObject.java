@@ -16,9 +16,9 @@ public class ReplyObject implements Serializable
     private long inboxId;
     @Column(name = "date_sent")
     private String date;
-    @Column(name = "deleteUserFlag")
+    @Column(name = "deleteuserflag")
     private int deleteUserFlag = 0;
-    @Column(name = "deleteAdminFlag")
+    @Column(name = "deleteadminflag")
     private int deleteAdminFlag = 0;
     @Column(name = "content")
     private String content;

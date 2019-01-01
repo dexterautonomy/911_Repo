@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>9jaForum</title>
+        <link rel="shortcut icon" type="image/x-icon" th:href="@{/files/system_img/logo.jpg}" href=""/>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+        <link rel="stylesheet" th:href="@{/css/app_style.css}" href=""/>
+    </head>
+    
+    <body class="container">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+            <div th:include="pages/adfragments :: headLogo"/>
+            <div th:include="pages/adfragments :: navigationUser"/>
+            
+            <div th:include="pages/adfragments :: adTop(${adObject}, ${top})"/>
+            
+            <div class="row">
+                <div th:include="pages/adfragments :: leftPane(${user}, ${size}, ${pize}, ${tize}, ${bize})"/>
+                
+                <div class="col-sm-9">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading title centertinz">Notifications</div>
+                    </div>
+                    <div class="centertinz smallfont redColor">
+                        <p th:text="${alert}"></p>
+                    </div>
+                    
+                    <div th:classappend="${nothing}">
+                        <span th:text="${alertFallback}"></span>
+                    </div>
+                    
+                    <div th:if="${inboxObj} != null">
+                        <div th:classappend="${theclass}">
+                            <span th:text="${nonotifications}"></span>
+                        </div>
+                        <div class="list-group">
+                            <div th:each="inbox : ${inboxObj}">
+                                <div class="list-group-item">
+                                    <div class="autoOverflow">
+                                        <span class="postcomment_username">Me</span>
+                                        <span style="float: right;">
+                                            <span class="smallfont" th:text="${inbox.duration}"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <a th:href="@{/user/inbox_dlt_(mid=${inbox.id}, pgn=${pgn}, akt=dlt_Mx)}">
+                                                <span class="glyphicon glyphicon-trash" style="color: red;"></span>
+                                            </a>
+                                        </span>
+                                    </div>
+                                    <div class="list-group-item-text justify smallfont3A" th:utext="${inbox.content}"></div><br/>
+                                    
+                                    <div class="row list-group-item-text" th:each="inboxreply : ${inbox.reply}">
+                                        <div class="col-xs-1">
+                                            <img class="readerImage2" src="" th:src="@{/files/system_img/logo.jpg}" alt="onenaijalogo"/>
+                                        </div>
+                                        <div class="col-xs-10 justify panel panel-body">
+                                            <div class="autoOverflow">
+                                                <span class="postcomment_username">Admin</span>
+                                                <span class="postcomment_duration smallfont" th:text="${inboxreply.duration}"></span>
+                                            </div>
+                                            <div class="smallfont3" th:text="${inboxreply.content}" style="color: black;"></div><br/>
+                                            <div>
+                                                <span style="color: blue;" class="glyphicon glyphicon-thumbs-up"></span>&nbsp;<span>Reply</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div><br/>
+                            </div>
+                        </div>
+                    
+                        <div>
+                            <ul class="pager centertinz">
+                                <li th:style="'display:'+@{${disp1}}+';'">
+                                    <a class="btn" th:href="@{/user/inbox(pg= ${prev})}"> Previous </a>
+                                </li>
+                                <li th:style="'display:'+@{${disp2}}+';'">
+                                    <a class="btn" th:href="@{/user/inbox(pg=${next})}"> Next </a>
+                                </li>
+                            </ul>
+                        </div><br/>
+                    </div>
+                </div>
+            </div>
+            
+            <div th:include="pages/adfragments :: adBottom(${adObject}, ${bottom})"/>
+            
+        </div>
+        <div class="col-sm-1"></div>
+    </body>
+</html>

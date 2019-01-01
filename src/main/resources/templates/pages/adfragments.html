@@ -78,7 +78,7 @@
             </div>
         </div>
         
-        <div th:fragment="leftPane(userObject, sizeOfMessage, sizeOfFollowedPost, sizeOfTrend)">
+        <div th:fragment="leftPane(userObject, sizeOfNotifications, sizeOfFollowedPost, sizeOfTrend, sizeOfInbox)">
             <div class="col-sm-3">
                 <a class="smallfont2" th:href="@{/user/prf}">
                     <div class="thumbNailX">
@@ -92,10 +92,10 @@
                         <div><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Make A Post<hr/></div>
                     </a>
                     <a class="smallfont2" th:href="@{/user/inbox(pg=1)}">
-                        <div><span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;Inbox&nbsp;<span class="badge smallfont" th:classappend="${unReadMessages}" th:text="${sizeOfMessage}"></span><hr/></div>
+                        <div><span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;Inbox&nbsp;<span class="badge smallfont" th:classappend="${unReadMessages}" th:text="${sizeOfInbox}"></span><hr/></div>
                     </a>
-                    <a class="smallfont2" th:href="@{/user/inbox(pg=1)}">
-                        <div><span class="glyphicon glyphicon-info-sign"></span>&nbsp;&nbsp;Notifications&nbsp;<span class="badge smallfont" th:classappend="${unReadMessages}" th:text="${sizeOfMessage}"></span><hr/></div>
+                    <a class="smallfont2" th:href="@{/user/notf(pg=1)}">
+                        <div><span class="glyphicon glyphicon-info-sign"></span>&nbsp;&nbsp;Notifications&nbsp;<span class="badge smallfont" th:classappend="${unReadMessages}" th:text="${sizeOfNotifications}"></span><hr/></div>
                     </a>
                     <a class="smallfont2" th:href="@{/user/flpost(pg=1)}">
                         <div><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Followed Posts&nbsp;<span class="badge smallfont" th:classappend="${unReadPosts}" th:text="${sizeOfFollowedPost}"></span><hr/></div>
@@ -167,7 +167,7 @@
             </div>
         </div>
         
-        <div th:fragment="adminLeftPane(userObject, allUsers, allAds)">
+        <div th:fragment="adminLeftPane(userObject, allUsers, allAds, allInbox)">
             <div class="col-sm-3">
                 <div class="thumbNailX">
                     <img class="profileImage" src="" th:src="@{'/files/profile_img/' + ${userObject.pix}}" th:alt="${userObject.username + ' pic'}" alt=""/><br/><br/>
@@ -178,7 +178,7 @@
                     <div><span th:text="${allUsers}"></span>&nbsp;Members<hr/></div>
                     
                     <a class="smallfont2" th:href="@{_inbox_admin}">
-                        <div><span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;Inbox <span class="badge smallfont">25</span><hr/></div>
+                        <div><span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;Inbox <span class="badge smallfont" th:text="${allInbox}"></span><hr/></div>
                     </a>
                     <a class="smallfont2" th:href="@{_manage_ads_toon(pg=1)}">
                         <div><span class="glyphicon glyphicon-bullhorn"></span>&nbsp;&nbsp;Manage Ads <span class="badge smallfont" th:text="${allAds}"></span><hr/></div>

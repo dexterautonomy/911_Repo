@@ -4,6 +4,7 @@ import com.hingebridge.model.AdvertObject;
 import com.hingebridge.model.CommentClass;
 import com.hingebridge.model.FollowedPostDeleteObject;
 import com.hingebridge.model.FollowerObject;
+import com.hingebridge.model.InboxObject;
 import com.hingebridge.model.MessageObject;
 import com.hingebridge.model.PostClass;
 import com.hingebridge.model.QuoteObject;
@@ -14,6 +15,7 @@ import com.hingebridge.repository.CommentClassRepo;
 import com.hingebridge.repository.CommentReactionClassRepo;
 import com.hingebridge.repository.FollowedPostDeleteObjectRepo;
 import com.hingebridge.repository.FollowerObjectRepo;
+import com.hingebridge.repository.InboxObjectRepo;
 import com.hingebridge.repository.MessageObjectRepo;
 import com.hingebridge.repository.PostClassRepo;
 import com.hingebridge.utility.UtilityClass;
@@ -76,13 +78,15 @@ public class UserController
     private FollowedPostDeleteObjectRepo fpdor;
     @Autowired
     private AdvertObjectRepo aor;
+    @Autowired
+    private InboxObjectRepo ior;
     
     @GetMapping("/login")
     public String userHomePage(HttpServletRequest req, ModelMap model)
     {
         aac.displayAdvert(model);   //This line is for adverts
         
-        String[] hideBlocks = {"secondBlock", "thirdBlock"};
+        String[] hideBlocks = {"secondBlock", "thirdBlock", "fourthBlock"};
         utc.dispBlock(model, "firstBlock", hideBlocks);
         utc.modelUser(model);
         utc.sessionUserDetails(req);    //very important
@@ -91,23 +95,8 @@ public class UserController
         
         if(utc.checkPostBan())
         {
-            return "redirect:/user/inbox?pg=1";
+            return "redirect:/user/notf?pg=1";
         }
-        
-        return "pages/userpage";
-    }
-    
-    @GetMapping("/mail_us")
-    public String mailUs(HttpServletRequest req, ModelMap model)
-    {
-        aac.displayAdvert(model);   //This line is for adverts
-        
-        String[] hideBlocks = {"firstBlock", "secondBlock", "thirdBlock"};
-        utc.dispBlock(model, "fourthBlock", hideBlocks);
-        utc.modelUser(model);
-        utc.sessionUserDetails(req);    //very important
-        utc.modelTransfer(model);
-        model.addAttribute("postclass", new PostClass());
         
         return "pages/userpage";
     }
@@ -121,10 +110,10 @@ public class UserController
         if(utc.checkPostBan())
         {
             //You cannot make a post when you are postbanned
-            return "redirect:/user/inbox?pg=1";
+            return "redirect:/user/notf?pg=1";
         }
         
-        String[] hideBlocks = {"secondBlock", "thirdBlock"};
+        String[] hideBlocks = {"secondBlock", "thirdBlock", "fourthBlock"};
         utc.dispBlock(model, "firstBlock", hideBlocks);
         utc.modelUser(model);
         String path = utc.getFilePath()+"dist_img";
@@ -1917,8 +1906,8 @@ public class UserController
         return "pages/followedpost";
     }
     
-    @GetMapping("/inbox")
-    public String getInbox(ModelMap model, @RequestParam("pg")Optional<Integer> page,
+    @GetMapping("/notf")
+    public String getNotification(ModelMap model, @RequestParam("pg")Optional<Integer> page,
     RedirectAttributes ra, HttpServletRequest req)
     {
         aac.displayAdvert(model);   //This line is for adverts
@@ -1936,7 +1925,7 @@ public class UserController
         }
         
         List<MessageObject> mo = mobjr.getMyMessage(utc.getUser().getId());   //Get all followed posts
-        utc.modelTransfer(model);
+        
         if(!mo.isEmpty())  //If there are messages
         {
             if(mo.size() < end)
@@ -1972,9 +1961,8 @@ public class UserController
             model.addAttribute("alertFallback", "No notifications");
             
         }
-        return "pages/messagepage";
+        return "pages/notificationpage";
     }
-    
     
     @GetMapping("/rcd")
     public String getRecord(ModelMap model, @RequestParam("pg")Optional<Integer> pgn, 
@@ -2075,7 +2063,7 @@ public class UserController
                 {
                     ra.addFlashAttribute("alert", "Cannot execute command");
                 }
-                ret = "redirect:/user/inbox?pg="+pgn.get();
+                ret = "redirect:/user/notf?pg="+pgn.get();
             }
             break;
             
@@ -2109,7 +2097,7 @@ public class UserController
     {
         aac.displayAdvert(model);   //This line is for adverts
         
-        String[] hideBlocks = {"firstBlock", "thirdBlock"};
+        String[] hideBlocks = {"firstBlock", "thirdBlock", "fourthBlock"};
         utc.dispBlock(model, "secondBlock", hideBlocks);
         utc.modelUser(model);
         utc.modelTransfer(model);
@@ -2561,5 +2549,103 @@ public class UserController
         }
         
         return "redirect:/user/src?uts=" + uc.get().getUsername();
+    }
+    
+    @GetMapping("/mail_us")
+    public String mailUs(HttpServletRequest req, ModelMap model)
+    {
+        aac.displayAdvert(model);   //This line is for adverts
+        
+        String[] hideBlocks = {"firstBlock", "secondBlock", "thirdBlock"};
+        utc.dispBlock(model, "fourthBlock", hideBlocks);
+        utc.modelUser(model);
+        utc.sessionUserDetails(req);    //very important
+        utc.modelTransfer(model);
+        model.addAttribute("postclass", new PostClass());
+        
+        return "pages/userpage";
+    }
+    
+    @PostMapping("/mail_us_postcontrol")
+    public String mailUsPost(@ModelAttribute("postclass")PostClass pc, HttpServletRequest req, 
+    ModelMap model, RedirectAttributes ra)
+    {
+        aac.displayAdvert(model);   //This line is for adverts
+        
+        String[] hideBlocks = {"firstBlock", "secondBlock", "thirdBlock"};
+        utc.dispBlock(model, "fourthBlock", hideBlocks);
+        utc.modelUser(model);
+        utc.sessionUserDetails(req);    //very important
+        utc.modelTransfer(model);
+        
+        String content = pc.getContent().trim();
+        
+        if(content.length() < 701)
+        {
+            InboxObject io = new InboxObject(utc.getUser().getId(), utc.getDate(), content);
+            ior.save(io);
+            ra.addFlashAttribute("alert", "Sent");
+            return "redirect:mail_us";
+        }
+        else
+        {
+            model.addAttribute("alert", "Message too lengthy (must be less than 700 characters)");
+        }
+        
+        return "pages/userpage";
+    }
+    
+    @GetMapping("/inbox")
+    public String getInbox(ModelMap model, @RequestParam("pg")Optional<Integer> page,
+    RedirectAttributes ra, HttpServletRequest req)
+    {
+        aac.displayAdvert(model);   //This line is for adverts
+        
+        utc.modelUser(model);
+        utc.modelTransfer(model);
+        int init = 0;
+        int end = 1;
+        List<InboxObject> inboxObj = new LinkedList<>();
+        
+        if(page.get() > 1)
+        {
+            init = (page.get() - 1) * end;
+            end = end * page.get();
+        }
+        
+        List<InboxObject> io = utc.getUser().getInboxObject();
+        if(!io.isEmpty())  //If there are messages
+        {
+            if(io.size() < end)
+            {
+                end = io.size();
+            }
+            for(int count = init; count < end; count++)
+            {
+                inboxObj.add(io.get(count));
+            }
+            
+            model.addAttribute("inboxObj", inboxObj);
+            model.addAttribute("pgn", page.get());  //Key
+            model.addAttribute("prev", page.get()-1);
+            model.addAttribute("next", page.get()+1);
+                
+            if(page.get() - 1 == 0)
+            {
+                model.addAttribute("disp1", "none");
+            }
+            if(inboxObj.isEmpty())
+            {
+                model.addAttribute("nonotifications", "No messages");
+                model.addAttribute("disp2", "none");
+                model.addAttribute("theclass", "realcentertinz");
+            }
+        }
+        else    //If there are no messages
+        {
+            model.addAttribute("nothing", "realcentertinz");
+            model.addAttribute("alertFallback", "No messages");
+        }
+        return "pages/inboxpage";
     }
 }

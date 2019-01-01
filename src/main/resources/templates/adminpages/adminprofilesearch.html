@@ -17,7 +17,7 @@
             <div th:include="pages/adfragments :: navigationAdmin"/>
             
             <div class="row" th:if="${user} != null">
-                <div th:include="pages/adfragments :: adminLeftPane(${user}, ${allusers}, ${allAds})"/>
+                <div th:include="pages/adfragments :: adminLeftPane(${user}, ${allusers}, ${allAds}, ${allInbox})"/>
                 
                 <div class="col-sm-9">
                     <div th:classappend="${nothing}">

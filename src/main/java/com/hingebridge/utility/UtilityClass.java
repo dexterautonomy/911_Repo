@@ -10,6 +10,7 @@ import com.hingebridge.repository.AdvertObjectRepo;
 import com.hingebridge.repository.CommentClassRepo;
 import com.hingebridge.repository.FollowedPostDeleteObjectRepo;
 import com.hingebridge.repository.FollowerObjectRepo;
+import com.hingebridge.repository.InboxObjectRepo;
 import com.hingebridge.repository.MessageObjectRepo;
 import com.hingebridge.repository.PostClassRepo;
 import com.hingebridge.repository.SubCommentClassRepo;
@@ -76,6 +77,8 @@ public class UtilityClass
     private FollowedPostDeleteObjectRepo fpdor;
     @Autowired
     private AdvertObjectRepo aor;
+    @Autowired
+    private InboxObjectRepo ior;
     
     public UserClass getUser()
     {
@@ -566,9 +569,10 @@ public class UtilityClass
     
     public void modelTransfer(ModelMap model)
     {
-        model.addAttribute("size", getMessageObjSize(model));
-        model.addAttribute("pize", getFollowedPostSize(model));
-        model.addAttribute("tize", getMyTrendSize());
+        model.addAttribute("bize", getUser().getInboxObject().size()); //bize is inbox size
+        model.addAttribute("size", getMessageObjSize(model)); //size is message/notification size
+        model.addAttribute("pize", getFollowedPostSize(model)); //pize is followedpost size
+        model.addAttribute("tize", getMyTrendSize()); //tize is trend size
     }
     
     public void updateInbox(MessageObjectRepo mobjr, long user_id, long commentid, String postlink)
@@ -723,12 +727,15 @@ public class UtilityClass
     }
     
     
+    
+    
     //For admin
     public void adminModel(ModelMap model)
     {
+        
+        model.addAttribute("allInbox", ior.getAllForSize().size());
         model.addAttribute("allusers", ucr.findAll().size());
         model.addAttribute("user", getUser());
         model.addAttribute("allAds", aor.getAdminAdvertList().size());
-        
     }
 }

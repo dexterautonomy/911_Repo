@@ -13,15 +13,15 @@ public class InboxObject implements Serializable
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private long id;
+    private Long id;
     @Column(name = "user_id")
-    private long userId;
+    private Long userId;
     @Column(name = "date_sent")
     private String date;
-    @Column(name = "deleteUserFlag")
-    private int deleteUserFlag = 0;
-    @Column(name = "deleteAdminFlag")
+    @Column(name = "deleteadminflag")
     private int deleteAdminFlag = 0;
+    @Column(name = "deleteuserflag")
+    private int deleteUserFlag = 0;
     @Column(name = "content")
     private String content;
     @Column(name = "admin_read")
@@ -39,24 +39,24 @@ public class InboxObject implements Serializable
     
     public InboxObject(){}
     
-    public InboxObject(long userId, String date, String content)
+    public InboxObject(Long userId, String date, String content)
     {
         this.userId = userId;
         this.date = date;
         this.content = content;
     }
     
-    public long getId()
+    public Long getId()
     {
         return id;
     }
     
-    public void setUserId(long userId)
+    public void setUserId(Long userId)
     {
         this.userId = userId;
     }
     
-    public long getUserId()
+    public Long getUserId()
     {
         return userId;
     }

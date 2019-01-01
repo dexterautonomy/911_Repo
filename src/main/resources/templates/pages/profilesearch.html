@@ -23,7 +23,7 @@
             
             <!--purely for registered search-->
             <div class="row" th:if="${user} != null">
-                <div th:include="pages/adfragments :: leftPane(${user}, ${size}, ${pize}, ${tize})"/>
+                <div th:include="pages/adfragments :: leftPane(${user}, ${size}, ${pize}, ${tize}, ${bize})"/>
                 
                 <div class="col-sm-9">
                     <div th:classappend="${nothing}">

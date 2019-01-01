@@ -190,8 +190,8 @@ create table inboxobject
 (
     id int unsigned not null auto_increment primary key,
     user_id int unsigned not null,
-    deleteUserFlag int not null,
-    deleteAdminFlag int not null,
+    deleteuserflag int not null,
+    deleteadminflag int not null,
     admin_read int not null,
     content text not null,
     date_sent varchar(50) not null,
@@ -202,8 +202,8 @@ create table replyobject
 (
     id int unsigned not null auto_increment primary key,
     inbox_id int unsigned not null,
-    deleteUserFlag int not null,
-    deleteAdminFlag int not null,
+    deleteuserflag int not null,
+    deleteadminflag int not null,
     user_read int not null,
     content text not null,
     date_sent varchar(50) not null,
