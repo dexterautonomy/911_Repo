@@ -28,9 +28,6 @@
                         <img th:classappend="${searchedUser.colorclass}" class="profileImageUpdate" src="" th:src="@{'/files/profile_img/' + ${searchedUser.pix}}" th:alt="${searchedUser.username + ' pic'}" alt=""/>
                         <div class="autoOverflow">
                             <div style="float: right;">
-                                <a class="btn btn-primary btn-xs" th:href="@{/user/prf_src(usr=${searchedUser.id}, akt=2)}">
-                                    <span class="glyphicon glyphicon-envelope"></span>&nbsp;Message 
-                                </a>
                                 <a class="btn btn-success  btn-xs" th:href="@{/user/prf_src(usr=${searchedUser.id}, akt=1)}">
                                     <span class="glyphicon glyphicon-plus-sign"></span>&nbsp;CommentBan 
                                 </a>

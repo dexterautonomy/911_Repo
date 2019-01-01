@@ -308,6 +308,14 @@ div.commentBck2 a:hover
     background-color: rgba(132,197,255,0.1);
 }
 
+.postsubcomment_body3
+{
+    margin-left: 25px;
+    border: 1px solid rgba(132,197,255,0.3);
+    border-radius: 10px;
+    background-color: white;
+}
+
 .unread
 {
     box-shadow: 0px 0px 5px red;
@@ -676,4 +684,17 @@ a:hover
 .floatLeft
 {
     float: left;
+}
+
+.replyCover
+{
+    background-color: rgb(255,215,255);
+    padding: 13px;
+    border-radius: 7px;
+    text-align: justify;
+    width: 90%;
+    border-bottom: 3px solid rgb(245,210,235);
+    border-left: 1px solid rgb(245,210,235);
+    margin-top: 5px;
+    margin-bottom: 10px;
 }

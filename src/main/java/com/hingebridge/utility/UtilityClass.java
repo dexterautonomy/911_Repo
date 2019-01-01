@@ -732,10 +732,9 @@ public class UtilityClass
     //For admin
     public void adminModel(ModelMap model)
     {
-        
-        model.addAttribute("allInbox", ior.getAllForSize().size());
-        model.addAttribute("allusers", ucr.findAll().size());
         model.addAttribute("user", getUser());
+        model.addAttribute("allInbox", ior.getAdminInboxSize().size());
+        model.addAttribute("allusers", ucr.findAll().size());
         model.addAttribute("allAds", aor.getAdminAdvertList().size());
     }
 }

@@ -34,6 +34,9 @@ public class InboxObject implements Serializable
     @OneToMany(mappedBy = "inboxreply")
     private List<ReplyObject> reply;
     
+    @OneToOne(mappedBy = "inboxquote")
+    private QuoteInboxObject quoteInboxObject;
+    
     @Transient
     private String duration;
     
@@ -142,5 +145,15 @@ public class InboxObject implements Serializable
     public int getAdminRead()
     {
         return adminRead;
+    }
+    
+    public void setQuoteInboxObject(QuoteInboxObject value)
+    {
+        quoteInboxObject = value;
+    }
+    
+    public QuoteInboxObject getQuoteInboxObject()
+    {
+        return quoteInboxObject;
     }
 }

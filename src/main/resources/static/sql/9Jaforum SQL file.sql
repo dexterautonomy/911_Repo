@@ -209,4 +209,14 @@ create table replyobject
     date_sent varchar(50) not null,
     constraint `fk_user_admin_reply` foreign key (`inbox_id`) references `inboxobject` (`id`)
 );
+
+
+create table quoteinboxobject
+(
+    id int unsigned not null auto_increment primary key,
+    inbox_id int unsigned not null,
+    reply_id int unsigned not null,
+    constraint `fk_inbox_id_as_per_quote` foreign key (`inbox_id`) references `inboxobject` (`id`),
+    constraint `fk_reply_id_as_per_quote` foreign key (`reply_id`) references `replyobject` (`id`)
+);
 */

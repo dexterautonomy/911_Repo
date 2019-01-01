@@ -2,6 +2,7 @@ package com.hingebridge.model;
 
 import com.hingebridge.utility.DurationCalculator;
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.*;
 
 @Entity
@@ -28,6 +29,9 @@ public class ReplyObject implements Serializable
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "inbox_id", insertable = false, updatable = false, nullable = false)
     private InboxObject inboxreply;
+    
+    @OneToMany(mappedBy = "replyquote")
+    private List<QuoteInboxObject> quoteReplyObject;
     
     @Transient
     private String duration;
@@ -119,5 +123,15 @@ public class ReplyObject implements Serializable
     public int getUserRead()
     {
         return userRead;
+    }
+    
+    public void setQuoteReplyObject(List<QuoteInboxObject> value)
+    {
+        quoteReplyObject = value;
+    }
+    
+    public List<QuoteInboxObject> getQuoteReplyObject()
+    {
+        return quoteReplyObject;
     }
 }

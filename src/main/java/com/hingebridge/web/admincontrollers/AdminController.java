@@ -3,10 +3,12 @@ package com.hingebridge.web.admincontrollers;
 import com.hingebridge.model.AdvertObject;
 import com.hingebridge.model.CommentClass;
 import com.hingebridge.model.FollowedPostDeleteObject;
+import com.hingebridge.model.InboxObject;
 import com.hingebridge.model.MessageObject;
 import com.hingebridge.model.PagerModel;
 import com.hingebridge.model.PostClass;
 import com.hingebridge.model.QuoteObject;
+import com.hingebridge.model.ReplyObject;
 import com.hingebridge.model.SubCommentClass;
 import com.hingebridge.model.UserClass;
 import com.hingebridge.repository.AdvertObjectRepo;
@@ -14,10 +16,12 @@ import com.hingebridge.repository.CommentClassRepo;
 import com.hingebridge.repository.CommentReactionClassRepo;
 import com.hingebridge.repository.FollowedPostDeleteObjectRepo;
 import com.hingebridge.repository.FollowerObjectRepo;
+import com.hingebridge.repository.InboxObjectRepo;
 import com.hingebridge.repository.MessageObjectRepo;
 import com.hingebridge.repository.PostClassRepo;
 import com.hingebridge.repository.PostReactionClassRepo;
 import com.hingebridge.repository.QuoteObjectRepo;
+import com.hingebridge.repository.ReplyObjectRepo;
 import com.hingebridge.repository.RoleClassRepo;
 import com.hingebridge.repository.SubCommentClassRepo;
 import com.hingebridge.repository.SubCommentReactionClassRepo;
@@ -81,6 +85,10 @@ public class AdminController
     private FollowedPostDeleteObjectRepo fpdor;
     @Autowired
     private AdvertObjectRepo aor;
+    @Autowired
+    private InboxObjectRepo ior;
+    @Autowired
+    private ReplyObjectRepo ror;
     
     @GetMapping("/entry")
     public String getAdminPage(HttpServletRequest req, HttpSession session, ModelMap model, @RequestParam("page") Optional<Integer> page_1)
@@ -1216,5 +1224,117 @@ public class AdminController
         }
         
         return "redirect:_manage_ads_toon?pg="+pg.get();
+    }
+    
+    @GetMapping("/_inbox_admin")
+    public String getInbox(ModelMap model, @RequestParam("pg")Optional<Integer> page_1,
+    RedirectAttributes ra, HttpServletRequest req)
+    {
+        aac.displayAdvert(model);
+        utc.adminModel(model);
+        
+        final int INITIAL_PAGE = 0;
+        final int INITIAL_PAGE_SIZE = 10;
+        int page = (page_1.orElse(0) < 1 ? INITIAL_PAGE : page_1.get() - 1);
+        
+        List<InboxObject> adminInboxSize = ior.getAdminInboxSize();
+        Page<InboxObject> adminInboxObj = ior.getAdminInbox(PageRequest.of(page, INITIAL_PAGE_SIZE));
+        PagerModel pgn = new PagerModel(adminInboxObj.getTotalPages(), adminInboxObj.getNumber());
+        
+        if(!adminInboxSize.isEmpty())
+        {
+            model.addAttribute("adminInboxObj", adminInboxObj);
+            model.addAttribute("pgn", pgn);
+            model.addAttribute("pg", page_1.get());
+        
+            if(adminInboxObj.getNumber() == 0)
+            {
+                model.addAttribute("disp1", "none");
+            }
+            if(adminInboxObj.getNumber() + 1 == adminInboxObj.getTotalPages())
+            {
+                model.addAttribute("disp2", "none");
+            }
+        }
+        else
+        {
+            model.addAttribute("nothing", "realcentertinz");
+            model.addAttribute("alertFallback", "No messages");
+        }
+        
+        return "adminpages/admininboxpage";
+    }
+    
+    @RequestMapping("/_admin_inbox_rkt_")
+    public String actInbox(ModelMap model, @RequestParam("mid")Optional<Long> inboxId,
+    @RequestParam("pgn")Optional<Integer> page, @RequestParam("akt")Optional<String> action,
+    RedirectAttributes ra, HttpServletRequest req, @RequestParam("rid")Optional<Long> replyId, 
+    @ModelAttribute("replyObjectPost")Optional<PostClass> pc)
+    {
+        aac.displayAdvert(model);   //This line is for adverts
+        utc.adminModel(model);
+        
+        //Long myId = utc.getUser().getId();
+        
+        switch(action.get())
+        {
+            case "dlt_Mxx":
+            {
+                Optional<InboxObject> inboxObj = ior.findById(inboxId.get());
+                if(inboxObj.orElse(null) != null)
+                {
+                    inboxObj.get().setDeleteAdminFlag(1);
+                    ior.save(inboxObj.get());
+                }
+                else
+                {
+                    ra.addFlashAttribute("alert", "Cannot execute action");
+                }
+            }
+            break;
+            
+            case "dlt_Mzz":
+            {
+                Optional<ReplyObject> replyObj = ror.findById(replyId.get());
+                if(replyObj.orElse(null) != null)
+                {
+                    replyObj.get().setDeleteAdminFlag(1);
+                    ror.save(replyObj.get());
+                }
+                else
+                {
+                    ra.addFlashAttribute("alert", "Cannot execute action");    
+                }
+            }
+            break;
+            
+            case "rep_":
+            {
+                Optional<InboxObject> inboxObj = ior.findById(inboxId.get());
+                if(inboxObj.orElse(null) != null)
+                {
+                    inboxObj.get().setAdminRead(1);
+                    ior.save(inboxObj.get());
+                    model.addAttribute("modelMID", inboxId.get());
+                    model.addAttribute("modelPGN", page.get());
+                    model.addAttribute("replyObjectPost", new PostClass());
+                    return "adminpages/admininboxpage";
+                }
+                else
+                {
+                    ra.addFlashAttribute("alert", "Cannot execute action"); 
+                }
+            }
+            break;
+                    
+            case "rep_post":
+            {
+                ReplyObject replyObject = new ReplyObject(inboxId.get(), utc.getDate(), pc.get().getContent());
+                ror.save(replyObject);
+            }
+            break;
+        }
+        
+        return "redirect:_inbox_admin?pg="+page.get();
     }
 }

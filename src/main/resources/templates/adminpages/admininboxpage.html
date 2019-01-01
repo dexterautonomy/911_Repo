@@ -10,16 +10,14 @@
         <link rel="stylesheet" th:href="@{/css/app_style.css}" href=""/>
     </head>
     
-    <body class="container">
+    <body class="container adminBk">
         <div class="col-sm-1"></div>
         <div class="col-sm-10">
             <div th:include="pages/adfragments :: headLogo"/>
-            <div th:include="pages/adfragments :: navigationUser"/>
-            
-            <div th:include="pages/adfragments :: adTop(${adObject}, ${top})"/>
+            <div th:include="pages/adfragments :: navigationAdmin"/>
             
             <div class="row">
-                <div th:include="pages/adfragments :: leftPane(${user}, ${size}, ${pize}, ${tize}, ${bize})"/>
+                <div th:include="pages/adfragments :: adminLeftPane(${user}, ${allusers}, ${allAds}, ${allInbox})"/>
                 
                 <div class="col-sm-9">
                     <div class="panel panel-primary">
@@ -33,44 +31,42 @@
                         <span th:text="${alertFallback}"></span>
                     </div>
                     
-                    <div th:if="${inboxObj} != null">
+                    <div th:if="${adminInboxObj} != null">
+                        <!--
                         <div th:classappend="${theclass}">
                             <span th:text="${nonotifications}"></span>
                         </div>
+                        -->
                         <div class="list-group">
-                            <div th:each="inbox : ${inboxObj}">
-                                <div class="list-group-item postsubcomment_body3">
+                            <div th:each="inbox : ${adminInboxObj}">
+                                <div class="list-group-item" th:classappend="${inbox.adminRead} == '0' ? 'unreadSub' : 'postsubcomment_body3'">
                                     <div class="autoOverflow">
-                                        <span class="postcomment_username">Me</span>
+                                        <span class="postcomment_username" th:text="${inbox.userInbox.username}"></span>
                                         <span style="float: right;">
                                             <span class="smallfont" th:text="${inbox.duration}"></span>&nbsp;&nbsp;&nbsp;&nbsp;
-                                            <a th:href="@{/user/inbox_rkt_(mid=${inbox.id}, pgn=${pgn}, akt=dlt_Mx)}">
+                                            <a th:href="@{_admin_inbox_rkt_(mid=${inbox.id}, pgn=${pg}, akt=dlt_Mxx)}">
                                                 <span class="glyphicon glyphicon-trash smallfont" style="color: red;"></span>
                                             </a>
                                         </span>
                                     </div>
-                                    
-                                    <!--this na where the quote go come in-->
-                                    <div class="replyCover" th:if="${inbox.quoteInboxObject} != null" th:text="${inbox.quoteInboxObject.replyquote.content}"></div>
                                     <div class="list-group-item-text justify smallfont3A" th:utext="${inbox.content}"></div><br/>
+                                    <a class="smallfont" th:href="@{_admin_inbox_rkt_(mid=${inbox.id}, pgn=${pg}, akt=rep_)}">
+                                        <span class="glyphicon glyphicon-share-alt"></span> Reply
+                                    </a><br/><br/>
                                     
-                                    <div class="row list-group-item-text" th:each="inboxreply : ${inbox.reply}">
+                                    <div class="row list-group-item-text" th:each="inboxreply : ${inbox.reply}" th:if="${inboxreply.deleteAdminFlag} == 0">
                                         <div class="col-xs-1">
-                                            <img class="readerImage2" src="" th:src="@{/files/system_img/logo.jpg}" alt="onenaijalogo"/>
+                                            <img class="readerImage2" src="" th:src="@{/files/system_img/logo.jpg}" alt="dropbylogo"/>
                                         </div>
                                         <div class="col-xs-10 justify panel panel-body postsubcomment_body2">
                                             <div class="autoOverflow">
                                                 <span class="postcomment_username">Admin</span>
                                                 <span class="postcomment_duration smallfont" th:text="${inboxreply.duration}"></span>
                                             </div>
-                                            
                                             <div class="smallfont3" th:utext="${inboxreply.content}" style="color: black;"></div><br/>
                                             <div class="smallfont">
-                                                <a th:href="@{/user/inbox_rkt_(rid=${inboxreply.id}, pgn=${pgn}, akt=rep_)}">
-                                                    <span style="color: blue;" class="glyphicon glyphicon-share-alt"></span>&nbsp;<span>Reply</span>&nbsp;&nbsp;
-                                                </a>
-                                                <a th:href="@{/user/inbox_rkt_(rid=${inboxreply.id}, pgn=${pgn}, akt=dlt_Mz)}">
-                                                <span style="color: red;" class="glyphicon glyphicon-trash"></span>&nbsp;<span></span>
+                                                <a class="smallfont" th:href="@{_admin_inbox_rkt_(rid=${inboxreply.id}, pgn=${pg}, akt=dlt_Mzz)}">
+                                                    <span style="color: red;" class="glyphicon glyphicon-trash"></span>&nbsp;<span></span>
                                                 </a>
                                             </div>
                                         </div>
@@ -80,24 +76,38 @@
                         </div>
                     
                         <div>
-                            <ul class="pager centertinz">
-                                <li th:style="'display:'+@{${disp1}}+';'">
-                                    <a class="btn" th:href="@{/user/inbox(pg= ${prev})}"> Previous </a>
-                                </li>
-                                <li th:style="'display:'+@{${disp2}}+';'">
-                                    <a class="btn" th:href="@{/user/inbox(pg=${next})}"> Next </a>
-                                </li>
-                            </ul>
-                        </div><br/>
-                    </div>
+                            <div class="centertinz">
+                                <ul class="pagination pagination-sm">
+                                    <li th:style="'display:'+@{${disp1}}+';'">
+                                        <a class="btn" th:href="@{_inbox_admin(pg=1)}"> « </a>
+                                    </li>
+                                    <li th:style="'display:'+@{${disp1}}+';'">
+                                        <a class="btn" th:href="@{_inbox_admin(pg=${adminInboxObj.number})}"> ← </a>
+                                    </li>
                     
-                    <!--here-->
+                    
+                                    <li th:each="page : ${#numbers.sequence(pgn.startPage, pgn.endPage)}" 
+                                        th:class="${adminInboxObj.number == (page - 1)} ? 'active pointerx'">
+                                        <a class="btn" th:href="@{_inbox_admin(pg=${page})}" th:text="${page}"></a>
+                                    </li>
+                    
+                    
+                                    <li th:style="'display:'+@{${disp2}}+';'">
+                                        <a class="btn" th:href="@{_inbox_admin(pg=${adminInboxObj.number + 2})}"> → </a>
+                                    </li>
+                                    <li th:style="'display:'+@{${disp2}}+';'">
+                                        <a class="btn" th:href="@{_inbox_admin(pg=${adminInboxObj.totalPages})}"> » </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                     
                     <div th:if="${replyObjectPost} != null">
                         <p class="smallfont centertinz redColor" th:text="${alert}"></p>
                     
                         <div>
-                            <form th:action="@{/user/inbox_rkt_(rid=${modelRID}, pgn=${modelPGN}, akt=rep_post)}" method="post" th:object="${replyObjectPost}" enctype="multipart/form-data">
+                            <form th:action="@{_admin_inbox_rkt_(mid=${modelMID}, pgn=${modelPGN}, akt=rep_post)}" method="post" th:object="${replyObjectPost}" enctype="multipart/form-data">
                                 <div class="form-group">
                                     <textarea class="form-control" th:field="*{content}" placeholder="Compose" cols="20" rows="10" required="" maxlength="700"></textarea><br/>
                                 </div>
@@ -110,16 +120,13 @@
                         <div>
                             <ul class="pager centertinz">
                                 <li>
-                                    <a class="btn" th:href="@{/user/inbox(pg=${modelPGN})}"> Back </a>
+                                    <a class="btn" th:href="@{_inbox_admin(pg=${modelPGN})}"> Back </a>
                                 </li>
                             </ul>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <div th:include="pages/adfragments :: adBottom(${adObject}, ${bottom})"/>
-            
         </div>
         <div class="col-sm-1"></div>
     </body>

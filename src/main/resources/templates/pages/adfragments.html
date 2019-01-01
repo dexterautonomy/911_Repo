@@ -167,7 +167,6 @@
             </div>
         </div>
         
-        
         <div th:fragment="adminLeftPane(userObject, allUsers, allAds, allInbox)">
             <div class="col-sm-3">
                 <div class="thumbNailX">
@@ -176,9 +175,9 @@
                 </div><br/><br/>
                         
                 <div>
-                    <div><span th:text="${allUsers}"></span>&nbsp;Members<hr/></div>
+                    <div class="smallfont"><span th:text="${allUsers}"></span>&nbsp;Members<hr/></div>
                     
-                    <a class="smallfont2" th:href="@{_inbox_admin}">
+                    <a class="smallfont2" th:href="@{_inbox_admin(pg=1)}">
                         <div><span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;Inbox <span class="badge smallfont" th:text="${allInbox}"></span><hr/></div>
                     </a>
                     <a class="smallfont2" th:href="@{_manage_ads_toon(pg=1)}">

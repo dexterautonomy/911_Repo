@@ -7,7 +7,9 @@ import com.hingebridge.model.FollowerObject;
 import com.hingebridge.model.InboxObject;
 import com.hingebridge.model.MessageObject;
 import com.hingebridge.model.PostClass;
+import com.hingebridge.model.QuoteInboxObject;
 import com.hingebridge.model.QuoteObject;
+import com.hingebridge.model.ReplyObject;
 import com.hingebridge.model.SubCommentClass;
 import com.hingebridge.model.UserClass;
 import com.hingebridge.repository.AdvertObjectRepo;
@@ -39,7 +41,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.hingebridge.repository.PostReactionClassRepo;
+import com.hingebridge.repository.QuoteInboxObjectRepo;
 import com.hingebridge.repository.QuoteObjectRepo;
+import com.hingebridge.repository.ReplyObjectRepo;
 import com.hingebridge.repository.SubCommentClassRepo;
 import com.hingebridge.repository.SubCommentReactionClassRepo;
 import com.hingebridge.repository.UserClassRepo;
@@ -80,6 +84,10 @@ public class UserController
     private AdvertObjectRepo aor;
     @Autowired
     private InboxObjectRepo ior;
+    @Autowired
+    private ReplyObjectRepo ror;
+    @Autowired
+    private QuoteInboxObjectRepo qior;
     
     @GetMapping("/login")
     public String userHomePage(HttpServletRequest req, ModelMap model)
@@ -2604,7 +2612,7 @@ public class UserController
         utc.modelUser(model);
         utc.modelTransfer(model);
         int init = 0;
-        int end = 1;
+        int end = 10;
         List<InboxObject> inboxObj = new LinkedList<>();
         
         if(page.get() > 1)
@@ -2647,5 +2655,111 @@ public class UserController
             model.addAttribute("alertFallback", "No messages");
         }
         return "pages/inboxpage";
+    }
+    
+    @RequestMapping("/inbox_rkt_")
+    public String actInbox(ModelMap model, @RequestParam("mid")Optional<Long> inboxId,
+    @RequestParam("pgn")Optional<Integer> page, @RequestParam("akt")Optional<String> action,
+    RedirectAttributes ra, HttpServletRequest req, @RequestParam("rid")Optional<Long> replyId, 
+    @ModelAttribute("replyObjectPost")Optional<PostClass> pc)
+    {
+        aac.displayAdvert(model);   //This line is for adverts
+        utc.modelUser(model);
+        utc.modelTransfer(model);
+        
+        Long myId = utc.getUser().getId();
+        
+        switch(action.get())
+        {
+            case "dlt_Mx":
+            {
+                Optional<InboxObject> inboxObj = ior.findById(inboxId.get());
+                if(inboxObj.orElse(null) != null)
+                {
+                    if(myId.equals(inboxObj.get().getUserInbox().getId()))
+                    {
+                        inboxObj.get().setDeleteUserFlag(1);
+                        ior.save(inboxObj.get());
+                    }
+                    else
+                    {
+                        ra.addFlashAttribute("alert", "Cannot execute action");
+                    }
+                }
+                else
+                {
+                    ra.addFlashAttribute("alert", "Cannot execute action");
+                }
+            }
+            break;
+            
+            case "dlt_Mz":
+            {
+                Optional<ReplyObject> replyObj = ror.findById(replyId.get());
+                if(replyObj.orElse(null) != null)
+                {
+                    if(myId.equals(replyObj.get().getInboxreply().getUserInbox().getId()))
+                    {
+                        replyObj.get().setDeleteUserFlag(1);
+                        ror.save(replyObj.get());
+                    }
+                    else
+                    {
+                        ra.addFlashAttribute("alert", "Cannot execute action");
+                    }
+                }
+                else
+                {
+                    ra.addFlashAttribute("alert", "Cannot execute action");    
+                }
+            }
+            break;
+            
+            case "rep_":
+            {
+                Optional<ReplyObject> replyObj = ror.findById(replyId.get());
+                if(replyObj.orElse(null) != null)
+                {
+                    if(myId.equals(replyObj.get().getInboxreply().getUserInbox().getId()))
+                    {
+                        model.addAttribute("modelRID", replyId.get());
+                        model.addAttribute("modelPGN", page.get());
+                        model.addAttribute("replyObjectPost", new PostClass());
+                        return "pages/inboxpage";
+                    }
+                    else
+                    {
+                        ra.addFlashAttribute("alert", "Cannot execute action");     
+                    }
+                }
+                else
+                {
+                    ra.addFlashAttribute("alert", "Cannot execute action"); 
+                }
+            }
+            break;
+                    
+            case "rep_post":
+            {
+                String date = utc.getDate();
+                String content = pc.get().getContent();
+                InboxObject iObj = new InboxObject(myId, date, content);
+                ior.save(iObj);
+                
+                Optional<InboxObject> inboxObj = ior.findInboxObjectByDateAndContent(date, content);
+                QuoteInboxObject qio = new QuoteInboxObject(inboxObj.get().getId(), replyId.get());
+                qior.save(qio);
+                
+                //Optional<ReplyObject> replyObj = ror.findById(replyId.get());
+                //String replyContent = replyObj.get().getContent();
+                
+                
+                //replyContent = "<div class='replyCover'>" + replyContent + "</div>" + ;
+                
+            }
+            break;
+        }
+        
+        return "redirect:inbox?pg="+page.get();
     }
 }
