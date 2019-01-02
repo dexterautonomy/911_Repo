@@ -1272,9 +1272,6 @@ public class AdminController
     @ModelAttribute("replyObjectPost")Optional<PostClass> pc)
     {
         aac.displayAdvert(model);   //This line is for adverts
-        utc.adminModel(model);
-        
-        //Long myId = utc.getUser().getId();
         
         switch(action.get())
         {
@@ -1319,6 +1316,7 @@ public class AdminController
                     model.addAttribute("modelMID", inboxId.get());
                     model.addAttribute("modelPGN", page.get());
                     model.addAttribute("replyObjectPost", new PostClass());
+                    utc.adminModel(model);
                     return "adminpages/admininboxpage";
                 }
                 else

@@ -96,9 +96,8 @@ public class UserController
         
         String[] hideBlocks = {"secondBlock", "thirdBlock", "fourthBlock"};
         utc.dispBlock(model, "firstBlock", hideBlocks);
-        utc.modelUser(model);
+        utc.userModel(model);
         utc.sessionUserDetails(req);    //very important
-        utc.modelTransfer(model);
         model.addAttribute("postclass", new PostClass());
         
         if(utc.checkPostBan())
@@ -123,7 +122,7 @@ public class UserController
         
         String[] hideBlocks = {"secondBlock", "thirdBlock", "fourthBlock"};
         utc.dispBlock(model, "firstBlock", hideBlocks);
-        utc.modelUser(model);
+        utc.userModel(model);
         String path = utc.getFilePath()+"dist_img";
         String date = utc.getDate();
         
@@ -131,7 +130,6 @@ public class UserController
         String content = pc.getContent().trim();
         String rankMyPost = pc.getRank();
         String category = pc.getCategory();
-        utc.modelTransfer(model);
         
         switch(pc.getActionButton())
         {
@@ -1801,16 +1799,6 @@ public class UserController
         return ret;
     }
     
-    /*
-    @GetMapping("/fallback")
-    public String getFallbackpage(ModelMap model, HttpServletRequest req)
-    {
-        utc.modelUser(model);
-        utc.modelTransfer(model);
-        return "pages/userfallbackpage";
-    }
-    */
-    
     @GetMapping("/flpost")
     public String getFollowedPost(@RequestParam("pg")Optional<Integer> page, HttpServletRequest req, 
     ModelMap model, RedirectAttributes ra)
@@ -1828,8 +1816,7 @@ public class UserController
         
         String[] hideBlocks = {"secondBlock"};
         utc.dispBlock(model, "firstBlock", hideBlocks);
-        utc.modelUser(model);
-        utc.modelTransfer(model);
+        utc.userModel(model);
         
         List<PostClass> pcList3 = new LinkedList<>();
         List<PostClass> pcList4 = new LinkedList<>();   //very important
@@ -1920,11 +1907,10 @@ public class UserController
     {
         aac.displayAdvert(model);   //This line is for adverts
         
-        utc.modelUser(model);
+        utc.userModel(model);
         int init = 0;
         int end = 5;
         List<MessageObject> mobj = new LinkedList<>();
-        utc.modelTransfer(model);
         
         if(page.get() > 1)
         {
@@ -1977,12 +1963,10 @@ public class UserController
     RedirectAttributes ra, HttpServletRequest req)
     {
         aac.displayAdvert(model);   //This line is for adverts
-        
-        utc.modelUser(model);
+        utc.userModel(model);
         int init = 0;
         int end = 5;
         List<PostClass> tobj = new LinkedList<>();
-        utc.modelTransfer(model);
         
         if(pgn.get() > 1)
         {
@@ -2094,7 +2078,6 @@ public class UserController
                 ret = "redirect:/user/flpost?pg="+pgn.get();
             }
             break;
-            
         }
         
         return ret;
@@ -2107,13 +2090,11 @@ public class UserController
         
         String[] hideBlocks = {"firstBlock", "thirdBlock", "fourthBlock"};
         utc.dispBlock(model, "secondBlock", hideBlocks);
-        utc.modelUser(model);
-        utc.modelTransfer(model);
+        utc.userModel(model);
         
         model.addAttribute("postclass", new PostClass());
         return "pages/userpage";
     }
-    
     
     @RequestMapping("/ads")
     public String creatAds(HttpServletRequest req, ModelMap model, @RequestParam("ct_")Optional<String> ct_, 
@@ -2123,9 +2104,7 @@ public class UserController
     @ModelAttribute("editAdvertObject")Optional<AdvertObject> editAdvertObject)
     {
         aac.displayAdvert(model);   //This line is for adverts
-        
-        utc.modelUser(model);
-        utc.modelTransfer(model);
+        utc.userModel(model);
         
         if(ct_.orElse(null) != null)
         {
@@ -2445,7 +2424,6 @@ public class UserController
                 {
                     try
                     {
-                        
                         uc.get().setPix(coverFileName);
                         ucr.save(uc.get());
                         
@@ -2480,8 +2458,8 @@ public class UserController
     public String search(@RequestParam("uts")String username, ModelMap model)
     {
         aac.displayAdvert(model);   //This line is for adverts
-        utc.modelUser(model);
-        utc.modelTransfer(model);
+        utc.userModel(model);
+        
         String usernameParam = username.trim().toLowerCase();
         Optional<UserClass> uc = ucr.findByUsername(usernameParam);
         
@@ -2519,8 +2497,7 @@ public class UserController
     public String followAndUnfollow(@RequestParam("usr")Optional<Long> followerUserId, @RequestParam("akt")Optional<Integer> action, ModelMap model)
     {
         aac.displayAdvert(model);   //This line is for adverts
-        utc.modelUser(model);
-        utc.modelTransfer(model);
+        utc.userModel(model);
         
         Optional<FollowerObject> fobj = fobjr.followOrNotObject(utc.getUser().getId(), followerUserId.get());
         Optional<UserClass> uc = ucr.findById(followerUserId.get());
@@ -2566,9 +2543,8 @@ public class UserController
         
         String[] hideBlocks = {"firstBlock", "secondBlock", "thirdBlock"};
         utc.dispBlock(model, "fourthBlock", hideBlocks);
-        utc.modelUser(model);
+        utc.userModel(model);
         utc.sessionUserDetails(req);    //very important
-        utc.modelTransfer(model);
         model.addAttribute("postclass", new PostClass());
         
         return "pages/userpage";
@@ -2579,12 +2555,10 @@ public class UserController
     ModelMap model, RedirectAttributes ra)
     {
         aac.displayAdvert(model);   //This line is for adverts
-        
         String[] hideBlocks = {"firstBlock", "secondBlock", "thirdBlock"};
         utc.dispBlock(model, "fourthBlock", hideBlocks);
-        utc.modelUser(model);
+        utc.userModel(model);
         utc.sessionUserDetails(req);    //very important
-        utc.modelTransfer(model);
         
         String content = pc.getContent().trim();
         
@@ -2608,9 +2582,8 @@ public class UserController
     RedirectAttributes ra, HttpServletRequest req)
     {
         aac.displayAdvert(model);   //This line is for adverts
+        utc.userModel(model);
         
-        utc.modelUser(model);
-        utc.modelTransfer(model);
         int init = 0;
         int end = 10;
         List<InboxObject> inboxObj = new LinkedList<>();
@@ -2664,9 +2637,7 @@ public class UserController
     @ModelAttribute("replyObjectPost")Optional<PostClass> pc)
     {
         aac.displayAdvert(model);   //This line is for adverts
-        utc.modelUser(model);
-        utc.modelTransfer(model);
-        
+        utc.userModel(model);
         Long myId = utc.getUser().getId();
         
         switch(action.get())
@@ -2722,10 +2693,35 @@ public class UserController
                 {
                     if(myId.equals(replyObj.get().getInboxreply().getUserInbox().getId()))
                     {
+                        replyObj.get().setUserRead(1);
+                        ror.save(replyObj.get());
                         model.addAttribute("modelRID", replyId.get());
                         model.addAttribute("modelPGN", page.get());
                         model.addAttribute("replyObjectPost", new PostClass());
+                        utc.userModel(model);
                         return "pages/inboxpage";
+                    }
+                    else
+                    {
+                        ra.addFlashAttribute("alert", "Cannot execute action");     
+                    }
+                }
+                else
+                {
+                    ra.addFlashAttribute("alert", "Cannot execute action"); 
+                }
+            }
+            break;
+            
+            case "_viewmark_":
+            {
+                Optional<ReplyObject> replyObj = ror.findById(replyId.get());
+                if(replyObj.orElse(null) != null)
+                {
+                    if(myId.equals(replyObj.get().getInboxreply().getUserInbox().getId()))
+                    {
+                        replyObj.get().setUserRead(1);
+                        ror.save(replyObj.get());
                     }
                     else
                     {
@@ -2749,13 +2745,6 @@ public class UserController
                 Optional<InboxObject> inboxObj = ior.findInboxObjectByDateAndContent(date, content);
                 QuoteInboxObject qio = new QuoteInboxObject(inboxObj.get().getId(), replyId.get());
                 qior.save(qio);
-                
-                //Optional<ReplyObject> replyObj = ror.findById(replyId.get());
-                //String replyContent = replyObj.get().getContent();
-                
-                
-                //replyContent = "<div class='replyCover'>" + replyContent + "</div>" + ;
-                
             }
             break;
         }

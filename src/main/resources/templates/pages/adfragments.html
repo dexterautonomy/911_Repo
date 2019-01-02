@@ -92,13 +92,13 @@
                         <div><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Make A Post<hr/></div>
                     </a>
                     <a class="smallfont2" th:href="@{/user/inbox(pg=1)}">
-                        <div><span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;Inbox&nbsp;<span class="badge smallfont" th:classappend="${unReadMessages}" th:text="${sizeOfInbox}"></span><hr/></div>
+                        <div><span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;Inbox&nbsp;<span class="badge smallfont" th:classappend="${orangeAlertInbox}" th:text="${sizeOfInbox}"></span><hr/></div>
                     </a>
                     <a class="smallfont2" th:href="@{/user/notf(pg=1)}">
-                        <div><span class="glyphicon glyphicon-info-sign"></span>&nbsp;&nbsp;Notifications&nbsp;<span class="badge smallfont" th:classappend="${unReadMessages}" th:text="${sizeOfNotifications}"></span><hr/></div>
+                        <div><span class="glyphicon glyphicon-info-sign"></span>&nbsp;&nbsp;Notifications&nbsp;<span class="badge smallfont" th:classappend="${orangeAlertNotification}" th:text="${sizeOfNotifications}"></span><hr/></div>
                     </a>
                     <a class="smallfont2" th:href="@{/user/flpost(pg=1)}">
-                        <div><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Followed Posts&nbsp;<span class="badge smallfont" th:classappend="${unReadPosts}" th:text="${sizeOfFollowedPost}"></span><hr/></div>
+                        <div><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Followed Posts&nbsp;<span class="badge smallfont" th:classappend="${orangeAlertFollowedPost}" th:text="${sizeOfFollowedPost}"></span><hr/></div>
                     </a>
                     <a class="smallfont2" th:href="@{/user/rcd(pg=1)}">
                         <div><span class="glyphicon glyphicon-briefcase"></span>&nbsp;&nbsp;My Trend&nbsp;<span class="badge smallfont" th:text="${sizeOfTrend}"></span><hr/></div>
@@ -178,7 +178,7 @@
                     <div class="smallfont"><span th:text="${allUsers}"></span>&nbsp;Members<hr/></div>
                     
                     <a class="smallfont2" th:href="@{_inbox_admin(pg=1)}">
-                        <div><span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;Inbox <span class="badge smallfont" th:text="${allInbox}"></span><hr/></div>
+                        <div><span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;Inbox <span class="badge smallfont" th:classappend="${adminOrangeAlertInbox}" th:text="${allInbox}"></span><hr/></div>
                     </a>
                     <a class="smallfont2" th:href="@{_manage_ads_toon(pg=1)}">
                         <div><span class="glyphicon glyphicon-bullhorn"></span>&nbsp;&nbsp;Manage Ads <span class="badge smallfont" th:text="${allAds}"></span><hr/></div>

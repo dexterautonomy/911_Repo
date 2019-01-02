@@ -41,7 +41,9 @@
                             <div th:each="inbox : ${adminInboxObj}">
                                 <div class="list-group-item" th:classappend="${inbox.adminRead} == '0' ? 'unreadSub' : 'postsubcomment_body3'">
                                     <div class="autoOverflow">
-                                        <span class="postcomment_username" th:text="${inbox.userInbox.username}"></span>
+                                        <a th:href="@{_src_admin_math_physics(usr=${inbox.userInbox.id})}">
+                                            <span class="postcomment_username" th:text="${inbox.userInbox.username}"></span>
+                                        </a>
                                         <span style="float: right;">
                                             <span class="smallfont" th:text="${inbox.duration}"></span>&nbsp;&nbsp;&nbsp;&nbsp;
                                             <a th:href="@{_admin_inbox_rkt_(mid=${inbox.id}, pgn=${pg}, akt=dlt_Mxx)}">
@@ -49,16 +51,22 @@
                                             </a>
                                         </span>
                                     </div>
-                                    <div class="list-group-item-text justify smallfont3A" th:utext="${inbox.content}"></div><br/>
+                                    
+                                    <!--this na where the quote go come in-->
+                                    <div class="autoOverflow">
+                                        <div class="adminReplyCover" th:if="${inbox.quoteInboxObject} != null" th:text="${inbox.quoteInboxObject.replyquote.content}"></div>
+                                    </div>
+                                    <div class="list-group-item-text justify smallfont3A" th:utext="${inbox.content}"></div>
+                                    
                                     <a class="smallfont" th:href="@{_admin_inbox_rkt_(mid=${inbox.id}, pgn=${pg}, akt=rep_)}">
                                         <span class="glyphicon glyphicon-share-alt"></span> Reply
-                                    </a><br/><br/>
+                                    </a><br/>
                                     
-                                    <div class="row list-group-item-text" th:each="inboxreply : ${inbox.reply}" th:if="${inboxreply.deleteAdminFlag} == 0">
-                                        <div class="col-xs-1">
+                                    <div class="media list-group-item-text" th:each="inboxreply : ${inbox.reply}" th:if="${inboxreply.deleteAdminFlag} == 0">
+                                        <div class="media-top media-left">
                                             <img class="readerImage2" src="" th:src="@{/files/system_img/logo.jpg}" alt="dropbylogo"/>
                                         </div>
-                                        <div class="col-xs-10 justify panel panel-body postsubcomment_body2">
+                                        <div class="media-body justify panel panel-body postsubcomment_body2">
                                             <div class="autoOverflow">
                                                 <span class="postcomment_username">Admin</span>
                                                 <span class="postcomment_duration smallfont" th:text="${inboxreply.duration}"></span>
@@ -66,7 +74,7 @@
                                             <div class="smallfont3" th:utext="${inboxreply.content}" style="color: black;"></div><br/>
                                             <div class="smallfont">
                                                 <a class="smallfont" th:href="@{_admin_inbox_rkt_(rid=${inboxreply.id}, pgn=${pg}, akt=dlt_Mzz)}">
-                                                    <span style="color: red;" class="glyphicon glyphicon-trash"></span>&nbsp;<span></span>
+                                                    <span style="color: red;" class="glyphicon glyphicon-trash"></span>&nbsp;<span>Delete</span>
                                                 </a>
                                             </div>
                                         </div>

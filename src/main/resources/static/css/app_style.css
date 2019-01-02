@@ -73,7 +73,6 @@ div.col-sm-10
 
 .postcomment_body
 {
-    margin-left: 25px;
     border: 1px solid rgb(237,237,237);
     border-radius: 10px;
     background-color: rgb(250,253,250);
@@ -591,8 +590,6 @@ a.unreadFollow:hover
 .alertNote
 {
     background-color: orange;
-    position: relative;
-    top: -5px;
 }
 
 .redColor
@@ -688,13 +685,42 @@ a:hover
 
 .replyCover
 {
+    float: right;
     background-color: rgb(255,215,255);
     padding: 13px;
     border-radius: 7px;
     text-align: justify;
-    width: 90%;
+    width: 93%;
     border-bottom: 3px solid rgb(245,210,235);
     border-left: 1px solid rgb(245,210,235);
+    margin-top: 5px;
+    margin-bottom: 10px;
+    font-size: 12px;
+}
+
+.smallPadding
+{
+    padding: 10px;
+}
+
+.mediaExposed
+{
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 15px;
+}
+
+.adminReplyCover
+{
+    float: right;
+    background-color: rgba(132,197,255,0.1);
+    padding: 13px;
+    border-radius: 7px;
+    text-align: justify;
+    width: 93%;
+    border-bottom: 3px solid rgba(132,197,255,0.1);
+    border-left: 1px solid rgba(132,197,255,0.1);
     margin-top: 5px;
     margin-bottom: 10px;
     font-size: 12px;

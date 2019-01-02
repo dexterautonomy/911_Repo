@@ -51,14 +51,17 @@
                                     </div>
                                     
                                     <!--this na where the quote go come in-->
-                                    <div class="replyCover" th:if="${inbox.quoteInboxObject} != null" th:text="${inbox.quoteInboxObject.replyquote.content}"></div>
-                                    <div class="list-group-item-text justify smallfont3A" th:utext="${inbox.content}"></div><br/>
+                                    <div class="autoOverflow">
+                                        <div class="replyCover" th:if="${inbox.quoteInboxObject} != null" th:text="${inbox.quoteInboxObject.replyquote.content}"></div>
+                                    </div>
                                     
-                                    <div class="row list-group-item-text" th:each="inboxreply : ${inbox.reply}">
-                                        <div class="col-xs-1">
+                                    <div class="list-group-item-text justify smallfont3A" th:utext="${inbox.content}"></div>
+                                    
+                                    <div class="media list-group-item-text" th:each="inboxreply : ${inbox.reply}">
+                                        <div class="media-top media-left">
                                             <img class="readerImage2" src="" th:src="@{/files/system_img/logo.jpg}" alt="onenaijalogo"/>
                                         </div>
-                                        <div class="col-xs-10 justify panel panel-body postsubcomment_body2">
+                                        <div class="media-body justify panel panel-body" th:classappend="${inboxreply.userRead} == '0' ? 'unreadSub' : 'postsubcomment_body2'">
                                             <div class="autoOverflow">
                                                 <span class="postcomment_username">Admin</span>
                                                 <span class="postcomment_duration smallfont" th:text="${inboxreply.duration}"></span>
@@ -67,10 +70,13 @@
                                             <div class="smallfont3" th:utext="${inboxreply.content}" style="color: black;"></div><br/>
                                             <div class="smallfont">
                                                 <a th:href="@{/user/inbox_rkt_(rid=${inboxreply.id}, pgn=${pgn}, akt=rep_)}">
-                                                    <span style="color: blue;" class="glyphicon glyphicon-share-alt"></span>&nbsp;<span>Reply</span>&nbsp;&nbsp;
+                                                    <span style="color: blue;" class="glyphicon glyphicon-share-alt"></span>&nbsp;<span>Reply</span>&nbsp;&nbsp;&nbsp;
+                                                </a>
+                                                <a th:href="@{/user/inbox_rkt_(rid=${inboxreply.id}, pgn=${pgn}, akt=_viewmark_)}" th:if="${inboxreply.userRead} == '0'">
+                                                    <span style="color: black;" class="glyphicon glyphicon-eye-open"></span>&nbsp;<span>Mark</span>&nbsp;&nbsp;&nbsp;
                                                 </a>
                                                 <a th:href="@{/user/inbox_rkt_(rid=${inboxreply.id}, pgn=${pgn}, akt=dlt_Mz)}">
-                                                <span style="color: red;" class="glyphicon glyphicon-trash"></span>&nbsp;<span></span>
+                                                    <span style="color: red;" class="glyphicon glyphicon-trash"></span>&nbsp;<span>Delete</span>
                                                 </a>
                                             </div>
                                         </div>

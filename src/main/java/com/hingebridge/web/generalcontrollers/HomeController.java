@@ -303,8 +303,7 @@ public class HomeController
                 {
                     String[] hideBlocks = {"firstBlock"};
                     utc.dispBlock(model, "secondBlock", hideBlocks);
-                    utc.modelUser(model);
-                    utc.modelTransfer(model);
+                    utc.userModel(model);
                     
                     boolean postExist = fpdor.getReadPostObject(id.get(), utc.getUser().getId());
                     if(!postExist)
@@ -326,10 +325,9 @@ public class HomeController
                 {
                     if(utc.getUser().getId().equals(pc.get().getUser_id()))
                     {
-                        String[] hideBlocks = {"firstBlock", "secondBlock"};
+                        String[] hideBlocks = {"firstBlock", "secondBlock", "fourthBlock"};
                         utc.dispBlock(model, "thirdBlock", hideBlocks);
-                        utc.modelUser(model);
-                        utc.modelTransfer(model);
+                        utc.userModel(model);
                         model.addAttribute("postclass", new PostClass());
                         model.addAttribute("unapprovedPost", pc.get());
                         model.addAttribute("pgn", pgnx.orElse(1));

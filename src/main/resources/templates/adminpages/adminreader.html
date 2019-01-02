@@ -52,14 +52,14 @@
                             </li>
                         </ul>
                         
-                        <div th:each="comment : ${commentsExt}">
-                            <div class="row">
-                                <div class="col-xs-1">
+                        <div th:each="comment : ${commentsExt}" class="mediaExposed">
+                            <div class="media smallPadding">
+                                <div class="media-left media-top">
                                     <a th:href="@{_src_admin_math_physics(usr=${comment.usertwo.id})}">
                                         <img th:classappend="${comment.usertwo.colorclass}" class="readerImage1" src="" th:src="@{'/files/profile_img/' + ${comment.usertwo.pix}}" th:alt="${comment.usertwo.username + ' pic'}"/>
                                     </a>
                                 </div>
-                                <div class="col-xs-10 justify panel panel-body postcomment_body">
+                                <div class="justify panel panel-body postcomment_body media-body">
                                     <div style="overflow: auto;">
                                         <a th:href="@{_src_admin_math_physics(usr=${comment.usertwo.id})}">
                                             <span class="postcomment_username" th:text="${comment.usertwo.username} == ${session.username} ? 'Admin' : ${'@' + comment.usertwo.username}"></span>&nbsp;&nbsp;&nbsp;
@@ -115,13 +115,13 @@
                                     </div>
                                     
                                     <div>
-                                        <div class="row" th:each="subcom : ${comment.subcomment}">
-                                            <div class="col-xs-1">
+                                        <div class="media smallPadding" th:each="subcom : ${comment.subcomment}">
+                                            <div class="media-left media-top">
                                                 <a th:href="@{_src_admin_math_physics(usr=${subcom.userthree.id})}">
                                                     <img th:classappend="${subcom.userthree.colorclass}" class="readerImage2" src="" th:src="@{'/files/profile_img/' + ${subcom.userthree.pix}}" th:alt="${subcom.userthree.username + ' pic'}"/>
                                                 </a>
                                             </div>
-                                            <div class="col-xs-10 justify panel panel-body postsubcomment_body">
+                                            <div class="media-body justify panel panel-body postsubcomment_body">
                                                 <div style="overflow: auto;">
                                                     <a th:href="@{_src_admin_math_physics(usr=${subcom.userthree.id})}">
                                                         <span class="postcomment_username" th:text="${subcom.userthree.username} == ${session.username} ? 'Admin' : ${'@' + subcom.userthree.username}"></span>&nbsp;&nbsp;&nbsp;

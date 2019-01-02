@@ -2,8 +2,10 @@ package com.hingebridge.utility;
 
 import com.hingebridge.model.CommentClass;
 import com.hingebridge.model.FollowerObject;
+import com.hingebridge.model.InboxObject;
 import com.hingebridge.model.MessageObject;
 import com.hingebridge.model.PostClass;
+import com.hingebridge.model.ReplyObject;
 import com.hingebridge.model.SubCommentClass;
 import com.hingebridge.model.UserClass;
 import com.hingebridge.repository.AdvertObjectRepo;
@@ -467,30 +469,37 @@ public class UtilityClass
         session.setAttribute("commentBan", getUser().getCommentban());
     }
     
-    public void modelUser(ModelMap model)
+    public void userModel(ModelMap model)
     {
         model.addAttribute("user", getUser());
+        model.addAttribute("bize", getUnreadInbox(model)); //bize is inbox size
+        model.addAttribute("size", getMessageObjSize(model)); //size is message/notification size
+        model.addAttribute("pize", getFollowedPostSize(model)); //pize is followedpost size
+        model.addAttribute("tize", pcr.getAllMyPost(getUser().getId()).size()); //tize is trend size
     }
     
     public long getMessageObjSize(ModelMap model)
     {
         long size;
+        long count = 0;
         List<MessageObject> mo = mobjr.getMyMessage(getUser().getId());
-        List<MessageObject> unReadMessagesList = new LinkedList<>();
+        //List<MessageObject> unReadMessagesList = new LinkedList<>();
         if(!mo.isEmpty())
         {
             for(MessageObject mObj : mo)
             {
                 if(mObj.getUnread().equals("unread"))
                 {
-                    unReadMessagesList.add(mObj);
+                    count++;
+                    //unReadMessagesList.add(mObj);
                 }
             }
         
-            if(!unReadMessagesList.isEmpty())
+            if(count != 0)//if(!unReadMessagesList.isEmpty())
             {
-                size = unReadMessagesList.size();
-                model.addAttribute("unReadMessages", "alertNote");
+                size = count;
+                //size = unReadMessagesList.size();
+                model.addAttribute("orangeAlertNotification", "alertNote");
             }
             else
             {
@@ -504,20 +513,90 @@ public class UtilityClass
         return size;
     }
     
+    public long getUnreadInbox(ModelMap model)
+    {
+        long size;
+        long count = 0;
+        List<InboxObject> io = getUser().getInboxObject();
+        
+        if(!io.isEmpty())
+        {
+            for(InboxObject iObj : io)
+            {
+                for(ReplyObject ro: iObj.getReply())
+                {
+                    if(ro.getUserRead() == 0)
+                    {
+                        count++;
+                    }
+                }
+            }
+            
+            if(count != 0)
+            {
+                size = count;
+                model.addAttribute("orangeAlertInbox", "alertNote");
+            }
+            else
+            {
+                size = io.size();
+            }
+        }
+        else
+        {
+            size = 0l;
+        }
+        return size;
+    }
+    
+    public long getAdminUnreadInbox(ModelMap model)
+    {
+        long size;
+        long count = 0;
+        List<InboxObject> io = ior.getAdminInboxSize();
+        
+        if(!io.isEmpty())
+        {
+            for(InboxObject iObj : io)
+            {
+                if(iObj.getAdminRead() == 0)
+                {
+                    count++;
+                }
+            }
+            
+            if(count != 0)
+            {
+                size = count;
+                model.addAttribute("adminOrangeAlertInbox", "alertNote");
+            }
+            else
+            {
+                size = io.size();
+            }
+        }
+        else
+        {
+            size = 0l;
+        }
+        return size;
+    }
+    
     public long getFollowedPostSize(ModelMap model)
     {
         long size;
+        long count = 0;
         LinkedList<PostClass> pcList = new LinkedList<>();
-        LinkedList<PostClass> unReadPcList = new LinkedList<>();
-        List<FollowerObject> followedObj = fobjr.getSelectedFollow(getUser().getId());
+        //LinkedList<PostClass> unReadPcList = new LinkedList<>();
+        List<FollowerObject> followedObj = fobjr.getSelectedFollow(getUser().getId()); //Gets the people you are following
         
         if(!followedObj.isEmpty())
         {
-            List<PostClass> po = pcr.followersPost(followedObj);
+            List<PostClass> po = pcr.followersPost(followedObj);  //Gets the post of people you are following
             
             for(PostClass pClass : po)
             {
-                boolean var = fpdor.getDeletedPostObject(pClass.getId(), getUser().getId());
+                boolean var = fpdor.getDeletedPostObject(pClass.getId(), getUser().getId());  //If you have not deleted any of the post
                     
                 if(!var)
                 {
@@ -527,22 +606,22 @@ public class UtilityClass
             
             if(!pcList.isEmpty())
             {
-                //size = pcList.size();
-                
                 for(PostClass pcObj : pcList)
                 {
-                    boolean var = fpdor.getReadPostObject(pcObj.getId(), getUser().getId());
+                    boolean var = fpdor.getReadPostObject(pcObj.getId(), getUser().getId());  //Since you have not deleted these, have you read them yet??
                     
-                    if(!var)
+                    if(!var)  //You have not read them
                     {
-                        unReadPcList.add(pcObj);
+                        count++;
+                        //unReadPcList.add(pcObj);
                     }
                 }
         
-                if(!unReadPcList.isEmpty())
+                if(count != 0)//if(!unReadPcList.isEmpty())
                 {
-                    size = unReadPcList.size();
-                    model.addAttribute("unReadPosts", "alertNote");
+                    size = count;
+                    //size = unReadPcList.size();
+                    model.addAttribute("orangeAlertFollowedPost", "alertNote");
                 }
                 else
                 {
@@ -559,20 +638,6 @@ public class UtilityClass
             size = 0l;
         }
         return size;
-    }
-    
-    public long getMyTrendSize()
-    { 
-        List<PostClass> trendSize = pcr.getAllMyPost(getUser().getId());
-        return trendSize.size();
-    }
-    
-    public void modelTransfer(ModelMap model)
-    {
-        model.addAttribute("bize", getUser().getInboxObject().size()); //bize is inbox size
-        model.addAttribute("size", getMessageObjSize(model)); //size is message/notification size
-        model.addAttribute("pize", getFollowedPostSize(model)); //pize is followedpost size
-        model.addAttribute("tize", getMyTrendSize()); //tize is trend size
     }
     
     public void updateInbox(MessageObjectRepo mobjr, long user_id, long commentid, String postlink)
@@ -733,7 +798,7 @@ public class UtilityClass
     public void adminModel(ModelMap model)
     {
         model.addAttribute("user", getUser());
-        model.addAttribute("allInbox", ior.getAdminInboxSize().size());
+        model.addAttribute("allInbox", getAdminUnreadInbox(model));
         model.addAttribute("allusers", ucr.findAll().size());
         model.addAttribute("allAds", aor.getAdminAdvertList().size());
     }
