@@ -22,6 +22,14 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -64,6 +72,17 @@ public class UtilityClass
     @Value("${value.j}")
     private int j;
     */
+    @Value("${hosting.context.path}")
+    String contextPath;
+            
+    @Value("${gmail.username}")
+    String mailUsername;
+    @Value("${gmail.password}")
+    String mailPassword;
+    @Value("${smtp.server.host}")
+    String mailHost;
+    @Value("${smtp.server.port}")
+    String mailPort;
     
     @Autowired
     private UserClassRepo ucr;
@@ -93,6 +112,11 @@ public class UtilityClass
     public String getFilePath()
     {
         return filePath;
+    }
+    
+    public String getAppContextPath()
+    {
+        return contextPath;
     }
     
     public String getDate()
@@ -802,4 +826,37 @@ public class UtilityClass
         model.addAttribute("allusers", ucr.findAll().size());
         model.addAttribute("allAds", aor.getAdminAdvertList().size());
     }
+    
+    public void sendMail(String recipient, String confirmation, String info, String action)
+    {
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", mailHost);
+        props.put("mail.smtp.port", mailPort);
+        
+        Session session = Session.getInstance(props, new javax.mail.Authenticator() // Get the Session object.
+        {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication()
+            {
+                return new PasswordAuthentication(mailUsername, mailPassword);
+            }
+        });
+
+        try
+        {
+            Message message = new MimeMessage(session); // Create a default MimeMessage object.
+            message.setFrom(new InternetAddress(mailUsername)); // Set From: header field of the header.
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient)); // Set To: header field of the header.
+	    message.setSubject("E-mail Confirmation"); // Set Subject: header field
+            
+            message.setContent(info + "<h2><a style='text-decoration: none;' href='"+confirmation+"'>"+action+"</a></h2>", "text/html"); // Now set the actual message
+            Transport.send(message); // Send message
+        }
+        catch (MessagingException ex)
+        {
+            throw new RuntimeException(ex);
+        }
+   }
 }

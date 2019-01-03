@@ -47,6 +47,18 @@
                             </div><br/><br/>
                         </form>
                     </div>
+                    
+                    <div th:if="${userclass} != null">
+                        <form th:action="@{/_res_akt}" method="POST" th:object="${userclass}">
+                            <div class="form-group">
+                                <input class="form-control" type="text" th:field="*{username}" readonly=""/><br/>
+                                <input class="form-control" type="email" th:field="*{email}" readonly=""/><br/>
+                                <input class="form-control" type="password" th:field="*{password}" placeholder="Reset password" required=""/><br/>
+                                
+                                <input class="btn btn-success" type="submit" value="Reset"/><br/><br/>
+                	    </div>
+                        </form>
+                    </div>
 
                 </div>
                 <div class="col-sm-3"></div>

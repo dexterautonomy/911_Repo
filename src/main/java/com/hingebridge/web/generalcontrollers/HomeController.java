@@ -36,6 +36,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class HomeController
@@ -104,7 +105,8 @@ public class HomeController
 	return "pages/loginpage";
     }
     
-    @GetMapping("rtv")
+    //4-Stage password reset algorithm
+    @GetMapping("rtv") //Gets the password reset page
     public String retrieve(ModelMap model)
     {
         String[] hideBlocks = {"firstBlock"};
@@ -113,16 +115,34 @@ public class HomeController
 	return "pages/loginpage";
     }
     
-    @PostMapping("rtv_")
-    public String retrieveDetails(@RequestParam("email")String email, ModelMap model)
+    @PostMapping("rtv_")  //Fill in the form by providing your registered email
+    public String retrieveDetails(@RequestParam("email")String email, ModelMap model, HttpServletRequest req)
     {
-        String[] hideBlocks = {"secondBlock"};
-        utc.dispBlock(model, "firstBlock", hideBlocks);
+        String[] hideBlocks = {"firstBlock"};
+        utc.dispBlock(model, "secondBlock", hideBlocks);
         
-        if(utc.emailExists(email))
+        if(utc.emailExists(email)) //If email exists
         {
+            String date = utc.getDate();  //Extra check for link
+            BCryptPasswordEncoder bCrypt = new BCryptPasswordEncoder(); //Encoder for email and date on link
             //This is where you use the Java mail API again to send the details to the provided mail
-            model.addAttribute("error", "A message has been sent to your mail");
+            HttpSession session = req.getSession();
+            session.setAttribute("lostAccountEmail", email);  //Puts plain email on session
+            session.setAttribute("dateApplied", date);  //Puts the plain date on session too, this will be encrypted and compared with the one clicked on link sent to email provided
+            
+            String encodedEmail = bCrypt.encode(email);
+            String encodedDate = bCrypt.encode(date);
+            
+            //session.setAttribute("encodedEmail", encodedEmail);
+            //session.setAttribute("encodedDate", encodedDate);
+            
+            String info = "Please click the link below to reset your password.<br/>";
+            String action = "Reset password";
+            
+            String link = utc.getAppContextPath() + "rtv_2?q_=" + encodedEmail + "&_z="+encodedDate;  //rtv_2: second stage retreival endpoint
+            
+            utc.sendMail(email, link, info, action);  //Sends the message/mail
+            model.addAttribute("error", "A message has been sent to your mail");  //Notification
         }
         else
         {
@@ -131,7 +151,71 @@ public class HomeController
         
 	return "pages/loginpage";
     }
+    
+    @GetMapping("rtv_2")  //Email confirmation
+    public String retrieveDetails2(@RequestParam("q_")String email, @RequestParam("_z")String date, ModelMap model, HttpServletRequest req, 
+            RedirectAttributes ra)
+    {
+        HttpSession session = req.getSession();
+        String lostEmail = (String)session.getAttribute("lostAccountEmail");
+        String lostDate = (String)session.getAttribute("dateApplied");
+        BCryptPasswordEncoder bCrypt = new BCryptPasswordEncoder();
+        
+        if(lostEmail != null && lostDate != null)
+        {
+            //if(email.equals(bCrypt.encode(lostEmail)) && date.equals(bCrypt.encode(lostDate)))
+            if(bCrypt.matches(lostEmail, email) && bCrypt.matches(lostDate, date))
+            {
+                Optional<UserClass> uc = ucr.findByEmail(lostEmail);  //find the owner by email provided
+                UserClass uClass = new UserClass();  //To allow password resetting by providing the username already
+                uClass.setUsername(uc.get().getUsername()); //sets the username on the page already
+                uClass.setEmail(uc.get().getEmail()); //sets the username on the page already
+                model.addAttribute("userclass", uClass);  //The form backing object
+                String[] hideBlock = {"firstBlock", "secondBlock"};  //Hides the firstBlock and secondBlock two blocks
+                utc.dispBlock(model, "", hideBlock);  //I used a th:if so no need for thirdBlock
+            }
+            else
+            {
+                return "redirect:/login";
+            }
+        }
+        else
+        {
+            return "redirect:/login";
+        }
+        
+	return "pages/loginpage";
+    }
 	
+    @PostMapping("_res_akt")
+    public String resetPassowordProper(@ModelAttribute("userclass")UserClass uClass, ModelMap model, 
+    RedirectAttributes ra, HttpServletRequest req)
+    {
+        BCryptPasswordEncoder bCrypt = new BCryptPasswordEncoder();
+        model.addAttribute("userclass", uClass);
+        String[] hideBlock = {"firstBlock", "secondBlock"};
+        utc.dispBlock(model, "", hideBlock);
+        
+        if(!utc.passwordCheck(uClass.getPassword()))
+        {
+            HttpSession session = req.getSession();
+            String pswd = bCrypt.encode(uClass.getPassword());
+            Optional<UserClass> uc = ucr.findByUsername(uClass.getUsername());
+            uc.get().setPassword(pswd);
+            ucr.save(uc.get());
+            ra.addFlashAttribute("error", "Password resetted successfully");
+            session.invalidate();
+            return "redirect:/login";
+        }
+        else
+        {
+            model.addAttribute("error", "Password must be 8 characters or more");
+        }
+        
+	return "pages/loginpage";
+    }
+            
+            
     @GetMapping("signup")
     public String signUp(ModelMap model)
     {
@@ -145,7 +229,6 @@ public class HomeController
         aac.displayAdvert(model);   //This line is for adverts
         session = req.getSession();
         
-        String ret = "pages/signup";
         String username = uc.getUsername().trim().toLowerCase();
         String password = uc.getPassword();
         String email = uc.getEmail();
@@ -177,12 +260,17 @@ public class HomeController
                                 the 'active' parameter is set to 1 here.
                                 String confirmation= "http://localhost:8090/9jaforum/reg_2/"+uc.getUsername()+"/"+uc.getPassword()+"/"+uc.getEmail()+"/"+"/"+uc.getConfirmemail()+"/"+uc.getGender();
                             */
+                            String url = "reg_2/?id_tk="+username+"&u_tk="+encodedPassword+"&e_tk="+email+"&c_tk="+encodedUsernameAsEmail+"&x_tk="+gender;
+                            String confirmation = utc.getAppContextPath() + url;
+
+                            //String confirmation = "http://localhost:8090/9jaforum/reg_2/?" + url;
+                            //model.addAttribute("check", confirmation);  //This is for testing purpose
                             
-                            String url = "id_tk="+username+"&u_tk="+encodedPassword+"&e_tk="+email+"&c_tk="+encodedUsernameAsEmail+"&x_tk="+gender;
-                            String confirmation = "http://localhost:8090/9jaforum/reg_2/?" + url;
-                            model.addAttribute("check", confirmation);  //This is for testing purpose
-                        
-                            ret = "pages/home";
+                            String info = "Please click the link below to complete your registration.<br/>";
+                            String action = "Complete registration";
+                            
+                            utc.sendMail(email, confirmation, info, action);  //This is the Java mail API
+                            model.addAttribute("error", "Please click the link sent to your mail");
                         }
                         else
                         {
@@ -210,12 +298,13 @@ public class HomeController
         }
         
 	
-	return ret;
+	return "pages/signup";
     }
 	
     @GetMapping("reg_2")
     public String register2(@RequestParam("id_tk")String username, @RequestParam("u_tk")String password, @RequestParam("e_tk")String email, 
-    @RequestParam("c_tk")String confirmemail, @RequestParam("x_tk")String gender, HttpServletRequest req, HttpSession session, ModelMap model)
+    @RequestParam("c_tk")String confirmemail, @RequestParam("x_tk")String gender, HttpServletRequest req, HttpSession session, ModelMap model, 
+    RedirectAttributes ra)
     {
         aac.displayAdvert(model);   //This line is for adverts
         
@@ -243,6 +332,7 @@ public class HomeController
 				Optional<UserClass> uc2=ucr.findByUsername(username);
 						
 				urcr.save(new UserRoleClass(uc2.get().getId(), role.getId()));
+                                ra.addFlashAttribute("error", "Registration complete, you can login now");
                             }
                             else
                             {
@@ -273,7 +363,7 @@ public class HomeController
 	{
             model.addAttribute("check", "Session has expired");
 	}
-	return "pages/home";
+	return "redirect:/login";
     }
     
     @GetMapping("/s_ch")
