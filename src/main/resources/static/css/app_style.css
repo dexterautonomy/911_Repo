@@ -128,22 +128,6 @@ div.commentBck2 a:hover
 {
     text-decoration: none;
 }
-/*
-.uploadbtnwrapper
-{
-    position: relative;
-    overflow: hidden;
-    display: inline-block;
-}
-
-.uploadbtnfile
-{
-    position: absolute;
-    left: 0;
-    right: 0;
-    opacity: 0;
-}
-*/
 
 .realcentertinz
 {
@@ -597,6 +581,10 @@ a.unreadFollow:hover
     color: red;
 }
 
+.blueColor
+{
+    color: blue;
+}
 .greenBack
 {
     color: green;
@@ -724,4 +712,57 @@ a:hover
     margin-top: 5px;
     margin-bottom: 10px;
     font-size: 12px;
+}
+
+
+
+
+.aaa
+{
+    width: 95%;
+    float: left;
+}
+
+.bbb
+{
+    width: 4%;
+    float: right;
+    font-size: 12px;
+}
+
+.ccc
+{
+    overflow: auto;
+    padding: 10px;
+}
+
+
+.uploadbtnwrapper
+{
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+}
+
+/*
+.uploadbtn
+{
+    border: 2px solid grey;
+    color: grey;
+    background-color: white;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 20px;
+}
+*/
+
+.uploadbtnwrapper input[type = file]
+{
+    font-size: 5px;
+    padding: 10px 5px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
 }

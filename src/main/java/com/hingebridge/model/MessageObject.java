@@ -14,7 +14,7 @@ public class MessageObject implements Serializable
     @Column(name = "recipient_id")
     private long recipient_id;
     @Column(name = "flag")
-    private int flag = 1;
+    private int flag = 0;
     @Column(name = "postlink")
     private String postlink;
     @Column(name = "unread")

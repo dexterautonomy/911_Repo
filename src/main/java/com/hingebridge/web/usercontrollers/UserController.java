@@ -301,6 +301,7 @@ public class UserController
                                         model.addAttribute("alert", "Cover Image name too long (less than 50 characters)");
                                     }
                                 }
+                                //At this point make only memelogic upload cover image
                                 else if(coverFile.getSize() == 0)   //why not use coverFile.isEmpty()
                                 {
                                     String coverFileName = "empty.png";
@@ -465,6 +466,7 @@ public class UserController
                                         model.addAttribute("alert", "Cover Image name too long (less than 50 characters)");
                                     }
                                 }
+                                //At this point make only memelogic upload cover image
                                 else if(coverFile.getSize() == 0)   //why not use coverFile.isEmpty()
                                 {
                                     String coverFileName = "empty.png";
@@ -734,13 +736,23 @@ public class UserController
                 
                     if(userrank >= pc.get().getPostrank())
                     {
-                        model.addAttribute("postclass", new PostClass());
-                        model.addAttribute("pos", post_id.get());
-                        model.addAttribute("cid", comment_id.get());
-                        model.addAttribute("t", title.get());
-                        model.addAttribute("p", pg.get());
-                        model.addAttribute("page", commentPaginate.get());
-                        ret = "pages/subcommentpage";
+                        Optional<CommentClass> cClass = ccr.findById(comment_id.get());
+                        
+                        if(cClass.get().getSubcomment().size() != 10)
+                        {
+                            model.addAttribute("postclass", new PostClass());
+                            model.addAttribute("pos", post_id.get());
+                            model.addAttribute("cid", comment_id.get());
+                            model.addAttribute("t", title.get());
+                            model.addAttribute("p", pg.get());
+                            model.addAttribute("page", commentPaginate.get());
+                            ret = "pages/subcommentpage";
+                        }
+                        else
+                        {
+                            String alert = "Limit exceeded";
+                            ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                        }
                     }
                     else
                     {
@@ -1429,7 +1441,7 @@ public class UserController
                             }
                             else
                             {
-                                Optional<CommentClass> cc = ccr.findById(comment_id.get());
+                                Optional<CommentClass> cc = ccr.findById(comment_id.get());  //Comment you are subcommenting on
                                 SubCommentClass scc;
                                 
                                 if(utc.getUser().getId().equals(cc.get().getUser_id()))  //No need marking your comment as unread na, abi no be you write am??
@@ -1445,7 +1457,7 @@ public class UserController
                                 
                                 //Notify the owner of the comment here: Very important
                                 String postlink = "s_ch?pos="+post_id.get()+"&t="+title.get()+"&p="+pg.get()+"&cid="+comment_id.get()+"#"+comment_id.get();
-                                utc.updateInbox(mobjr, cc.get().getUser_id(), comment_id.get(), postlink);
+                                utc.updateInbox(cc.get().getUser_id(), comment_id.get(), postlink);
                                 
                                 return "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx=Posted";
                             }

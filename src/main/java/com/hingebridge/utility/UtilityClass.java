@@ -491,6 +491,7 @@ public class UtilityClass
         session.setAttribute("username", getUser().getUsername());
         session.setAttribute("usercolorclass", getUser().getColorclass());
         session.setAttribute("commentBan", getUser().getCommentban());
+        session.setAttribute("myRank", getUser().getUserrank());
     }
     
     public void userModel(ModelMap model)
@@ -664,7 +665,7 @@ public class UtilityClass
         return size;
     }
     
-    public void updateInbox(MessageObjectRepo mobjr, long user_id, long commentid, String postlink)
+    public void updateInbox(long user_id, long commentid, String postlink)
     {
         Optional<MessageObject> mo = mobjr.findByCommentid(commentid);
         
@@ -676,12 +677,11 @@ public class UtilityClass
                 {
                     if(!getUser().getId().equals(mo.get().getRecipient_id()))   //No need notifying yourself on a subcomment you made na
                     {
-                        if(!mo.get().getUnread().equals("unread"))
+                        if(mo.get().getUnread().equals("read"))
                         {
                             mo.get().setUnread("unread");
                         }
                     
-                        mo.get().setFlag(1);
                         mobjr.save(mo.get());
                     }
                 }
@@ -691,9 +691,15 @@ public class UtilityClass
                 {
                     if(!getUser().getId().equals(mo.get().getRecipient_id()))   //No need notifying yourself on a subcomment you made na
                     {
-                        if(!mo.get().getUnread().equals("unread"))
+                        if(mo.get().getUnread().equals("read"))
                         {
+                            mo.get().setFlag(0);
                             mo.get().setUnread("unread");
+                            mobjr.save(mo.get());
+                        }
+                        else if(mo.get().getUnread().equals("unread"))
+                        {
+                            mo.get().setFlag(0);
                             mobjr.save(mo.get());
                         }
                     }
@@ -858,5 +864,5 @@ public class UtilityClass
         {
             throw new RuntimeException(ex);
         }
-   }
+    }
 }

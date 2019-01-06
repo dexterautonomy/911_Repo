@@ -2,7 +2,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title>9jaForum</title>
+        <title>Sumpis</title>
         <meta charset="UTF-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </head>
@@ -12,12 +12,12 @@
         <div th:fragment="headLogo">
             <div class="row">
                 <h1>
-                    <a><img class="appLogo" src="" th:src="@{/files/system_img/logo.jpg}" alt="onenaijalogo"/> DropBy</a>
+                    <a><img class="appLogo" src="" th:src="@{/files/system_img/logo.jpg}" alt="onenaijalogo"/> Sumpis</a>
                 </h1>
             </div>
         </div>
         
-        <div th:fragment="navigationHome"> 
+        <div th:fragment="navigationHome">
             <div class="row">
                 <nav class="navbar navbar-inverse container-fluid">
                     <ul class="nav navbar-nav">
@@ -28,11 +28,11 @@
                         <li><a><span class="glyphicon glyphicon-bookmark"></span>&nbsp;Poem/Sarcasm</a></li>
                         <li><a><span class="glyphicon glyphicon-adjust"></span>&nbsp;The Sexes</a></li>
                         
-                        <li><a th:href="@{/securedadminLogin/entry}"><span class="glyphicon glyphicon-adjust"></span>&nbsp;RemoveLater</a></li>
+                        <li><a th:href="@{/securedadminLogin/entry}"><span class="glyphicon glyphicon-adjust"></span>&nbsp;Admin</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li><a th:href="@{/user/login}"><span class="glyphicon glyphicon-log-in"></span>&nbsp;Login</a></li>
-                        <li><a th:href="@{/signup}"><span class="glyphicon glyphicon-user"></span>&nbsp;Sign Up</a></li>
+                        <li th:if="${session.username} == null"><a th:href="@{/signup}"><span class="glyphicon glyphicon-user"></span>&nbsp;Sign Up</a></li>
                     </ul>
                 </nav>
             </div>

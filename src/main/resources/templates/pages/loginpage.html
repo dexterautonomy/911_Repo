@@ -6,6 +6,10 @@
         <link rel="shortcut icon" type="image/x-icon" th:href="@{/files/system_img/logo.jpg}" href=""/>
         <meta charset="UTF-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        
+        <script th:src="@{/js/jQueryFile.js}" type="text/javascript"></script>
+        <script th:src="@{/js/app_js.js}" type="text/javascript"></script>
+        
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
         <link rel="stylesheet" th:href="@{/css/app_style.css}" href=""/>
     </head>
@@ -25,8 +29,8 @@
             <div class="row">
                 <div class="col-sm-3"></div>
                 <div class="col-sm-6">
-                    <p class="smallfont redColor" th:text="${error}"></p>
-                      
+                    <p id="info3" class="smallfont blueColor" th:text="${error}"></p>
+                    
                     <div th:classappend="${firstBlock}">
                         <form th:action="@{/j_spring_security_check}" method="POST">
                             <div class="form-group">
@@ -35,7 +39,7 @@
                                 <input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
                                 <input class="btn btn-success" type="submit" value="Login"/>
                             </div>
-                            <a th:href="@{/rtv}" class="smallfont redColor">Forgot username/password?</a><br/><br/>
+                            <a th:href="@{/rtv}" class="smallfont blueColor">Reset password</a><br/><br/>
                         </form>
                     </div>
                     
@@ -53,9 +57,9 @@
                             <div class="form-group">
                                 <input class="form-control" type="text" th:field="*{username}" readonly=""/><br/>
                                 <input class="form-control" type="email" th:field="*{email}" readonly=""/><br/>
-                                <input class="form-control" type="password" th:field="*{password}" placeholder="Reset password" required=""/><br/>
+                                <input id="resetPassword" class="form-control" type="password" th:field="*{password}" placeholder="Reset password" required=""/><br/>
                                 
-                                <input class="btn btn-success" type="submit" value="Reset"/><br/><br/>
+                                <input id="reset" class="btn btn-success" type="submit" value="Reset"/><br/><br/>
                 	    </div>
                         </form>
                     </div>

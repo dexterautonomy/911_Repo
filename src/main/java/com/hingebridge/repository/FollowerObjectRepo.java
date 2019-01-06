@@ -33,4 +33,8 @@ public interface FollowerObjectRepo extends JpaRepository<FollowerObject, Long>
         }
         return followOrnot;
     }
+    
+    @Query("SELECT fobj FROM FollowerObject fobj WHERE fobj.follower_id = :user_id AND fobj.flag = 1")
+    public List<FollowerObject> myFollowers(@Param("user_id")long user_id);
+    
 }

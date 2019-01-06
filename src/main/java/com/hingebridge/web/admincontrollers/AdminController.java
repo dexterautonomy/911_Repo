@@ -695,7 +695,7 @@ public class AdminController
                                 
                                 //Notify the owner of the comment here: Very important
                                 String postlink = "s_ch?pos="+post_id.get()+"&t="+title.get()+"&p="+pg.get()+"&cid="+comment_id.get()+"#"+comment_id.get();
-                                utc.updateInbox(mobjr, cc.get().getUser_id(), comment_id.get(), postlink);
+                                utc.updateInbox(cc.get().getUser_id(), comment_id.get(), postlink);
                                 
                                 return "redirect:b_ch_admin_backdoor?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx=Posted";
                             }

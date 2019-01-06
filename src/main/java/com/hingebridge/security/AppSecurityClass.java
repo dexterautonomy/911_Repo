@@ -41,7 +41,8 @@ public class AppSecurityClass extends WebSecurityConfigurerAdapter
         .defaultSuccessUrl("/")
         .and()
         .logout().deleteCookies("remove").invalidateHttpSession(true)
-        .logoutUrl("/j_spring_security_logout").logoutSuccessUrl("/");
+        .logoutUrl("/j_spring_security_logout").logoutSuccessUrl("/")
+                .and().csrf().disable();
     }
     
     /*

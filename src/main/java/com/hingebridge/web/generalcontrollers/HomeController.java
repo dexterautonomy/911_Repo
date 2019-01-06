@@ -31,11 +31,20 @@ import com.hingebridge.repository.UserClassRepo;
 import com.hingebridge.repository.UserRoleClassRepo;
 import com.hingebridge.utility.AdvertAlgorithmClass;
 import com.hingebridge.utility.UtilityClass;
+import java.io.File;
+import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -68,6 +77,7 @@ public class HomeController
         aac.displayAdvert(model);   //This line is for adverts
         
         session = req.getSession();
+        
         final int INITIAL_PAGE = 0;
         final int INITIAL_PAGE_SIZE = 5;    //pageSize is the offset
         int page = (page_1.orElse(0) < 1 ? INITIAL_PAGE : page_1.get() - 1);    //page is the LIMIT            
@@ -133,9 +143,6 @@ public class HomeController
             String encodedEmail = bCrypt.encode(email);
             String encodedDate = bCrypt.encode(date);
             
-            //session.setAttribute("encodedEmail", encodedEmail);
-            //session.setAttribute("encodedDate", encodedDate);
-            
             String info = "Please click the link below to reset your password.<br/>";
             String action = "Reset password";
             
@@ -176,11 +183,13 @@ public class HomeController
             }
             else
             {
+                ra.addFlashAttribute("error", "Broken link");
                 return "redirect:/login";
             }
         }
         else
         {
+            ra.addFlashAttribute("error", "Expired link");
             return "redirect:/login";
         }
         
@@ -204,7 +213,9 @@ public class HomeController
             uc.get().setPassword(pswd);
             ucr.save(uc.get());
             ra.addFlashAttribute("error", "Password resetted successfully");
-            session.invalidate();
+            //session.invalidate();   //Konfirm this line
+            session.removeAttribute("lostAccountEmail");
+            session.removeAttribute("dateApplied");
             return "redirect:/login";
         }
         else
@@ -217,10 +228,22 @@ public class HomeController
             
             
     @GetMapping("signup")
-    public String signUp(ModelMap model)
+    public String signUp(ModelMap model, HttpServletRequest req)
     {
-	model.addAttribute("signupobject", new UserClass());
-	return "pages/signup";
+        String ret;
+        HttpSession session = req.getSession();
+        String username = (String)session.getAttribute("username");
+        if(username != null)
+        {
+            ret = "redirect:/user/login";
+        }
+        else
+        {
+            model.addAttribute("signupobject", new UserClass());
+            ret = "pages/signup";
+        }
+        
+	return ret;
     }
 	
     @PostMapping("/reg_1")
@@ -248,11 +271,11 @@ public class HomeController
                     {
                         if(!utc.invalidEntry(password))
                         {
-                            session.setAttribute("username", username);
-                            session.setAttribute("password", encodedPassword);
-                            session.setAttribute("email", email);
-                            session.setAttribute("gender", gender);
-                            session.setAttribute("confirmemail", encodedUsernameAsEmail);
+                            session.setAttribute("usernameReg", username);
+                            session.setAttribute("passwordReg", encodedPassword);
+                            session.setAttribute("emailReg", email);
+                            session.setAttribute("genderReg", gender);
+                            session.setAttribute("confirmemailReg", encodedUsernameAsEmail);
 		
                             /*
                                 For JAVA MAIL SERVICE:
@@ -309,11 +332,11 @@ public class HomeController
         aac.displayAdvert(model);   //This line is for adverts
         
 	session = req.getSession();
-	String confirmemailx = (String)session.getAttribute("confirmemail");
-	String usernamex = (String)session.getAttribute("username");
-	String passwordx = (String)session.getAttribute("password");
-	String genderx = (String)session.getAttribute("gender");
-	String emailx = (String)session.getAttribute("email");
+	String confirmemailx = (String)session.getAttribute("confirmemailReg");
+	String usernamex = (String)session.getAttribute("usernameReg");
+	String passwordx = (String)session.getAttribute("passwordReg");
+	String genderx = (String)session.getAttribute("genderReg");
+	String emailx = (String)session.getAttribute("emailReg");
 		
 	if(confirmemailx != null && usernamex != null && passwordx != null && genderx != null && emailx != null)
 	{
@@ -333,35 +356,42 @@ public class HomeController
 						
 				urcr.save(new UserRoleClass(uc2.get().getId(), role.getId()));
                                 ra.addFlashAttribute("error", "Registration complete, you can login now");
+                                //session.invalidate();
+                                
+                                session.removeAttribute("usernameReg");
+                                session.removeAttribute("passwordReg");
+                                session.removeAttribute("emailReg");
+                                session.removeAttribute("genderReg");
+                                session.removeAttribute("confirmemailReg");
                             }
                             else
                             {
-				model.addAttribute("check", "E-mail was found to be inconsistent");
+				ra.addFlashAttribute("error", "E-mail was found to be inconsistent");
                             }
 			}
 			else
 			{
-                            model.addAttribute("check", "Gender was found to be inconsistent");
+                            ra.addFlashAttribute("error", "Gender was found to be inconsistent");
 			}
                     }
                     else
                     {
-                    	model.addAttribute("check", "Data was found to be inconsistent");
+                    	ra.addFlashAttribute("error", "Data was found to be inconsistent");
                     }
 		}
 		else
 		{
-                    model.addAttribute("check", "Username was found to be inconsistent");
+                    ra.addFlashAttribute("error", "Username was found to be inconsistent");
 		}
             }
             else
             {
-		model.addAttribute("check", "Data was found to be inconsistent");
+		ra.addFlashAttribute("error", "Data was found to be inconsistent");
             }
 	}
 	else
 	{
-            model.addAttribute("check", "Session has expired");
+            ra.addFlashAttribute("error", "Expired session");
 	}
 	return "redirect:/login";
     }
@@ -580,4 +610,103 @@ public class HomeController
         
         return ret;
     }
+    
+    @GetMapping("/ajaxUsernameCheck")
+    @ResponseBody
+    public String checkUsername(@RequestParam("username")String username)
+    {
+        String outcome = "";
+        
+        if(utc.usernameExists(username.toLowerCase()))
+        {
+            outcome = "username exists";
+        }
+        else if(utc.invalidEntry(username))
+        {
+            outcome = "invalid entry";
+        }
+        
+        return outcome;
+    }
+    
+    @GetMapping("/ajaxEmailCheck")
+    @ResponseBody
+    public String checkEmail(@RequestParam("email")String email)
+    {
+        String outcome = "";
+        
+        if(utc.emailExists(email))
+        {
+            outcome = "email exists";
+        }
+        
+        return outcome;
+    }
+    
+    @GetMapping("/ajaxPasswordCheck")
+    @ResponseBody
+    public String checkPassword(@RequestParam("password")String password)
+    {
+        String outcome = "";
+        
+        if(utc.passwordCheck(password))
+        {
+            outcome = "weak password";
+        }
+        else if(utc.invalidEntry(password))
+        {
+            outcome = "invalid entry";
+        }
+        
+        return outcome;
+    }
+    
+    /*
+    @RequestMapping("/ajaxDynamicFileUpload3")
+    @ResponseBody
+    public String dynamicUpload2nd(MultipartHttpServletRequest req)
+    {
+        try
+        {
+            String path = utc.getFilePath() + "dist_img";
+            Iterator<String> filename = req.getFileNames();
+            while(filename.hasNext())
+            {
+                MultipartFile mpf = req.getFile(filename.next());
+                if(mpf != null)
+                {
+                    File pathToFile=new File(path, mpf.getOriginalFilename());
+                    mpf.transferTo(pathToFile);
+                }
+            }
+            
+        }
+        catch (IOException | IllegalStateException ex)
+        {
+            Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return "success";
+    }
+    */
+    
+    @RequestMapping("/ajaxDynamicFileUpload")
+    @ResponseBody
+    public boolean dynamicUpload(@RequestParam("dynamicUpload")MultipartFile file)
+    {
+        try
+        {
+            String path = utc.getFilePath() + "dist_img";
+            File pathToFile = new File(path, file.getOriginalFilename());
+            file.transferTo(pathToFile);
+            
+        }
+        catch (IOException | IllegalStateException ex)
+        {
+            Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return true;
+    }
+    
 }

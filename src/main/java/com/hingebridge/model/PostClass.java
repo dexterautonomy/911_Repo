@@ -40,7 +40,7 @@ public class PostClass implements Serializable
     @Column(name = "content")
     private String content;
     @Column(name = "category")
-    private String category = "memelogic";
+    private String category = "mypost";
     
     @Transient
     private String duration;
