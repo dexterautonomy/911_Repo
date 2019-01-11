@@ -15,14 +15,7 @@
     </head>
     
     <body class="container">
-        <div class="hidden">
-            <!--For JQuery very important-->
-            <span id="sessionOn" th:text="${session.username} == null ? 'no session' : ${session.username}"></span>
-            <span id="userRank" th:text="${session.myRank}"></span>
-        </div>
-        
-        
-    <div class="col-sm-1"></div>
+        <div class="col-sm-1"></div>
     
     <div class="col-sm-10">
         <div th:include="pages/adfragments :: headLogo"/>
@@ -58,6 +51,17 @@
                         </div><br/>
 
                         <div id="dynamicFormDiv" class="hidden" style="margin: 0 auto; width: 90%">
+                            <div class="hidden">
+                                <!--For JQuery very important-->
+                                <span id="sessionOn" th:text="${session.username} == null ? 'no session' : ${session.username}"></span>
+                                <span id="userRank" th:text="${session.myRank}"></span>
+                                <span id="postid" th:text="${pos}"></span>
+                                <span id="title" th:text="${title}"></span>
+                                <span id="commentPaginate" th:text="${commentsExt.number + 1}"></span>
+                                <span id="pagePaginate" th:text="${pg}"></span>
+                            </div>
+                            
+                            
                             <form id="dynamicForm" action="" enctype="multipart/form-data" method="POST">
                                 <div>
                                     <textarea id="kontent" class="form-control" name="dynamicFormContent" placeholder="Comment" cols="20" rows="7" required="" maxlength="700"></textarea><br/>
@@ -65,8 +69,8 @@
                                 <div class="uploadbtnwrapper">
                                     <input id="addimg" class="btn btn-sm btn-default" name="dynamicFormFile" type="file" style="display: inline"/>
                                     <button class="btn btn-sm btn-info" name="doesNothing"><span class="glyphicon glyphicon-cloud-upload" style="display: inline"></span> Attach Image</button>
-                                    <button class="btn btn-sm btn-primary" name="smiley"><span class="glyphicon glyphicon-cloud-upload" style="display: inline"></span> Smileys</button>
-                                    <button id="dynamicSubmit" class="btn btn-sm btn-success" style="display: inline"><span class=" glyphicon glyphicon-send"> Post</span></button>
+                                    <button id="smiley" class="btn btn-sm btn-primary" name="smiley" style="display: inline"><span class="glyphicon glyphicon-cloud-upload"></span> Smileys</button>
+                                    <button id="dynamicSubmit" class="btn btn-sm btn-success" style="display: inline"><span class=" glyphicon glyphicon-send"></span> Post</button>
                                 </div>
                             </form>
                         </div>
@@ -91,7 +95,18 @@
                                             <span class="postcomment_username" th:text="${comment.usertwo.username} == ${session.username} ? 'Me' : ${'@' + comment.usertwo.username}"></span>&nbsp;&nbsp;&nbsp;
                                         </a>
                                         <span class="smallfontRank" th:text="${comment.commentrank} != 0 ? ${'CR: ' + comment.commentrank + '%'} : ''"></span>
-                                        <span class="postcomment_duration" th:text="${comment.duration}"></span>
+                                        <span class="postcomment_duration" >
+                                            <span th:text="${comment.duration}"></span>
+                                            <!--
+                                            <a th:href="@{user/cmt(akt=dlt_s, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg})}">
+                                                <span style="color: red;" class="glyphicon glyphicon-trash" th:classappend="${comment.usertwo.username} == ${session.username} ? '' : 'hidden'"></span>
+                                            </a>
+                                            &nbsp;&nbsp;
+                                            <a th:href="@{user/cmt(akt=dlt_sMod, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg})}">
+                                                <span style="color: blue;" class="glyphicon glyphicon-trash" th:classappend="${session.usercolorclass} == 'user_mod' ? '' : 'hidden'"></span>
+                                            </a>
+                                            -->
+                                        </span>
                                     </div>
                                     
                                     <div>
@@ -129,17 +144,19 @@
                                             <a th:if="${session.commentBan} != 1" th:href="@{user/cmt(akt=edit_s, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg})}">
                                                 <span style="color: grey;" class="glyphicon glyphicon-pencil" th:classappend="${comment.usertwo.username} == ${session.username} ? '' : 'hidden'"></span>&nbsp;&nbsp;&nbsp;
                                             </a>
+                                            
                                             <a th:href="@{user/cmt(akt=dlt_s, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg})}">
                                                 <span style="color: red;" class="glyphicon glyphicon-trash" th:classappend="${comment.usertwo.username} == ${session.username} ? '' : 'hidden'"></span>
                                             </a>
+                                            
                                         <span/>
+                                        
                                         
                                         <span style="float: right;">
                                             <a th:href="@{user/cmt(akt=dlt_sMod, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg})}">
                                                 <span style="color: blue;" class="glyphicon glyphicon-trash" th:classappend="${session.usercolorclass} == 'user_mod' ? '' : 'hidden'"></span>
                                             </a>
-                                        <span/><hr/>
-                                        
+                                        <span/><hr/>                                        
                                     </div>
                                     
                                     <div>

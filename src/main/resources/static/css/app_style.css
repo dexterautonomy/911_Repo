@@ -278,7 +278,7 @@ div.commentBck2 a:hover
 .unreadSub
 {
     margin-left: 25px;
-    border-radius: 10px;
+    border-radius: 5px;
     background-color: rgb(250, 240, 240);
     border: 1px solid rgb(250, 230, 230);
 }
@@ -295,7 +295,7 @@ div.commentBck2 a:hover
 {
     margin-left: 25px;
     border: 1px solid rgba(132,197,255,0.3);
-    border-radius: 10px;
+    border-radius: 5px;
     background-color: white;
 }
 
@@ -759,10 +759,10 @@ a:hover
 
 .uploadbtnwrapper input[type = file]
 {
-    font-size: 5px;
-    padding: 10px 5px;
     position: absolute;
     left: 0;
     top: 0;
     opacity: 0;
+    font-size: 5px;
+    padding: 10px 5px;
 }

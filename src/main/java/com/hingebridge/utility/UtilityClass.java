@@ -39,6 +39,7 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.StringUtils;
 
 @Component
 @PropertySource("classpath:application.properties")
@@ -864,5 +865,35 @@ public class UtilityClass
         {
             throw new RuntimeException(ex);
         }
+    }
+    
+    public boolean checkTag(String content)
+    {
+        boolean test = false;
+        int countOpeningtag = StringUtils.countOccurrencesOf(content, "<_");
+        int countClosingTag = StringUtils.countOccurrencesOf(content, "_>");
+        
+        if(countOpeningtag == countClosingTag)
+        {
+            if(content.lastIndexOf("_>") > content.lastIndexOf("<_"))
+            {
+                if(!content.contains("<script>") && !content.contains("</script>") && !content.contains("<script/>"))
+                {
+                    test = true;
+                }
+            }
+        }
+        return test;
+    }
+    
+    public boolean checkTag2(String title)
+    {
+        boolean test = false;
+        
+        if(!title.contains("<") && !title.contains(">"))
+        {
+            test = true;
+        }
+        return test;
     }
 }

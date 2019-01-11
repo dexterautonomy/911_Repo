@@ -48,6 +48,7 @@ import com.hingebridge.repository.SubCommentClassRepo;
 import com.hingebridge.repository.SubCommentReactionClassRepo;
 import com.hingebridge.repository.UserClassRepo;
 import com.hingebridge.utility.AdvertAlgorithmClass;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @PreAuthorize("hasRole('USER')")
 @Controller
@@ -195,6 +196,18 @@ public class UserController
                 pc.setRank(rankMyPost);
                 PostClass postClass = null;
                 //Long user_id = utc.getUser().getId();
+                
+                if(!utc.checkTag2(title))  //Arrange this well
+                {
+                    model.addAttribute("alert", "Title must not contain < or >");
+                    return "pages/userpage";
+                }
+                
+                if(!utc.checkTag(content))  //Arrange this well
+                {
+                    model.addAttribute("alert", "Some tags are not properly closed [<_ must end with _>]");
+                    return "pages/userpage";
+                }
                 
                 content=content.replaceAll("<_", "<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
                 content=content.replaceAll("_>", "'/><br/><br/>");
@@ -1324,9 +1337,20 @@ public class UserController
                     {
                         pc.setContent(content);
                 
+                        if(!utc.checkTag(content))  //Arrange this well
+                        {
+                            model.addAttribute("pos", post_id.get());
+                            model.addAttribute("t", title.get());
+                            model.addAttribute("p", pg.get());
+                            model.addAttribute("page", commentPaginate.get());
+                            
+                            model.addAttribute("alert", "Some tags are not properly closed [<_ must end with _>]");
+                            return "pages/commentpage";
+                        }
+                        
                         content=content.replaceAll("<_", "<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
                         content=content.replaceAll("_>", "'/><br/><br/>");
-                
+                        
                         if(!content.matches("\\s*"))
                         {
                             if(content.length() > 1500)
@@ -1424,6 +1448,18 @@ public class UserController
                     {
                         pc.setContent(content);
                 
+                        if(!utc.checkTag(content))  //Arrange this well
+                        {
+                            model.addAttribute("pos", post_id.get());
+                            model.addAttribute("cid", comment_id.get());
+                            model.addAttribute("t", title.get());
+                            model.addAttribute("p", pg.get());
+                            model.addAttribute("page", commentPaginate.get());
+                            
+                            model.addAttribute("alert", "Some tags are not properly closed [<_ must end with _>]");
+                            return "pages/subcommentpage";
+                        }
+                        
                         content=content.replaceAll("<_", "<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
                         content=content.replaceAll("_>", "'/><br/><br/>");
                 
@@ -2576,10 +2612,20 @@ public class UserController
         
         if(content.length() < 701)
         {
-            InboxObject io = new InboxObject(utc.getUser().getId(), utc.getDate(), content);
-            ior.save(io);
-            ra.addFlashAttribute("alert", "Sent");
-            return "redirect:mail_us";
+            if(utc.checkTag2(content))
+            {
+                InboxObject io = new InboxObject(utc.getUser().getId(), utc.getDate(), content);
+                ior.save(io);
+                ra.addFlashAttribute("alert", "Sent");
+                return "redirect:mail_us";
+            }
+            else
+            {
+                pc.setContent(content);
+                model.addAttribute("postclass", pc);
+                model.addAttribute("alert", "< and > are not allowed here");
+                return "pages/userpage";
+            }
         }
         else
         {
@@ -2762,5 +2808,23 @@ public class UserController
         }
         
         return "redirect:inbox?pg="+page.get();
+    }
+    
+    @RequestMapping("/userAjaxDynamicFileUpload")
+    @ResponseBody
+    public boolean userAjaxDynamicFileUpload(@RequestParam("userDynamicUpload")MultipartFile file)
+    {
+        try
+        {
+            String path = utc.getFilePath() + "dist_img";
+            File pathToFile = new File(path, file.getOriginalFilename());
+            file.transferTo(pathToFile);
+        }
+        catch (IOException | IllegalStateException ex)
+        {
+            Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return true;
     }
 }

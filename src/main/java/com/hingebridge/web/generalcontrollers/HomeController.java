@@ -1,6 +1,8 @@
 package com.hingebridge.web.generalcontrollers;
 
+import com.google.gson.Gson;
 import com.hingebridge.model.CommentClass;
+import com.hingebridge.model.DynamicContent;
 import com.hingebridge.model.FollowedPostDeleteObject;
 import com.hingebridge.model.MessageObject;
 import com.hingebridge.model.PagerModel;
@@ -407,7 +409,7 @@ public class HomeController
         String ret = null;
         
         final int INITIAL_PAGE = 0;
-        final int INITIAL_PAGE_SIZE = 15;    //pageSize is the offset
+        final int INITIAL_PAGE_SIZE = 1;    //pageSize is the offset
         int page = (commentPaginate.orElse(0) < 1 ? INITIAL_PAGE : commentPaginate.get() - 1);    //page is the LIMIT            
         
         Optional<PostClass> pc;    // = pcr.getPostReader(id.get(), title.get());
@@ -549,7 +551,7 @@ public class HomeController
         aac.displayAdvert(model);   //This line is for adverts
         
         final int INITIAL_PAGE = 0;
-        final int INITIAL_PAGE_SIZE = 15;    //pageSize is the offset
+        final int INITIAL_PAGE_SIZE = 1;    //pageSize is the offset
         int page = (commentPaginate.orElse(0) < 1 ? INITIAL_PAGE : commentPaginate.get() - 1);    //page is the LIMIT            
         
         Optional<PostClass> pc = pcr.getPostReader(id.get(), title.get(), 1);
@@ -709,4 +711,23 @@ public class HomeController
         return true;
     }
     
+            
+    @RequestMapping("/ajaxDynamicComment")
+    //@ResponseBody
+    //public boolean dynamicComment(@RequestParam("content")String content, @RequestParam("pos")Long post_id,
+    //@RequestParam("title")String title, @RequestParam("page")int commentPaginate, @RequestParam("pg")int pg)
+    public String dynamicComment(@RequestParam("sent")String sent)
+    {
+        Gson gson = new Gson();
+        DynamicContent dc = gson.fromJson(sent, DynamicContent.class);
+        String content = dc.getContent();
+        Long post_id = dc.getPos();
+        
+        content=content.replaceAll("<_", "<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
+        content=content.replaceAll("_>", "'/><br/><br/>");
+        
+        CommentClass cc = new CommentClass(utc.getUser().getId(), post_id, content, utc.getDate());
+        ccr.save(cc);
+        return "redirect:/b_ch?pos="+post_id+"&t="+dc.getTitle()+"&page="+dc.getPage()+"&p="+dc.getPg()+"&alertx=Posted";
+    }
 }

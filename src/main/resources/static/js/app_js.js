@@ -151,11 +151,13 @@ function appFunction()
             if($(this).val() !== 'memelogic')
             {
                $('#coverImgOptional').fadeOut(500);//.addClass('hidden');
+               $('#coverimg').val('');
             }
             else
             {
                 $('#coverImgOptional').fadeIn(500).removeClass('hidden');
             }
+            event.stopPropagation();
        });
     });
     
@@ -236,78 +238,258 @@ function appFunction()
     });
     
     $('#addimg').change(function (e){
-        var kontent = $('#kontent').val();  //content of the textarea
-        var fileName = $(this).val();
-        var fakePath = 'C:\\fakepath\\';  //fakepath that comes with the filename
-        if(fileName !== "")  //If a file was chosen at all
+        if(checkSession())
         {
-            fileName = fileName.replace(fakePath, "");  //Replace that fake path with nothing
-            var imgFile = this.files[0];  //Get the file itself
-            
-            if(fileName.length <= 50)
+            if(checkRank())
             {
-                if(fileName.endsWith(".jpg") || fileName.endsWith(".png") || fileName.endsWith(".gif") 
-                || fileName.endsWith(".jpeg") || fileName.endsWith(".JPG") || fileName.endsWith(".PNG") 
-                || fileName.endsWith(".GIF") || fileName.endsWith(".JPEG") || fileName.endsWith(".webp") 
-                || fileName.endsWith(".WEBP"))
+                var kontent = $('#kontent').val();  //content of the textarea
+                var fileName = $(this).val();
+                var fakePath = 'C:\\fakepath\\';  //fakepath that comes with the filename
+                if(fileName !== "")  //If a file was chosen at all
                 {
-                    if(imgFile.size <= 4000000)
+                    fileName = fileName.replace(fakePath, "");  //Replace that fake path with nothing
+                    var imgFile = this.files[0];  //Get the file itself
+            
+                    if(fileName.length <= 50)
                     {
-                        $('#info1').text('');
-                        //var form = $('#dynamicForm');
-                        var file = '<_'+ fileName +'_>';  //you know this already
+                        if(fileName.endsWith(".jpg") || fileName.endsWith(".png") || fileName.endsWith(".gif") 
+                        || fileName.endsWith(".jpeg") || fileName.endsWith(".JPG") || fileName.endsWith(".PNG") 
+                        || fileName.endsWith(".GIF") || fileName.endsWith(".JPEG") || fileName.endsWith(".webp") 
+                        || fileName.endsWith(".WEBP"))
+                        {
+                            if(imgFile.size <= 4000000)
+                            {
+                                $('#info1').text('');
+                                //var form = $('#dynamicForm');
+                                var file = '<_'+ fileName +'_>';  //you know this already
             
-                        //Now this is where Ajax is used to send the image to the server endpoint
-                        $(this).prop("disabled", true);  //Disable the fileupload button
-                        $('#dynamicSubmit').prop("disabled", true);  //Disable the submit button
+                                //Now this is where Ajax is used to send the image to the server endpoint
+                                disableButtons();
             
-                        var myFormData = new FormData();  //creates a new formdata for uploading
-                        myFormData.append("dynamicUpload", imgFile);  //Appends the file to the key
+                                var myFormData = new FormData();  //creates a new formdata for uploading
+                                myFormData.append("dynamicUpload", imgFile);  //Appends the file to the key
                         
-                        $.ajax({
-                            enctype: 'multipart/form-data',
-                            type: 'POST',
-                            url: "ajaxDynamicFileUpload",
-                            data: myFormData,
-                            processData: false,
-                            contentType: false,
-                            cache: false,
-                            timeout: 600000,
-                            success: function (data) {
-                                if(data)
-                                {
-                                    $('#kontent').val(kontent + file);  //Update the textarea
-                                }
-                                $('#addimg').prop("disabled", false);
-                                $('#dynamicSubmit').prop("disabled", false);
-                            },
-                            error: function (e) {
-                                $('#kontent').val(kontent);  //Update the textarea
-                                $('#addimg').prop("disabled", false);
-                                $('#dynamicSubmit').prop("disabled", false);
+                                $.ajax({
+                                    enctype: 'multipart/form-data',
+                                    type: 'POST',
+                                    url: "ajaxDynamicFileUpload",
+                                    data: myFormData,
+                                    processData: false,
+                                    contentType: false,
+                                    cache: false,
+                                    timeout: 600000,
+                                    success: function (data) {
+                                        if(data)
+                                        {
+                                            $('#kontent').val(kontent + file);  //Update the textarea
+                                        }
+                                        enableButtons();
+                                    },
+                                    error: function (e) {
+                                        $('#kontent').val(kontent);  //Update the textarea
+                                        enableButtons();
+                                    }
+                                });
                             }
-                        });
-                        
+                            else
+                            {
+                                $('#info1').text('File size exceeded (4mb or less)');
+                            }
+                        }
+                        else
+                        {
+                            $('#info1').text('File format is not supported (suported formats: jpg, png, gif, webp)');
+                        }
                     }
                     else
                     {
-                        $('#info1').text('File size exceeded (4mb or less)');
+                        $('#info1').text('File name is too long, must be 50 characters of less');
                     }
-                }
-                else
-                {
-                    $('#info1').text('File format is not supported (suported formats: jpg, png, gif, webp)');
                 }
             }
             else
             {
-                $('#info1').text('File name is too long, must be 50 characters of less');
+                $('#info1').text("Unfortunately, your rank just dropped below the post rank");
             }
-            
-        }        
+        }
+        else
+        {
+            $('#info1').text("Session expired. Please log in");
+        }
     });
     
+    function enableButtons()
+    {
+        $('#addimg').prop("disabled", false);
+        $('#dynamicSubmit').prop("disabled", false);
+        $('#smiley').prop("disabled", false);
+    }
+    
+    function disableButtons()
+    {
+        $('#addimg').prop("disabled", true);
+        $('#dynamicSubmit').prop("disabled", true);
+        $('#smiley').prop("disabled", true);
+    }
+    
+    
+    //Clear info on focus in of textarea
     $('#kontent').focusin(function (e){
         $('#info1').text("");
+    });
+    
+    $('#dynamicSubmit').click(function (e){
+        e.preventDefault();
+        if(checkSession())
+        {
+            if(checkRank())
+            {
+                var kontent = $('#kontent').val();
+                
+                if(!kontent.match(/^\s*$/))
+                {
+                    if(checkTag(kontent))
+                    {
+                        disableButtons();
+                    
+                        var sentContent = {
+                            content: $('#kontent').val(),
+                            pos: $('#postid').text(),
+                            title: $('#title').text(),
+                            page: $('#commentPaginate').text(),
+                            pg: $('#pagePaginate').text()
+                        };
+                    
+                        $.ajax({
+                            type: 'GET',
+                            url: "ajaxDynamicComment",
+                            data: "sent="+encodeURIComponent(JSON.stringify(sentContent)),
+                            processData: false,
+                            contentType: "json",
+                            cache: false,
+                            timeout: 600000,
+                            success: function () {
+                                $('#kontent').val("");  //Update the textarea
+                                $('#dynamicFormDiv').fadeOut(300);
+                                enableButtons();
+                                location.reload(true);
+                            },
+                            error: function (e) {
+                                $('#kontent').val(kontent);  //Update the textarea
+                                enableButtons();
+                            }                    
+                        });
+                    }
+                    else
+                    {
+                        alert("malformed");
+                    }
+                }
+            }
+            else
+            {
+                $('#info1').text("Unfortunately, your rank just dropped below the post rank");
+            }
+        }
+        else
+        {
+            alert("hhh");
+            $('#info1').text("Session expired. Please log in");
+        }
+    });
+    
+    
+    function checkTag(content)
+    {
+        var test = false;
+        var countOpeningtag = (content.match(/<_/g)).length;
+        var countClosingTag = (content.match(/_>/g)).length;
+        
+        if(countOpeningtag === countClosingTag)
+        {
+            if(content.lastIndexOf("_>") > content.lastIndexOf("<_"))
+            {
+                test = true;
+            }
+        }
+        return test;
+    }
+    
+    $('#userContentAddImg').change(function (e){
+        if(checkSession())
+        {
+            var kontent = $('#userContentTextArea').val();  //content of the textarea
+            var fileName = $(this).val();
+            var fakePath = 'C:\\fakepath\\';  //fakepath that comes with the filename
+            if(fileName !== "")  //If a file was chosen at all
+            {
+                fileName = fileName.replace(fakePath, "");  //Replace that fake path with nothing
+                var imgFile = this.files[0];  //Get the file itself
+            
+                if(fileName.length <= 50)
+                {
+                    if(fileName.endsWith(".jpg") || fileName.endsWith(".png") || fileName.endsWith(".gif") 
+                    || fileName.endsWith(".jpeg") || fileName.endsWith(".JPG") || fileName.endsWith(".PNG") 
+                    || fileName.endsWith(".GIF") || fileName.endsWith(".JPEG") || fileName.endsWith(".webp") 
+                    || fileName.endsWith(".WEBP"))
+                    {
+                        if(imgFile.size <= 4000000)
+                        {
+                            $('#info1').text('');
+                            var file = '<_'+ fileName +'_>';  //you know this already
+            
+                            //Now this is where Ajax is used to send the image to the server endpoint
+                            $('#userSubmitButton').prop("disabled", true);
+                            $(this).prop("disabled", true);
+            
+                                var myFormData = new FormData();  //creates a new formdata for uploading
+                                myFormData.append("userDynamicUpload", imgFile);  //Appends the file to the key
+                        
+                                $.ajax({
+                                enctype: 'multipart/form-data',
+                                type: 'POST',
+                                url: "userAjaxDynamicFileUpload",
+                                data: myFormData,
+                                processData: false,
+                                contentType: false,
+                                cache: false,
+                                timeout: 600000,
+                                success: function (data) {
+                                    if(data)
+                                    {
+                                        alert(kontent);
+                                        $('#userContentTextArea').val(kontent + file);  //Update the textarea
+                                    }
+                                    $('#userSubmitButton').prop("disabled", false);
+                                    $('#userContentAddImg').prop("disabled", false);
+                                },
+                                error: function () {
+                                    $('#userContentTextArea').val(kontent);  //Update the textarea
+                                    $('#userSubmitButton').prop("disabled", false);
+                                    $('#userContentAddImg').prop("disabled", false);
+                                }
+                            });
+                        }
+                        else
+                        {
+                            $('#info1').text('File size exceeded (4mb or less)');
+                        }
+                    }
+                    else
+                    {
+                        $('#info1').text('File format is not supported (suported formats: jpg, png, gif, webp)');
+                    }
+                }
+                else
+                {
+                    $('#info1').text('File name is too long, must be 50 characters of less');
+                }
+            }
+        }
+        else
+        {
+            location.reload(true);
+            $('#info1').text("Session expired. Please log in");
+        }
     });
 }
