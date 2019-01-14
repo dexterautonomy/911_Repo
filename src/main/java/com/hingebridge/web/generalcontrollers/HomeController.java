@@ -36,6 +36,7 @@ import com.hingebridge.utility.UtilityClass;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -409,7 +410,7 @@ public class HomeController
         String ret = null;
         
         final int INITIAL_PAGE = 0;
-        final int INITIAL_PAGE_SIZE = 1;    //pageSize is the offset
+        final int INITIAL_PAGE_SIZE = 10;    //pageSize is the offset
         int page = (commentPaginate.orElse(0) < 1 ? INITIAL_PAGE : commentPaginate.get() - 1);    //page is the LIMIT            
         
         Optional<PostClass> pc;    // = pcr.getPostReader(id.get(), title.get());
@@ -551,7 +552,7 @@ public class HomeController
         aac.displayAdvert(model);   //This line is for adverts
         
         final int INITIAL_PAGE = 0;
-        final int INITIAL_PAGE_SIZE = 1;    //pageSize is the offset
+        final int INITIAL_PAGE_SIZE = 10;    //pageSize is the offset
         int page = (commentPaginate.orElse(0) < 1 ? INITIAL_PAGE : commentPaginate.get() - 1);    //page is the LIMIT            
         
         Optional<PostClass> pc = pcr.getPostReader(id.get(), title.get(), 1);
@@ -729,5 +730,59 @@ public class HomeController
         CommentClass cc = new CommentClass(utc.getUser().getId(), post_id, content, utc.getDate());
         ccr.save(cc);
         return "redirect:/b_ch?pos="+post_id+"&t="+dc.getTitle()+"&page="+dc.getPage()+"&p="+dc.getPg()+"&alertx=Posted";
+    }
+    
+    @RequestMapping("/mresu_b")
+    public String moreSubComment(@RequestParam("p2")int paginate, @RequestParam("cid")Long cid, @RequestParam("pos")Long post_id,
+    @RequestParam("t")String title, @RequestParam("page")int commentPaginate, @RequestParam("pg")int pg, 
+    ModelMap model)
+    {
+        aac.displayAdvert(model);
+        
+        int init = 0;
+        int end = 10;
+        
+        if(paginate > 1)
+        {
+            init = (paginate - 1) * end;
+            end = end * paginate;
+        }
+        
+        Optional<CommentClass> cc = ccr.findById(cid);
+        List<SubCommentClass> subcommentList = cc.get().getSubcomment();
+        List<SubCommentClass> scc = new LinkedList<>();
+        
+        if(!subcommentList.isEmpty())
+        {
+            for(int count = init; count < end; count++)
+            {
+                if(subcommentList.get(count).getApproved() == 1)
+                {
+                    scc.add(subcommentList.get(count));
+                }
+            }
+        }
+        
+        model.addAttribute("extraSubComments", scc);
+                
+        model.addAttribute("pos", post_id);
+        model.addAttribute("t", title);
+        model.addAttribute("p", pg);
+        model.addAttribute("page", commentPaginate);
+        model.addAttribute("currentPage", paginate);
+        
+        model.addAttribute("prev", paginate - 1);
+        model.addAttribute("next", paginate + 1);
+                
+        if((paginate - 1) == 0)
+        {
+            model.addAttribute("disp1", "none");
+        }
+        if(scc.isEmpty())
+        {
+            model.addAttribute("disp2", "none");
+        }
+        
+        return "pages/extrasubcommentpage";
     }
 }

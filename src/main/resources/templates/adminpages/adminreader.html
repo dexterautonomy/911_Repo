@@ -2,7 +2,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title>Admin</title>
+        <title>TwikTok</title>
         <meta charset="UTF-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
@@ -125,6 +125,7 @@
                                     </div>
                                     
                                     <div>
+                                        
                                         <div class="media smallPadding" th:each="subcom : ${comment.subcomment}">
                                             <div class="media-left media-top">
                                                 <a th:href="@{_src_admin_math_physics(usr=${subcom.userthree.id})}">
@@ -139,11 +140,6 @@
                                                     <span class="smallfontRank" th:text="${subcom.subcommentrank} != 0 ? ${'CR: ' + subcom.subcommentrank + '%'} : ''"></span>
                                                     <span class="postcomment_duration">
                                                         <span th:text="${subcom.duration}"></span>
-                                                        <!--
-                                                        <a th:href="@{_cmt_admin_getedge(akt=dlt_Admin_2, sid=${subcom.id}, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg})}">
-                                                            <span style="color: blue;" class="glyphicon glyphicon-trash"></span>
-                                                        </a>
-                                                        -->
                                                     </span>
                                                 </div>
                                                 
@@ -175,6 +171,54 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        
+                                        <!--
+                                        <div class="media smallPadding" th:each="counter : ${#numbers.sequence(0, 10)}">
+                                            <div class="media-left media-top">
+                                                <a th:href="@{_src_admin_math_physics(usr=${comment.subcomment[counter].userthree.id})}">
+                                                    <img th:classappend="${comment.subcomment[counter].userthree.colorclass}" class="readerImage2" src="" th:src="@{'/files/profile_img/' + ${comment.subcomment[counter].userthree.pix}}" th:alt="${comment.subcomment[counter].userthree.username + ' pic'}"/>
+                                                </a>
+                                            </div>
+                                            <div class="media-body justify panel panel-body postsubcomment_body">
+                                                <div style="overflow: auto;">
+                                                    <a th:href="@{_src_admin_math_physics(usr=${comment.subcomment[counter].userthree.id})}">
+                                                        <span class="postcomment_username" th:text="${comment.subcomment[counter].userthree.username} == ${session.username} ? 'Admin' : ${'@' + comment.subcomment[counter].userthree.username}"></span>&nbsp;&nbsp;&nbsp;
+                                                    </a>
+                                                    <span class="smallfontRank" th:text="${comment.subcomment[counter].subcommentrank} != 0 ? ${'CR: ' + comment.subcomment[counter].subcommentrank + '%'} : ''"></span>
+                                                    <span class="postcomment_duration">
+                                                        <span th:text="${comment.subcomment[counter].duration}"></span>
+                                                    </span>
+                                                </div>
+                                                
+                                                <div th:utext="${comment.subcomment[counter].content}"></div><br/>
+                                                
+                                                <div class="commentBck2">
+                                                    <span>
+                                                        <a th:href="@{_cmt_admin_getedge(akt=lk_x, sid=${comment.subcomment[counter].id}, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg})}">
+                                                            <span style="color: green;" class="glyphicon glyphicon-thumbs-up"></span>&nbsp;<span class="smallfont" th:text="${comment.subcomment[counter].likes}"></span>
+                                                        </a>&nbsp;&nbsp;&nbsp;
+                                                        <a th:href="@{_cmt_admin_getedge(akt=flg_x, sid=${comment.subcomment[counter].id}, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg})}">
+                                                            <span style="color: red;" class="glyphicon glyphicon-flag"></span>&nbsp;<span class="smallfont" th:text="${comment.subcomment[counter].redflag}"></span>
+                                                        </a>&nbsp;&nbsp;&nbsp;
+                                                        <a th:href="@{_cmt_admin_getedge(akt=str_x, sid=${comment.subcomment[counter].id}, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg})}">
+                                                            <span style="color: yellow;" class="glyphicon glyphicon-star"></span>&nbsp;<span class="smallfont" th:text="${comment.subcomment[counter].star}"></span>
+                                                        </a>&nbsp;&nbsp;&nbsp;
+                                                        <a th:href="@{_cmt_admin_getedge(akt=edit_x, sid=${comment.subcomment[counter].id}, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg})}">
+                                                            <span style="color: grey;" class="glyphicon glyphicon-pencil" th:classappend="${comment.subcomment[counter].userthree.username} == ${session.username} ? '' : 'hidden'"></span>
+                                                        </a>
+                                                    <span/>
+                                                    
+                                                    
+                                                    <span style="float: right;">
+                                                        <a th:href="@{_cmt_admin_getedge(akt=dlt_Admin_2, sid=${comment.subcomment[counter].id}, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg})}">
+                                                            <span style="color: blue;" class="glyphicon glyphicon-trash"></span>
+                                                        </a>
+                                                    <span/>
+                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                        -->
                                     </div>
                                 </div>
                             </div>

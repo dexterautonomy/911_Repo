@@ -216,12 +216,14 @@ function appFunction()
         }
     }
     
-    $('#commentOnPost').click(function (e){
+    $('#commentOnPost').click(function (){
+        //kk
+        $('div.subcommentsOnTheGo').addClass('hidden');
         if(checkSession())
         {
             if(checkRank())
             {
-                $('#dynamicFormDiv').fadeToggle(300).removeClass('hidden');
+                $('#dynamicFormDiv').removeClass('hidden');
                 $('#kontent').val("");
                 $('#info1').text("");
             }
@@ -332,6 +334,20 @@ function appFunction()
         $('#smiley').prop("disabled", true);
     }
     
+    function enableButtonsX()
+    {
+        $('input.subCommentAddimg').prop("disabled", false);
+        $('button.dynamicSubmitSubComment').prop("disabled", false);
+        $('button.subCommentSmiley').prop("disabled", false);
+    }
+    
+    function disableButtonsX()
+    {
+        $('input.subCommentAddimg').prop("disabled", true);
+        $('button.subCommentSmiley').prop("disabled", true);
+        $('button.dynamicSubmitSubComment').prop("disabled", true);
+    }
+    
     
     //Clear info on focus in of textarea
     $('#kontent').focusin(function (e){
@@ -350,39 +366,46 @@ function appFunction()
                 {
                     if(checkTag(kontent))
                     {
-                        disableButtons();
+                        if(checkScript(kontent))
+                        {
+                            disableButtons();
                     
-                        var sentContent = {
-                            content: $('#kontent').val(),
-                            pos: $('#postid').text(),
-                            title: $('#title').text(),
-                            page: $('#commentPaginate').text(),
-                            pg: $('#pagePaginate').text()
-                        };
+                            var sentContent = {
+                                content: $('#kontent').val(),
+                                pos: $('#postid').text(),
+                                title: $('#title').text(),
+                                page: $('#commentPaginate').text(),
+                                pg: $('#pagePaginate').text()
+                            };
                     
-                        $.ajax({
-                            type: 'GET',
-                            url: "ajaxDynamicComment",
-                            data: "sent="+encodeURIComponent(JSON.stringify(sentContent)),
-                            processData: false,
-                            contentType: "json",
-                            cache: false,
-                            timeout: 600000,
-                            success: function () {
-                                $('#kontent').val("");  //Update the textarea
-                                $('#dynamicFormDiv').fadeOut(300);
-                                enableButtons();
-                                location.reload(true);
-                            },
-                            error: function (e) {
-                                $('#kontent').val(kontent);  //Update the textarea
-                                enableButtons();
-                            }                    
-                        });
+                            $.ajax({
+                                type: 'GET',
+                                url: "ajaxDynamicComment",
+                                data: "sent=" + encodeURIComponent(JSON.stringify(sentContent)),
+                                processData: false,
+                                contentType: "json",
+                                cache: false,
+                                timeout: 600000,
+                                success: function () {
+                                    $('#kontent').val("");  //Update the textarea
+                                    $('#dynamicFormDiv').fadeOut(300);
+                                    enableButtons();
+                                    location.reload(true);
+                                },
+                                error: function (e) {
+                                    $('#kontent').val(kontent);  //Update the textarea
+                                    enableButtons();
+                                }                    
+                            });
+                        }
+                        else
+                        {
+                            alert("Malformed text, script not allowed");
+                        }
                     }
                     else
                     {
-                        alert("malformed");
+                        alert("Malformed text, <_ must be followed by _>");
                     }
                 }
             }
@@ -393,7 +416,6 @@ function appFunction()
         }
         else
         {
-            alert("hhh");
             $('#info1').text("Session expired. Please log in");
         }
     });
@@ -402,15 +424,34 @@ function appFunction()
     function checkTag(content)
     {
         var test = false;
-        var countOpeningtag = (content.match(/<_/g)).length;
-        var countClosingTag = (content.match(/_>/g)).length;
         
-        if(countOpeningtag === countClosingTag)
+        if(content.includes("<_") && content.includes("_>"))
         {
-            if(content.lastIndexOf("_>") > content.lastIndexOf("<_"))
+            var countOpeningtag = content.lastIndexOf("<_"); //(content.match(/<_/g)).length;
+            var countClosingTag = content.lastIndexOf("_>"); //(content.match(/_>/g)).length;
+            
+            if(countClosingTag === countOpeningtag)
             {
-                test = true;
+                if(countClosingTag > countOpeningtag)
+                {
+                    test = true;
+                }
             }
+        }
+        else if(!content.includes("<_") && !content.includes("_>"))
+        {
+            test = true;
+        }
+        
+        return test;
+    }
+    
+    function checkScript(content)
+    {
+        var test = false;
+        if(!content.includes("<script>") && !content.includes("<script/>") && !content.includes("</script>"))
+        {
+            test = true;
         }
         return test;
     }
@@ -488,8 +529,230 @@ function appFunction()
         }
         else
         {
-            location.reload(true);
+            //come back here later to finalise it
             $('#info1').text("Session expired. Please log in");
         }
+    });
+    
+    $('a.commentsOnTheGo').each(function (index){
+        $(this).click(function (ev){
+            //kk
+            ev.preventDefault();
+            $('#dynamicFormDiv').addClass('hidden');
+            //$('#kontent').val("");
+            
+            
+            if(checkSession())
+            {
+                if(checkRank())
+                {
+                    var selectSubComment = $('div.subcommentsOnTheGo')[index];
+                    $(selectSubComment).toggleClass('hidden');
+                    $('textarea.subCommentContent').val("");
+            
+                    $('div.subcommentsOnTheGo').each(function (e){
+                        if(index !== e)
+                        {
+                            var otherSubcommentsOnTheGoDivs = $('div.subcommentsOnTheGo')[e];
+                            if($(otherSubcommentsOnTheGoDivs).is(':visible'))
+                            {
+                                $(otherSubcommentsOnTheGoDivs).addClass('hidden');
+                            }
+                        }
+                    });
+                }
+                else
+                {
+                    //$('#info1').text("Your rank is lesser than the post rank");
+                    $($('div.subcommentsOnTheGo')[index]).toggleClass('hidden');
+                    $($('form.dynamicSubComment')[index]).addClass('hidden');
+                    
+                    $('div.subcommentsOnTheGo').each(function (e){
+                        if(index !== e)
+                        {
+                            var otherSubcommentsOnTheGoDivs = $('div.subcommentsOnTheGo')[e];
+                            if($(otherSubcommentsOnTheGoDivs).is(':visible'))
+                            {
+                                $(otherSubcommentsOnTheGoDivs).addClass('hidden');
+                            }
+                        }
+                    });
+                }
+            }
+            else
+            {
+                //$('#info1').text("Session expired. Please log in");
+                $($('div.subcommentsOnTheGo')[index]).toggleClass('hidden');
+                $($('form.dynamicSubComment')[index]).addClass('hidden');
+                    
+                $('div.subcommentsOnTheGo').each(function (e){
+                    if(index !== e)
+                    {
+                        var otherSubcommentsOnTheGoDivs = $('div.subcommentsOnTheGo')[e];
+                        if($(otherSubcommentsOnTheGoDivs).is(':visible'))
+                        {
+                            $(otherSubcommentsOnTheGoDivs).addClass('hidden');
+                        }
+                    }
+                });
+            }
+        });
+    });
+    
+    
+    $('input.subCommentAddimg').each(function (index){
+        $(this).change(function (ev){
+            //ev.preventDefault();
+            if(checkSession())
+            {
+                if(checkRank())
+                {
+                    var textArea = $($('textarea.subCommentContent')[index]);
+                    var textAreaContent = textArea.val();
+                    var fileName = $($('input.subCommentAddimg')[index]).val();
+                    var fakePath = 'C:\\fakepath\\';
+                    if(fileName !== "")
+                    {
+                        fileName = fileName.replace(fakePath, "");
+                        var imgFile = $('input.subCommentAddimg')[index].files[0];
+                        
+                        if(fileName.length <= 50)
+                        {
+                            if(fileName.endsWith(".jpg") || fileName.endsWith(".png") || fileName.endsWith(".gif") 
+                            || fileName.endsWith(".jpeg") || fileName.endsWith(".JPG") || fileName.endsWith(".PNG") 
+                            || fileName.endsWith(".GIF") || fileName.endsWith(".JPEG") || fileName.endsWith(".webp") 
+                            || fileName.endsWith(".WEBP"))
+                            {
+                                if(imgFile.size <= 4000000)
+                                {
+                                    $('#info1').text('');
+                                    var file = '<_'+ fileName +'_>';
+                                    disableButtonsX();
+                                    
+                                    textArea.val(textAreaContent + file);
+            
+                                    var myFormData = new FormData();
+                                    myFormData.append("dynamicUpload", imgFile);
+                        
+                                    $.ajax({
+                                        enctype: 'multipart/form-data',
+                                        type: 'POST',
+                                        url: "ajaxDynamicFileUpload",
+                                        data: myFormData,
+                                        processData: false,
+                                        contentType: false,
+                                        cache: false,
+                                        timeout: 600000,
+                                        success: function (data) {
+                                            if(data)
+                                            {
+                                                textArea.val(textAreaContent + file);
+                                            }
+                                            enableButtonsX();
+                                        },
+                                        error: function () {
+                                            textArea.val(textAreaContent);
+                                            enableButtonsX();
+                                        }
+                                    });
+                                }
+                                else
+                                {
+                                    $('#info1').text('File size exceeded (4mb or less)');
+                                }
+                            }
+                            else
+                            {
+                                $('#info1').text('File format is not supported (suported formats: jpg, png, gif, webp)');
+                            }
+                        }
+                        else
+                        {
+                            $('#info1').text('File name is too long, must be 50 characters of less');
+                        }
+                    }
+                }
+                else
+                {
+                    $('#info1').text("Unfortunately, your rank just dropped below the post rank");
+                }
+            }
+            else
+            {
+                $('#info1').text("Session expired. Please log in");
+            }
+        });
+    });
+    
+    $('button.dynamicSubmitSubComment').each(function (index){
+        $(this).click(function (ev){
+            ev.preventDefault();
+            if(checkSession())
+            {
+                if(checkRank())
+                {
+                    var textArea = $($('textarea.subCommentContent')[index]);
+                    var textAreaContent = textArea.val();
+                
+                    if(!textAreaContent.match(/^\s*$/))
+                    {
+                        if(checkTag(textAreaContent))
+                        {
+                            if(checkScript(textAreaContent))
+                            {
+                                disableButtonsX();
+                    
+                                var sentContent = {
+                                    content: textAreaContent,
+                                    pos: $('#postid').text(),
+                                    cid: $($('span.commentid')[index]).text(),
+                                    title: $('#title').text(),
+                                    page: $('#commentPaginate').text(),
+                                    pg: $('#pagePaginate').text()
+                                };
+                    
+                                $.ajax({
+                                    type: 'GET',
+                                    url: "user/ajaxSubCommentDynamicComment",
+                                    data: "sent=" + encodeURIComponent(JSON.stringify(sentContent)),
+                                    processData: false,
+                                    contentType: "json",
+                                    cache: false,
+                                    timeout: 600000,
+                                    success: function () {
+                                        textArea.val("");
+                                        $($('subcommentsOnTheGo')[index]).fadeOut(300);
+                                        enableButtonsX();
+                                        location.reload(true);
+                                        alert("posted");
+                                    },
+                                    error: function () {
+                                        textArea.val(textAreaContent);  //Update the textarea
+                                        enableButtonsX();
+                                        alert("error");
+                                    }                    
+                                });
+                            }
+                            else
+                            {
+                                alert("Malformed text, script not allowed");
+                            }
+                        }
+                        else
+                        {
+                            alert("Malformed text, <_ must be followed by _>");
+                        }
+                    }
+                }
+                else
+                {
+                    $('#info1').text("Unfortunately, your rank just dropped below the post rank");
+                }
+            }
+            else
+            {
+                $('#info1').text("Session expired. Please log in");
+            }
+        });
     });
 }

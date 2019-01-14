@@ -1,7 +1,9 @@
 package com.hingebridge.web.usercontrollers;
 
+import com.google.gson.Gson;
 import com.hingebridge.model.AdvertObject;
 import com.hingebridge.model.CommentClass;
+import com.hingebridge.model.DynamicContent;
 import com.hingebridge.model.FollowedPostDeleteObject;
 import com.hingebridge.model.FollowerObject;
 import com.hingebridge.model.InboxObject;
@@ -751,8 +753,8 @@ public class UserController
                     {
                         Optional<CommentClass> cClass = ccr.findById(comment_id.get());
                         
-                        if(cClass.get().getSubcomment().size() != 10)
-                        {
+                        //if(cClass.get().getSubcomment().size() != 10)
+                        //{
                             model.addAttribute("postclass", new PostClass());
                             model.addAttribute("pos", post_id.get());
                             model.addAttribute("cid", comment_id.get());
@@ -760,12 +762,12 @@ public class UserController
                             model.addAttribute("p", pg.get());
                             model.addAttribute("page", commentPaginate.get());
                             ret = "pages/subcommentpage";
-                        }
-                        else
+                        //}
+                        /*else
                         {
                             String alert = "Limit exceeded";
                             ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
-                        }
+                        }*/
                     }
                     else
                     {
@@ -2826,5 +2828,40 @@ public class UserController
         }
         
         return true;
+    }
+    
+    @RequestMapping("/ajaxSubCommentDynamicComment")
+    @ResponseBody
+    public String subCommentDynamicComment(@RequestParam("sent")String sent)
+    {
+        Gson gson = new Gson();
+        DynamicContent dc = gson.fromJson(sent, DynamicContent.class);
+        String content = dc.getContent();
+        Long post_id = dc.getPos();
+        Long comment_id = dc.getCid();
+        String title = dc.getTitle();
+        
+        content=content.replaceAll("<_", "<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
+        content=content.replaceAll("_>", "'/><br/><br/>");
+        
+        Optional<CommentClass> cc = ccr.findById(comment_id);  //Comment you are subcommenting on
+        SubCommentClass scc;
+                                
+        if(utc.getUser().getId().equals(cc.get().getUser_id()))  //No need marking your comment as unread na, abi no be you write am??
+        {
+            scc = new SubCommentClass(utc.getUser().getId(), comment_id, content, utc.getDate(), "read");
+        }
+        else
+        {
+            scc = new SubCommentClass(utc.getUser().getId(), comment_id, content, utc.getDate());
+        }
+                                
+        sccr.save(scc);
+                                
+        //Notify the owner of the comment here: Very important
+        String postlink = "s_ch?pos="+post_id+"&t="+title+"&p="+dc.getPg()+"&cid="+comment_id+"#"+comment_id;
+        utc.updateInbox(cc.get().getUser_id(), comment_id, postlink);
+                                
+        return "redirect:/b_ch?pos="+post_id+"&t="+title+"&page="+dc.getPage()+"&p="+dc.getPg()+"&alertx=Posted";
     }
 }
