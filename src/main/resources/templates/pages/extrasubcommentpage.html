@@ -5,10 +5,10 @@
         <title>TwikTok</title>
         <meta charset="UTF-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        
+        <!--
         <script th:src="@{/js/jQueryFile.js}" type="text/javascript"></script>
         <script th:src="@{/js/app_js.js}" type="text/javascript"></script>
-        
+        -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
         <link rel="shortcut icon" type="image/x-icon" th:href="@{/files/system_img/logo.jpg}" href=""/>
         <link rel="stylesheet" th:href="@{/css/app_style.css}" href=""/>
@@ -22,8 +22,9 @@
             <div th:include="pages/adfragments :: adTop(${adObject}, ${top})"/>
         
             <div class="row">
-                <div>
-                    <p id="info1" class="smallfont centertinz redColor" th:text="${alertx}"></p>
+                <div class="extracomments">
+                    <div id="info1" class="smallfont centertinz redColor" th:text="${alertx}"></div>
+                    <div class="smallfont centertinz blueColor" th:classappend="${theClass}" th:text="${alert}"></div>
                 
                     <div>
                         <div class="media smallPadding" th:each="subcom : ${extraSubComments}">
@@ -44,25 +45,25 @@
                                 <div th:utext="${subcom.content}"></div><br/>
                                 <div class="commentBck2">
                                     <span>
-                                        <a th:href="@{user/mre_cmt(akt=lk_x, sid=${subcom.id}, cid=${comment.id}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage})}">
+                                        <a th:href="@{user/mre_cmt(akt=lk_x, sid=${subcom.id}, cid=${cid}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage})}">
                                             <span style="color: green;" class="glyphicon glyphicon-thumbs-up"></span>&nbsp;<span class="smallfont" th:text="${subcom.likes}"></span>
                                         </a>&nbsp;&nbsp;&nbsp;
-                                        <a th:href="@{user/mre_cmt(akt=flg_x, sid=${subcom.id}, cid=${comment.id}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage})}">
+                                        <a th:href="@{user/mre_cmt(akt=flg_x, sid=${subcom.id}, cid=${cid}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage})}">
                                             <span style="color: red;" class="glyphicon glyphicon-flag"></span>&nbsp;<span class="smallfont" th:text="${subcom.redflag}"></span>
                                         </a>&nbsp;&nbsp;&nbsp;
-                                        <a th:href="@{user/mre_cmt(akt=str_x, sid=${subcom.id}, cid=${comment.id}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage})}">
+                                        <a th:href="@{user/mre_cmt(akt=str_x, sid=${subcom.id}, cid=${cid}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage})}">
                                             <span style="color: yellow;" class="glyphicon glyphicon-star"></span>&nbsp;<span class="smallfont" th:text="${subcom.star}"></span>
                                         </a>&nbsp;&nbsp;&nbsp;
-                                        <a th:href="@{user/mre_cmt(akt=edit_x, sid=${subcom.id}, cid=${comment.id}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage})}">
+                                        <a th:href="@{user/mre_cmt(akt=edit_x, sid=${subcom.id}, cid=${cid}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage})}">
                                             <span style="color: grey;" class="glyphicon glyphicon-pencil" th:classappend="${subcom.userthree.username} == ${session.username} ? '' : 'hidden'"></span>
                                         </a>&nbsp;&nbsp;&nbsp;
-                                        <a th:href="@{user/mre_cmt(akt=dlt_x, sid=${subcom.id}, cid=${comment.id}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage})}">
+                                        <a th:href="@{user/mre_cmt(akt=dlt_x, sid=${subcom.id}, cid=${cid}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage})}">
                                             <span style="color: red;" class="glyphicon glyphicon-trash" th:classappend="${subcom.userthree.username} == ${session.username} ? '' : 'hidden'"></span>
                                         </a>
                                     <span/>
                                                     
                                     <span style="float: right;">
-                                        <a th:href="@{user/cmt(akt=dlt_xMod, sid=${subcom.id}, cid=${comment.id}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage})}">
+                                        <a th:href="@{user/cmt(akt=dlt_xMod, sid=${subcom.id}, cid=${cid}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage})}">
                                             <span style="color: blue;" class="glyphicon glyphicon-trash" th:classappend="${session.usercolorclass} == 'user_mod' ? '' : 'hidden'"></span>
                                         </a>
                                     <span/>
@@ -73,10 +74,15 @@
                         <div>
                             <ul class="pager centertinz">
                                 <li th:style="'display:'+@{${disp1}}+';'">
-                                    <a class="btn" th:href="@{mresu_b(p2=${prev}, pos=${pos}, t=${t}, page=${page}, p=${p}, cid=${comment.id})}"> Previous </a>
+                                    <a class="btn" th:href="@{mresu_b(p2=${prev}, pos=${pos}, t=${t}, page=${page}, pg=${p}, cid=${cid})}"> Previous </a>
                                 </li>
+                                
+                                <li>
+                                    <a class="btn" th:href="@{s_ch(pos=${pos}, t=${t}, page=${page}, p=${p})}"> Back </a>
+                                </li>
+                                
                                 <li th:style="'display:'+@{${disp2}}+';'">
-                                    <a class="btn" th:href="@{mresu_b(p2=${next}, pos=${pos}, t=${t}, page=${page}, p=${p}, cid=${comment.id})}"> Next </a>
+                                    <a class="btn" th:href="@{mresu_b(p2=${next}, pos=${pos}, t=${t}, page=${page}, pg=${p}, cid=${cid})}"> Next </a>
                                 </li>
                             </ul>
                         </div>

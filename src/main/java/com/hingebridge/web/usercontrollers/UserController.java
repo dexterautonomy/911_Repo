@@ -2864,4 +2864,342 @@ public class UserController
                                 
         return "redirect:/b_ch?pos="+post_id+"&t="+title+"&page="+dc.getPage()+"&p="+dc.getPg()+"&alertx=Posted";
     }
+    
+    @GetMapping("/mre_cmt")
+    public String subCommentExtra(@RequestParam("pos")Optional<Long> post_id, @RequestParam("t")Optional<String> title, 
+    @RequestParam("p") Optional<Integer> pg, ModelMap model, @RequestParam("page")Optional<Integer> commentPaginate, 
+    @RequestParam("akt")Optional<String> action, HttpServletRequest req, RedirectAttributes ra, 
+    @RequestParam("cid")Optional<Long> comment_id, @RequestParam("sid")Optional<Long> subcomment_id, 
+    @RequestParam("p2")Optional<Integer> currentPage)
+    {
+        aac.displayAdvert(model);   //This line is for adverts
+        
+        String ret= null;
+        utc.sessionUserDetails(req);    //Do not ever remove this
+        long id = utc.getUser().getId();
+        
+        switch(action.get())
+        {
+            case "lk_x":
+            {
+                Optional<SubCommentClass> scc = sccr.findById(subcomment_id.get());
+                String check = scrcr.likedBefore(subcomment_id.get(), id);  //has this user liked this subcomment before now?
+                long likes = scc.get().getLikes();
+                
+                switch(check)
+                {
+                    case "":
+                    {
+                        likes = likes + 1;
+                        scc.get().setLikes(likes);
+                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_like");
+                    }
+                    break;
+                    
+                    case "liked":
+                    {
+                        likes = likes - 1;
+                        scc.get().setLikes(likes);
+                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_unlike");
+                    }
+                    break;
+                    
+                    case "unliked":
+                    {
+                        likes = likes + 1;
+                        scc.get().setLikes(likes);
+                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_like");
+                    }
+                    break;
+                }
+                
+                sccr.save(scc.get());
+                utc.alterSubCommentRankingParameters(scc, sccr);
+                ret = "redirect:/mresu_b?p2="+currentPage.get()+"&pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&pg="+pg.get()+"&cid="+comment_id.get();
+            }
+            break;
+            
+            case "flg_x":
+            {
+                Optional<SubCommentClass> scc = sccr.findById(subcomment_id.get());
+                String check = scrcr.redFlaggedBefore(subcomment_id.get(), id);  //has this user liked this subcomment before now?
+                long redflag = scc.get().getRedflag();
+                
+                switch(check)
+                {
+                    case "":
+                    {
+                        redflag = redflag + 1;
+                        scc.get().setRedflag(redflag);
+                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_redflag");
+                    }
+                    break;
+                    
+                    case "redflagged":
+                    {
+                        redflag = redflag - 1;
+                        scc.get().setRedflag(redflag);
+                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_unredflag");
+                    }
+                    break;
+                    
+                    case "notredflagged":
+                    {
+                        redflag = redflag + 1;
+                        scc.get().setRedflag(redflag);
+                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_redflag");
+                    }
+                    break;
+                }
+                
+                sccr.save(scc.get());
+                utc.alterSubCommentRankingParameters(scc, sccr);
+                ret = "redirect:/mresu_b?p2="+currentPage.get()+"&pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&pg="+pg.get()+"&cid="+comment_id.get();
+            }
+            break;
+            
+            case "str_x":
+            {
+                Optional<SubCommentClass> scc = sccr.findById(subcomment_id.get());
+                String check = scrcr.starredBefore(subcomment_id.get(), id);  //has this user liked this subcomment before now?
+                long starred = scc.get().getStar();
+                
+                switch(check)
+                {
+                    case "":
+                    {
+                        starred = starred + 1;
+                        scc.get().setStar(starred);
+                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_star");
+                    }
+                    break;
+                    
+                    case "starred":
+                    {
+                        starred = starred - 1;
+                        scc.get().setStar(starred);
+                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_unstar");
+                    }
+                    break;
+                    
+                    case "notstarred":
+                    {
+                        starred = starred + 1;
+                        scc.get().setStar(starred);
+                        utc.alterUserRankingParameters(scc.get().getUser_id(), "save_star");
+                    }
+                    break;
+                }
+                
+                sccr.save(scc.get());
+                utc.alterSubCommentRankingParameters(scc, sccr);
+                ret = "redirect:/mresu_b?p2="+currentPage.get()+"&pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&pg="+pg.get()+"&cid="+comment_id.get();
+            }
+            break;
+            
+            case "edit_x":
+            {
+                Optional<SubCommentClass> scc = sccr.findById(subcomment_id.get());
+                
+                if(utc.getUser().getId().equals(scc.get().getUser_id()))
+                {
+                    String content = scc.get().getContent();
+                
+                    content=content.replaceAll("<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/", "<_");
+                    content=content.replaceAll("'/><br/><br/>", "_>");
+                    
+                    PostClass pClass = new PostClass();
+                    pClass.setContent(content);
+                    model.addAttribute("postclass", pClass);
+                    model.addAttribute("pos", post_id.get());
+                    model.addAttribute("sid", subcomment_id.get());
+                    model.addAttribute("cid", comment_id.get());
+                    model.addAttribute("t", title.get());
+                    model.addAttribute("p", pg.get());
+                    model.addAttribute("page", commentPaginate.get());
+                    model.addAttribute("p2", currentPage.get());
+                    
+                    ret = "pages/editextrasubcommentpage";
+                }
+                else
+                {
+                    String alert = "Cannot edit comment";
+                    ret = "redirect:/mresu_b?p2="+currentPage.get()+"&pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&pg="+pg.get()+"&cid="+comment_id.get();
+                }
+            }
+            break;
+            
+            case "dlt_x":
+            {
+                String alert;
+                Optional<SubCommentClass> scc = sccr.findById(subcomment_id.get());
+                
+                if(utc.getUser().getId().equals(scc.get().getUser_id()))
+                {
+                    scc.get().setApproved(0);
+                    sccr.save(scc.get());
+                    alert = "Deleted";
+                }
+                else
+                {
+                    alert = "Cannot delete comment";
+                }
+                ret = "redirect:/mresu_b?p2="+currentPage.get()+"&pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&pg="+pg.get()+"&cid="+comment_id.get();
+            }
+            break;
+            
+            case "dlt_xMod":
+            {
+                String alert;
+                Optional<SubCommentClass> scc = sccr.findById(subcomment_id.get());
+                
+                if(utc.getUser().getColorclass().equals("user_mod"))
+                {
+                    scc.get().setApproved(0);
+                    sccr.save(scc.get());
+                    alert = "Deleted";
+                }
+                else
+                {
+                    alert = "Cannot delete comment";
+                }
+                ret = "redirect:/mresu_b?p2="+currentPage.get()+"&pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&pg="+pg.get()+"&cid="+comment_id.get();
+            }
+            break;
+        }
+        return ret;
+    }
+    
+    @PostMapping("mre_sub_cmtpost")
+    public String extraCmtPost(@RequestParam("pos")Optional<Long> post_id, @RequestParam("t")Optional<String> title, 
+    @RequestParam("p") Optional<Integer> pg, ModelMap model, @RequestParam("page")Optional<Integer> commentPaginate, 
+    @ModelAttribute("postclass")PostClass pc, RedirectAttributes ra, @RequestParam("akt")Optional<String> action, 
+    @RequestParam("cid")Optional<Long> comment_id, @RequestParam("sid")Optional<Long> subcomment_id, 
+    @RequestParam("p2")Optional<Integer> currentPage)
+    {
+        aac.displayAdvert(model);   //This line is for adverts
+        
+        if(utc.checkCommentBan())
+        {
+            //It won't come to this but just leave am there
+            //Do not forget to add provisions for those banned etc, they should not be able to write post, comment etc
+            return "redirect:/";
+        }
+        
+        String ret = null;
+        String path = utc.getFilePath()+"dist_img";
+        String date = utc.getDate();
+        String content = pc.getContent().trim();
+        
+        switch(action.get())
+        {
+            case "edit_subcmt":
+            {
+                switch(pc.getActionButton())
+                {
+                    case "add_img":
+                    {
+                        model.addAttribute("pos", post_id.get());
+                        model.addAttribute("sid", subcomment_id.get());
+                        model.addAttribute("cid", comment_id.get());
+                        model.addAttribute("t", title.get());
+                        model.addAttribute("p", pg.get());
+                        model.addAttribute("page", commentPaginate.get());
+                        model.addAttribute("p2", currentPage.get());
+                
+                        pc.setContent(content);
+                
+                        MultipartFile contentFile =  pc.getContentFile();
+                        if(contentFile.isEmpty())
+                        {
+                            model.addAttribute("alert", "No image file selected");
+                        }
+                        else if(contentFile.getSize() > 0 && contentFile.getSize() <= 4000000)
+                        {
+                            String contentFileName = contentFile.getOriginalFilename();
+                            if(contentFileName != null && contentFileName.length() <= 50)
+                            {
+                                if(contentFileName.endsWith(".jpg") || contentFileName.endsWith(".png") || contentFileName.endsWith(".gif") 
+                                || contentFileName.endsWith(".jpeg") || contentFileName.endsWith(".JPG") || contentFileName.endsWith(".PNG") 
+                                || contentFileName.endsWith(".GIF") || contentFileName.endsWith(".JPEG") || contentFileName.endsWith(".webp") 
+                                || contentFileName.endsWith(".WEBP"))
+                                {
+                                    try
+                                    {
+                                        String imageRef="<_" + contentFileName + "_>";
+                                        pc.setContent(content + imageRef);
+                                
+                                        model.addAttribute("alert", "Image added to content");
+                                        File pathToFile=new File(path, contentFileName);
+                                        contentFile.transferTo(pathToFile);
+                                    }
+                                    catch (IllegalStateException | IOException ex) 
+                                    {
+                                        Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                }
+                                else
+                                {
+                                    model.addAttribute("alert", "Invalid image format (suported: jpg, png, gif, webp)");
+                                }
+                            }
+                            else
+                            {
+                                model.addAttribute("alert", "Content image name too long (less than 50 characters)");
+                            }
+                        }
+                        else if(contentFile.getSize() == 0)
+                        {
+                            model.addAttribute("alert", "");
+                        }
+                        else
+                        {
+                            model.addAttribute("alert", "File size exceeded (4MB or less)");
+                        }
+                    }
+                    break;
+            
+                    case "post":
+                    {
+                        pc.setContent(content);
+                
+                        content=content.replaceAll("<_", "<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
+                        content=content.replaceAll("_>", "'/><br/><br/>");
+                
+                        if(!content.matches("\\s*"))
+                        {
+                            if(content.length() > 801)
+                            {
+                                model.addAttribute("pos", post_id.get());
+                                model.addAttribute("sid", subcomment_id.get());
+                                model.addAttribute("cid", comment_id.get());
+                                model.addAttribute("t", title.get());
+                                model.addAttribute("p", pg.get());
+                                model.addAttribute("page", commentPaginate.get());
+                                model.addAttribute("p2", currentPage.get());
+                        
+                                model.addAttribute("alert", "Comment must be less than 800 characters [" + pc.getContent().length() +"]");
+                            }
+                            else
+                            {
+                                Optional<SubCommentClass> sccObj = sccr.findById(subcomment_id.get());
+                                sccObj.get().setContent(content);
+                                sccr.save(sccObj.get());
+                                //put alert later
+                                return "redirect:/mresu_b?p2="+currentPage.get()+"&pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&pg="+pg.get()+"&cid="+comment_id.get();
+                            }
+                        }
+                        else
+                        {
+                            ra.addFlashAttribute("alertx", "Comment cannot be empty");
+                        }
+                    }
+                    break;
+                }
+                ret = "pages/editextrasubcommentpage";
+            }
+            break;
+        }
+        return ret;
+    }
 }

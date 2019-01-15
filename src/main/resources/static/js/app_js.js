@@ -539,8 +539,7 @@ function appFunction()
             //kk
             ev.preventDefault();
             $('#dynamicFormDiv').addClass('hidden');
-            //$('#kontent').val("");
-            
+            $('div.dynamicQuote').addClass('hidden');
             
             if(checkSession())
             {
@@ -747,6 +746,45 @@ function appFunction()
                 else
                 {
                     $('#info1').text("Unfortunately, your rank just dropped below the post rank");
+                }
+            }
+            else
+            {
+                $('#info1').text("Session expired. Please log in");
+            }
+        });
+    });
+    
+    $('a.quotesOnTheGo').each(function (index){
+        $(this).click(function (ev){
+            ev.preventDefault();
+            $('#dynamicFormDiv').addClass('hidden');
+            $('div.subcommentsOnTheGo').addClass('hidden');
+            
+            if(checkSession())
+            {
+                if(checkRank())
+                {
+                    var selectQuote = $('div.dynamicQuote')[index];
+                    $(selectQuote).toggleClass('hidden');
+                    
+                    var commentForQuoting = $($('div.commentContentForQuoting')[index]).text();
+                    var quotedTextArea = $($('textarea.quotedTextarea')[index]).val(commentForQuoting);
+            
+                    $('div.dynamicQuote').each(function (e){
+                        if(index !== e)
+                        {
+                            var otherQuoteOnTheGoDivs = $('div.dynamicQuote')[e];
+                            if($(otherQuoteOnTheGoDivs).is(':visible'))
+                            {
+                                $(otherQuoteOnTheGoDivs).addClass('hidden');
+                            }
+                        }
+                    });
+                }
+                else
+                {
+                    $('#info1').text("Your rank is lesser than the post rank");
                 }
             }
             else

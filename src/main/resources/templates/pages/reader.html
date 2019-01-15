@@ -75,7 +75,6 @@
                             </form>
                         </div>
                         
-                        
                         <ul class="pager centertinz">
                             <li>
                                 <a th:href="@{/(page=${pg})}">Back</a>
@@ -109,7 +108,7 @@
                                             <div th:utext="${comment.quoteobj.content}"></div>
                                         </div>
                                         
-                                        <div th:id="${comment.id}" style="clear: both;" th:utext="${comment.content}"></div><br/>
+                                        <div class="commentContentForQuoting" th:id="${comment.id}" style="clear: both;" th:utext="${comment.content}"></div><br/>
                                     </div>
                                     
                                     <div class="hidden">
@@ -123,7 +122,7 @@
                                             <a class="commentsOnTheGo" th:if="${session.commentBan != 1}" th:href="@{user/cmt(akt=cmt_s, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg})}">
                                                 <span class="glyphicon glyphicon-comment"></span>&nbsp;<span class="smallfont" th:text="${#lists.size(comment.subcomment) == 0 ? '' : #lists.size(comment.subcomment)}">Comments</span>&nbsp;&nbsp;&nbsp;
                                             </a>
-                                            <a th:if="${session.commentBan != 1}" th:href="@{user/cmt(akt=qte_s, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg})}">
+                                            <a class="quotesOnTheGo" th:if="${session.commentBan != 1}" th:href="@{user/cmt(akt=qte_s, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg})}">
                                                 <span style="color: pink;" class="glyphicon glyphicon-share-alt"></span>&nbsp;<span class="smallfont">Quote</span>&nbsp;&nbsp;&nbsp;
                                             </a>
                                             <a th:href="@{user/cmt(akt=lk_s, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg})}">
@@ -155,6 +154,7 @@
                                     </div>
                                     
                                     <div class="subcommentsOnTheGo hidden">
+                                        <!-- This form is for Javascript subcomment -->
                                         <form class="dynamicSubComment" action="" enctype="multipart/form-data">
                                             <div>
                                                 <textarea class="form-control subCommentContent" name="dynamicFormContent" placeholder="Comment" cols="20" rows="5" required="" maxlength="700"></textarea><br/>
@@ -166,7 +166,6 @@
                                                 <button class="btn btn-sm btn-success dynamicSubmitSubComment" style="display: inline"><span class=" glyphicon glyphicon-send"></span> Post</button>
                                             </div>
                                         </form>
-                                        
                                         
                                         <div class="media smallPadding" th:each="subcom, counter : ${comment.subcomment}" th:if="${counter.index &lt; 10}">
                                             <div class="media-left media-top">
@@ -218,57 +217,22 @@
                                                 <span class="smallfont">More Comments</span>
                                             </a>
                                         </div>
-                                        
-                                        <!--
-                                        <div class="media smallPadding" th:each="counter : ${#numbers.sequence(0, 9)}">
-                                            <div class="media-left media-top">
-                                                <a th:href="@{/prf_src(usr=${comment.subcomment[counter].userthree.id})}">
-                                                    <img th:classappend="${comment.subcomment[counter].userthree.colorclass}" class="readerImage2" src="" th:src="@{'/files/profile_img/' + ${comment.subcomment[counter].userthree.pix}}" th:alt="${comment.subcomment[counter].userthree.username + ' pic'}"/>
-                                                </a>
+                                    </div>
+                                    
+                                    <div class="dynamicQuote hidden">
+                                        <!-- This form is for Javascript quote -->
+                                        <form action="" enctype="multipart/form-data">
+                                            <div>
+                                                <textarea class="form-control quotedTextarea" name="dynamicFormContent" placeholder="Comment" cols="20" rows="5" required="" maxlength="700"></textarea><br/>
+                                                <textarea class="form-control dynamicQuoteContent1" name="dynamicFormContent" placeholder="Comment" cols="20" rows="5" required="" maxlength="700"></textarea><br/>
                                             </div>
-                                            <div class="justify panel panel-body postsubcomment_body media-body">
-                                                <div style="overflow: auto;">
-                                                    <a th:href="@{/prf_src(usr=${comment.subcomment[counter].userthree.id})}">
-                                                        <span class="postcomment_username" th:text="${comment.subcomment[counter].userthree.username} == ${session.username} ? 'Me' : ${'@' + comment.subcomment[counter].userthree.username}"></span>&nbsp;&nbsp;&nbsp;
-                                                    </a>
-                                                    <span class="smallfontRank" th:text="${comment.subcomment[counter].subcommentrank} != 0 ? ${'CR: ' + comment.subcomment[counter].subcommentrank + '%'} : ''"></span>
-                                                    <span class="postcomment_duration" th:text="${comment.subcomment[counter].duration}"></span>
-                                                </div>
-                                                
-                                                <div th:utext="${comment.subcomment[counter].content}"></div><br/>
-                                                
-                                                <div class="commentBck2">
-                                                    
-                                                    <span>
-                                                        <a th:href="@{user/cmt(akt=lk_x, sid=${comment.subcomment[counter].id}, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg})}">
-                                                            <span style="color: green;" class="glyphicon glyphicon-thumbs-up"></span>&nbsp;<span class="smallfont" th:text="${comment.subcomment[counter].likes}"></span>
-                                                        </a>&nbsp;&nbsp;&nbsp;
-                                                        <a th:href="@{user/cmt(akt=flg_x, sid=${comment.subcomment[counter].id}, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg})}">
-                                                            <span style="color: red;" class="glyphicon glyphicon-flag"></span>&nbsp;<span class="smallfont" th:text="${comment.subcomment[counter].redflag}"></span>
-                                                        </a>&nbsp;&nbsp;&nbsp;
-                                                        <a th:href="@{user/cmt(akt=str_x, sid=${comment.subcomment[counter].id}, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg})}">
-                                                            <span style="color: yellow;" class="glyphicon glyphicon-star"></span>&nbsp;<span class="smallfont" th:text="${comment.subcomment[counter].star}"></span>
-                                                        </a>&nbsp;&nbsp;&nbsp;
-                                                        <a th:href="@{user/cmt(akt=edit_x, sid=${comment.subcomment[counter].id}, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg})}">
-                                                            <span style="color: grey;" class="glyphicon glyphicon-pencil" th:classappend="${comment.subcomment[counter].userthree.username} == ${session.username} ? '' : 'hidden'"></span>
-                                                        </a>&nbsp;&nbsp;&nbsp;
-                                                        <a th:href="@{user/cmt(akt=dlt_x, sid=${comment.subcomment[counter].id}, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg})}">
-                                                            <span style="color: red;" class="glyphicon glyphicon-trash" th:classappend="${comment.subcomment[counter].userthree.username} == ${session.username} ? '' : 'hidden'"></span>
-                                                        </a>
-                                                    <span/>
-                                                    
-                                                    <span style="float: right;">
-                                                        <a th:href="@{user/cmt(akt=dlt_xMod, sid=${comment.subcomment[counter].id}, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg})}">
-                                                            <span style="color: blue;" class="glyphicon glyphicon-trash" th:classappend="${session.usercolorclass} == 'user_mod' ? '' : 'hidden'"></span>
-                                                        </a>
-                                                    <span/>
-                                                </div>
+                                            <div class="uploadbtnwrapper">
+                                                <input class="btn btn-sm btn-default subCommentAddimg" name="dynamicFormFile" type="file" style="display: inline"/>
+                                                <button class="btn btn-sm btn-info" name="doesNothing"><span class="glyphicon glyphicon-cloud-upload" style="display: inline"></span> Attach Image</button>
+                                                <button class="btn btn-sm btn-primary subCommentSmiley" name="smiley" style="display: inline"><span class="glyphicon glyphicon-cloud-upload"></span> Smileys</button>
+                                                <button class="btn btn-sm btn-success dynamicSubmitSubComment" style="display: inline"><span class=" glyphicon glyphicon-send"></span> Post</button>
                                             </div>
-                                        </div>
-                                        -->
-                                        
-                                        
-                                        
+                                        </form>
                                     </div>
                                 </div>
                             </div>

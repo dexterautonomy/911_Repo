@@ -752,19 +752,22 @@ public class HomeController
         List<SubCommentClass> subcommentList = cc.get().getSubcomment();
         List<SubCommentClass> scc = new LinkedList<>();
         
-        if(!subcommentList.isEmpty())
+        if(subcommentList.size() < end)
         {
-            for(int count = init; count < end; count++)
-            {
-                if(subcommentList.get(count).getApproved() == 1)
-                {
-                    scc.add(subcommentList.get(count));
-                }
-            }
+            end = subcommentList.size();
         }
         
-        model.addAttribute("extraSubComments", scc);
-                
+        for(int count = init; count < end; count++)
+        {
+            scc.add(subcommentList.get(count));
+        }
+        
+        if(!scc.isEmpty())
+        {
+            model.addAttribute("extraSubComments", scc);
+        }
+        
+        model.addAttribute("cid", cid);
         model.addAttribute("pos", post_id);
         model.addAttribute("t", title);
         model.addAttribute("p", pg);
@@ -774,12 +777,14 @@ public class HomeController
         model.addAttribute("prev", paginate - 1);
         model.addAttribute("next", paginate + 1);
                 
-        if((paginate - 1) == 0)
+        if((paginate - 1) == 1)
         {
             model.addAttribute("disp1", "none");
         }
         if(scc.isEmpty())
         {
+            model.addAttribute("theClass", "realcentertinz");
+            model.addAttribute("alert", "No more comments");
             model.addAttribute("disp2", "none");
         }
         

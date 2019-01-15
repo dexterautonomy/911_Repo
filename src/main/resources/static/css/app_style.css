@@ -773,3 +773,14 @@ a:hover
     font-size: 5px;
     padding: 10px 5px;
 }
+
+.extracomments
+{
+    width: 85%;
+    margin: 0 auto;
+}
+
+.quotedTextarea
+{
+    background-color: rgb(255,215,255);
+}
