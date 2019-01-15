@@ -3202,4 +3202,41 @@ public class UserController
         }
         return ret;
     }
+    
+    
+    @RequestMapping("/ajaxSubCommentDynamicComment_")
+    @ResponseBody
+    public String dynamicQuote(@RequestParam("sent")String sent)
+    {
+        Gson gson = new Gson();
+        DynamicContent dc = gson.fromJson(sent, DynamicContent.class);
+        String content = dc.getContent();  //The quoting text
+        String content2 = dc.getContent2();  //The quoted text
+        Long post_id = dc.getPos();
+        Long comment_id = dc.getCid();
+        String title = dc.getTitle();
+        String date = utc.getDate();
+        
+        content = content.replaceAll("<_", "<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
+        content = content.replaceAll("_>", "'/><br/><br/>");
+        
+        content2 = content2.replaceAll("<_", "<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
+        content2 = content2.replaceAll("_>", "'/><br/><br/>");
+        
+        Optional<CommentClass> ccid = ccr.findById(comment_id);
+        
+        CommentClass cc = new CommentClass(utc.getUser().getId(), post_id, content, date);
+        ccr.save(cc);
+        Optional<CommentClass> quickCom = ccr.getExactPost(utc.getUser().getId(), post_id, date);
+        QuoteObject qobj = new QuoteObject(ccid.get().getUser_id(), quickCom.get().getId(), content2, ccid.get().getPostdate());
+        qobjr.save(qobj);
+                                    
+        /*
+        //Notify the owner of the comment here: Very important
+        Optional<CommentClass> cLass = ccr.findById(comment_id.get());
+        String postlink = "s_ch?pos="+post_id.get()+"&t="+title.get()+"&p="+pg.get()+"&cid="+comment_id.get()+"#"+comment_id.get();
+        utc.updateInbox(mobjr, cLass.get().getUser_id(), comment_id.get(), postlink);
+        */
+        return "redirect:/b_ch?pos="+post_id+"&t="+title+"&page="+dc.getPage()+"&p="+dc.getPg()+"&alertx=Posted";
+    }
 }

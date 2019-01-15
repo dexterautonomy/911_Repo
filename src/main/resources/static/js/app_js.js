@@ -348,6 +348,20 @@ function appFunction()
         $('button.dynamicSubmitSubComment').prop("disabled", true);
     }
     
+    function enableButtonsY()
+    {
+        $('input.quoteCommentAddimg').prop("disabled", false);
+        $('button.dynamicSubmitQuote').prop("disabled", false);
+        $('button.quoteCommentSmiley').prop("disabled", false);
+    }
+    
+    function disableButtonsY()
+    {
+        $('input.quoteCommentAddimg').prop("disabled", true);
+        $('button.dynamicSubmitQuote').prop("disabled", true);
+        $('button.quoteCommentSmiley').prop("disabled", true);
+    }
+    
     
     //Clear info on focus in of textarea
     $('#kontent').focusin(function (e){
@@ -430,12 +444,9 @@ function appFunction()
             var countOpeningtag = content.lastIndexOf("<_"); //(content.match(/<_/g)).length;
             var countClosingTag = content.lastIndexOf("_>"); //(content.match(/_>/g)).length;
             
-            if(countClosingTag === countOpeningtag)
+            if(countClosingTag > countOpeningtag)
             {
-                if(countClosingTag > countOpeningtag)
-                {
-                    test = true;
-                }
+                test = true;
             }
         }
         else if(!content.includes("<_") && !content.includes("_>"))
@@ -600,8 +611,7 @@ function appFunction()
     
     
     $('input.subCommentAddimg').each(function (index){
-        $(this).change(function (ev){
-            //ev.preventDefault();
+        $(this).change(function (){
             if(checkSession())
             {
                 if(checkRank())
@@ -628,7 +638,7 @@ function appFunction()
                                     var file = '<_'+ fileName +'_>';
                                     disableButtonsX();
                                     
-                                    textArea.val(textAreaContent + file);
+                                    //textArea.val(textAreaContent + file);
             
                                     var myFormData = new FormData();
                                     myFormData.append("dynamicUpload", imgFile);
@@ -769,7 +779,7 @@ function appFunction()
                     $(selectQuote).toggleClass('hidden');
                     
                     var commentForQuoting = $($('div.commentContentForQuoting')[index]).text();
-                    var quotedTextArea = $($('textarea.quotedTextarea')[index]).val(commentForQuoting);
+                    $($('textarea.quotedTextarea')[index]).val(commentForQuoting);
             
                     $('div.dynamicQuote').each(function (e){
                         if(index !== e)
@@ -785,6 +795,203 @@ function appFunction()
                 else
                 {
                     $('#info1').text("Your rank is lesser than the post rank");
+                }
+            }
+            else
+            {
+                $('#info1').text("Session expired. Please log in");
+            }
+        });
+    });
+    
+    $('input.quoteCommentAddimg').each(function (index){
+        $(this).change(function (){
+            if(checkSession())
+            {
+                if(checkRank())
+                {
+                    var textArea = $($('textarea.dynamicQuoteContent1')[index]);
+                    var textAreaContent = textArea.val();
+                    var fileName = $($('input.quoteCommentAddimg')[index]).val();
+                    var fakePath = 'C:\\fakepath\\';
+                    if(fileName !== "")
+                    {
+                        fileName = fileName.replace(fakePath, "");
+                        var imgFile = $('input.quoteCommentAddimg')[index].files[0];
+                        
+                        if(fileName.length <= 50)
+                        {
+                            if(fileName.endsWith(".jpg") || fileName.endsWith(".png") || fileName.endsWith(".gif") 
+                            || fileName.endsWith(".jpeg") || fileName.endsWith(".JPG") || fileName.endsWith(".PNG") 
+                            || fileName.endsWith(".GIF") || fileName.endsWith(".JPEG") || fileName.endsWith(".webp") 
+                            || fileName.endsWith(".WEBP"))
+                            {
+                                if(imgFile.size <= 4000000)
+                                {
+                                    $('#info1').text('');
+                                    var file = '<_'+ fileName +'_>';
+                                    
+                                    disableButtonsY();
+                                    //textArea.val(textAreaContent + file);
+
+                                    var myFormData = new FormData();
+                                    myFormData.append("dynamicUpload", imgFile);
+                        
+                                    $.ajax({
+                                        enctype: 'multipart/form-data',
+                                        type: 'POST',
+                                        url: "ajaxDynamicFileUpload",
+                                        data: myFormData,
+                                        processData: false,
+                                        contentType: false,
+                                        cache: false,
+                                        timeout: 600000,
+                                        success: function (data) {
+                                            if(data)
+                                            {
+                                                textArea.val(textAreaContent + file);
+                                            }
+                                            enableButtonsY();
+                                        },
+                                        error: function () {
+                                            textArea.val(textAreaContent);
+                                            enableButtonsY();
+                                        }
+                                    });
+                                }
+                                else
+                                {
+                                    $('#info1').text('File size exceeded (4mb or less)');
+                                }
+                            }
+                            else
+                            {
+                                $('#info1').text('File format is not supported (suported formats: jpg, png, gif, webp)');
+                            }
+                        }
+                        else
+                        {
+                            $('#info1').text('File name is too long, must be 50 characters of less');
+                        }
+                    }
+                }
+                else
+                {
+                    $('#info1').text("Unfortunately, your rank just dropped below the post rank");
+                }
+            }
+            else
+            {
+                $('#info1').text("Session expired. Please log in");
+            }
+        });
+    });
+    
+    $('button.dynamicSubmitQuote').each(function (index){
+        $(this).click(function (ev){
+            ev.preventDefault();
+            if(checkSession())
+            {
+                if(checkRank())
+                {
+                    var quotingTextArea = $($('textarea.dynamicQuoteContent1')[index]);
+                    var originalCommentBeforQuoting = $($('div.commentContentForQuoting')[index]).text();
+                    var textAreaQuotedContent = $($('textarea.quotedTextarea')[index]).val();
+                    var theQuotingText = quotingTextArea.val();
+                    
+                    if(!textAreaQuotedContent.match(/^\s*$/))
+                    {
+                        if(originalCommentBeforQuoting.includes(textAreaQuotedContent))
+                        {
+                            if(checkTag(textAreaQuotedContent))
+                            {
+                                if(checkScript(textAreaQuotedContent))
+                                {
+                                    if(!theQuotingText.match(/^\s*$/))
+                                    {
+                                        if(checkTag(theQuotingText))
+                                        {
+                                            if(checkScript(theQuotingText))
+                                            {
+                                                if(theQuotingText.length < 801)
+                                                {
+                                                    disableButtonsY();
+                    
+                                                    var sentContent = {
+                                                        content: theQuotingText,
+                                                        content2: textAreaQuotedContent, 
+                                                        pos: $('#postid').text(),
+                                                        cid: $($('span.commentid')[index]).text(),
+                                                        title: $('#title').text(),
+                                                        page: $('#commentPaginate').text(),
+                                                        pg: $('#pagePaginate').text()
+                                                    };
+                    
+                                                    $.ajax({
+                                                        type: 'GET',
+                                                        url: "user/ajaxSubCommentDynamicComment_",
+                                                        data: "sent=" + encodeURIComponent(JSON.stringify(sentContent)),
+                                                        processData: false,
+                                                        contentType: "json",
+                                                        cache: false,
+                                                        timeout: 600000,
+                                                        success: function () {
+                                                            quotingTextArea.val("");
+                                                            $($('div.dynamicQuote')[index]).fadeOut(300);
+                                                            enableButtonsY();
+                                                            location.reload(true);
+                                                            alert("posted");
+                                                        },
+                                                        error: function () {
+                                                            quotingTextArea.val(theQuotingText);  //Update the textarea
+                                                            enableButtonsY();
+                                                            alert("Not posted");
+                                                        }
+                                                    });
+                                                }
+                                                else
+                                                {
+                                                    alert("Please keep it concise");
+                                                }
+                                            }
+                                            else
+                                            {
+                                                alert("Malformed text, script not allowed");
+                                            }
+                                        }
+                                        else
+                                        {
+                                            alert("Malformed text, <_ must be followed by _>");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        alert("Quote cannot be empty");
+                                    }
+                                }
+                                else
+                                {
+                                    alert("Malformed text, script not allowed");
+                                }
+                            }
+                            else
+                            {
+                                alert("Malformed text, <_ must be followed by _>");
+                            }
+                        }
+                        else
+                        {
+                            alert("Quote is out of context");
+                        }
+                    }
+                    else
+                    {
+                        alert("Quoted text cannot be empty");
+                    }
+                }
+                else
+                {
+                    $('#info1').text("Unfortunately, your rank just dropped below the post rank");
                 }
             }
             else

@@ -3,6 +3,7 @@ package com.hingebridge.model;
 public class DynamicContent
 {
     private String content;
+    private String content2;
     private Long pos;
     private Long cid;
     private String title;
@@ -12,6 +13,16 @@ public class DynamicContent
     public DynamicContent(Long pos, String title, int page, int pg, String content)
     {
         this.content = content;
+        this.pos = pos;
+        this.title = title;
+        this.page = page;
+        this.pg = pg;
+    }
+    
+    public DynamicContent(Long pos, String title, int page, int pg, String content, String content2)
+    {
+        this.content = content;
+        this.content2 = content2;
         this.pos = pos;
         this.title = title;
         this.page = page;
@@ -36,6 +47,16 @@ public class DynamicContent
     public String getContent()
     {
         return content;
+    }
+    
+    public void setContent2(String content2)
+    {
+        this.content2 = content2;
+    }
+    
+    public String getContent2()
+    {
+        return content2;
     }
     
     public void setPos(Long pos)
