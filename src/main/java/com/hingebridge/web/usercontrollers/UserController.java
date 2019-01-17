@@ -3239,4 +3239,44 @@ public class UserController
         */
         return "redirect:/b_ch?pos="+post_id+"&t="+title+"&page="+dc.getPage()+"&p="+dc.getPg()+"&alertx=Posted";
     }
+    
+    @RequestMapping("/getCommentToQuote")
+    @ResponseBody
+    public String getCommentToQuote(@RequestParam("comment_id")Long comment_id)
+    {
+        Optional<CommentClass> ccid = ccr.findById(comment_id);
+        String content = ccid.get().getContent();
+        
+        content = content.replaceAll("<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/", "<_");
+        content = content.replaceAll("'/><br/><br/>", "_>");
+        
+        return content;
+    }
+    
+    @RequestMapping("/ajaxSubCommentDynamicComment_editcomment")
+    @ResponseBody
+    public String dynamicEditComment(@RequestParam("sent")String sent)
+    {
+        Gson gson = new Gson();
+        DynamicContent dc = gson.fromJson(sent, DynamicContent.class);
+        String content = dc.getContent();
+        Long post_id = dc.getPos();
+        Long comment_id = dc.getCid();
+        String title = dc.getTitle();
+        
+        content = content.replaceAll("<_", "<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
+        content = content.replaceAll("_>", "'/><br/><br/>");
+        
+        Optional<CommentClass> ccid = ccr.findById(comment_id);
+        ccid.get().setContent(content);
+        ccr.save(ccid.get());
+                                    
+        /*
+        //Notify the owner of the comment here: Very important
+        Optional<CommentClass> cLass = ccr.findById(comment_id.get());
+        String postlink = "s_ch?pos="+post_id.get()+"&t="+title.get()+"&p="+pg.get()+"&cid="+comment_id.get()+"#"+comment_id.get();
+        utc.updateInbox(mobjr, cLass.get().getUser_id(), comment_id.get(), postlink);
+        */
+        return "redirect:/b_ch?pos="+post_id+"&t="+title+"&page="+dc.getPage()+"&p="+dc.getPg()+"&alertx=Posted";
+    }
 }

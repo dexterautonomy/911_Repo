@@ -217,8 +217,10 @@ function appFunction()
     }
     
     $('#commentOnPost').click(function (){
-        //kk
         $('div.subcommentsOnTheGo').addClass('hidden');
+        $('div.dynamicQuote').addClass('hidden');
+        $('div.dynamicEditSubComment').addClass('hidden');
+            
         if(checkSession())
         {
             if(checkRank())
@@ -362,6 +364,20 @@ function appFunction()
         $('button.quoteCommentSmiley').prop("disabled", true);
     }
     
+    function enableButtonsZ()
+    {
+        $('input.editSubCommentAddimg').prop("disabled", false);
+        $('button.editDynamicSubmitSubComment').prop("disabled", false);
+        $('button.editSubCommentSmiley').prop("disabled", false);
+    }
+    
+    function disableButtonsZ()
+    {
+        $('input.editSubCommentAddimg').prop("disabled", true);
+        $('button.editDynamicSubmitSubComment').prop("disabled", true);
+        $('button.editSubCommentSmiley').prop("disabled", true);
+    }
+    
     
     //Clear info on focus in of textarea
     $('#kontent').focusin(function (e){
@@ -444,6 +460,10 @@ function appFunction()
             var countOpeningtag = content.lastIndexOf("<_"); //(content.match(/<_/g)).length;
             var countClosingTag = content.lastIndexOf("_>"); //(content.match(/_>/g)).length;
             
+            if((content.match(/<_/g)).length !== (content.match(/_>/g)).length)
+            {
+                return test;
+            }
             if(countClosingTag > countOpeningtag)
             {
                 test = true;
@@ -547,10 +567,10 @@ function appFunction()
     
     $('a.commentsOnTheGo').each(function (index){
         $(this).click(function (ev){
-            //kk
             ev.preventDefault();
             $('#dynamicFormDiv').addClass('hidden');
             $('div.dynamicQuote').addClass('hidden');
+            $('div.dynamicEditSubComment').addClass('hidden');
             
             if(checkSession())
             {
@@ -770,17 +790,39 @@ function appFunction()
             ev.preventDefault();
             $('#dynamicFormDiv').addClass('hidden');
             $('div.subcommentsOnTheGo').addClass('hidden');
+            $('div.dynamicEditSubComment').addClass('hidden');
             
             if(checkSession())
             {
                 if(checkRank())
                 {
+                    var commentid = $($('span.commentid')[index]).text();
                     var selectQuote = $('div.dynamicQuote')[index];
                     $(selectQuote).toggleClass('hidden');
                     
-                    var commentForQuoting = $($('div.commentContentForQuoting')[index]).text();
-                    $($('textarea.quotedTextarea')[index]).val(commentForQuoting);
-            
+                    //var commentForQuoting = $($('div.commentContentForQuoting')[index]).text();
+                    disableButtonsY();
+                    
+                    $.ajax({
+                        type: 'GET',
+                        url: "user/getCommentToQuote",
+                        data: "comment_id=" + encodeURIComponent(commentid),
+                        processData: false,
+                        contentType: "text",
+                        cache: false,
+                        timeout: 600000,
+                        success: function (data) {
+                            if(data)
+                            {
+                                $($('textarea.quotedTextarea')[index]).val(data);
+                            }
+                            enableButtonsY();
+                        },
+                        error: function () {
+                            $(selectQuote).addClass('hidden');
+                        }
+                    });
+                    
                     $('div.dynamicQuote').each(function (e){
                         if(index !== e)
                         {
@@ -791,6 +833,11 @@ function appFunction()
                             }
                         }
                     });
+                    /*
+                    $($('textarea.quotedTextarea')[index]).val(commentForQuoting);
+            
+                    
+                    */
                 }
                 else
                 {
@@ -812,67 +859,74 @@ function appFunction()
                 {
                     var textArea = $($('textarea.dynamicQuoteContent1')[index]);
                     var textAreaContent = textArea.val();
-                    var fileName = $($('input.quoteCommentAddimg')[index]).val();
-                    var fakePath = 'C:\\fakepath\\';
-                    if(fileName !== "")
+                    if(textAreaContent.length < 646) // so 646 in Javascript is html's 700 character length
                     {
-                        fileName = fileName.replace(fakePath, "");
-                        var imgFile = $('input.quoteCommentAddimg')[index].files[0];
-                        
-                        if(fileName.length <= 50)
+                        var fileName = $($('input.quoteCommentAddimg')[index]).val();
+                        var fakePath = 'C:\\fakepath\\';
+                        if(fileName !== "")
                         {
-                            if(fileName.endsWith(".jpg") || fileName.endsWith(".png") || fileName.endsWith(".gif") 
-                            || fileName.endsWith(".jpeg") || fileName.endsWith(".JPG") || fileName.endsWith(".PNG") 
-                            || fileName.endsWith(".GIF") || fileName.endsWith(".JPEG") || fileName.endsWith(".webp") 
-                            || fileName.endsWith(".WEBP"))
-                            {
-                                if(imgFile.size <= 4000000)
-                                {
-                                    $('#info1').text('');
-                                    var file = '<_'+ fileName +'_>';
-                                    
-                                    disableButtonsY();
-                                    //textArea.val(textAreaContent + file);
-
-                                    var myFormData = new FormData();
-                                    myFormData.append("dynamicUpload", imgFile);
+                            fileName = fileName.replace(fakePath, "");
+                            var imgFile = $('input.quoteCommentAddimg')[index].files[0];
                         
-                                    $.ajax({
-                                        enctype: 'multipart/form-data',
-                                        type: 'POST',
-                                        url: "ajaxDynamicFileUpload",
-                                        data: myFormData,
-                                        processData: false,
-                                        contentType: false,
-                                        cache: false,
-                                        timeout: 600000,
-                                        success: function (data) {
-                                            if(data)
-                                            {
-                                                textArea.val(textAreaContent + file);
+                            if(fileName.length <= 50)
+                            {
+                                if(fileName.endsWith(".jpg") || fileName.endsWith(".png") || fileName.endsWith(".gif") 
+                                || fileName.endsWith(".jpeg") || fileName.endsWith(".JPG") || fileName.endsWith(".PNG") 
+                                || fileName.endsWith(".GIF") || fileName.endsWith(".JPEG") || fileName.endsWith(".webp") 
+                                || fileName.endsWith(".WEBP"))
+                                {
+                                    if(imgFile.size <= 4000000)
+                                    {
+                                        $('#info1').text('');
+                                        var file = '<_'+ fileName +'_>';
+                                    
+                                        disableButtonsY();
+                                        //textArea.val(textAreaContent + file);
+
+                                        var myFormData = new FormData();
+                                        myFormData.append("dynamicUpload", imgFile);
+                        
+                                        $.ajax({
+                                            enctype: 'multipart/form-data',
+                                            type: 'POST',
+                                            url: "ajaxDynamicFileUpload",
+                                            data: myFormData,
+                                            processData: false,
+                                            contentType: false,
+                                            cache: false,
+                                            timeout: 600000,
+                                            success: function (data) {
+                                                if(data)
+                                                {
+                                                    textArea.val(textAreaContent + file);
+                                                }
+                                                enableButtonsY();
+                                            },
+                                            error: function () {
+                                                textArea.val(textAreaContent);
+                                                enableButtonsY();
                                             }
-                                            enableButtonsY();
-                                        },
-                                        error: function () {
-                                            textArea.val(textAreaContent);
-                                            enableButtonsY();
-                                        }
-                                    });
+                                        });
+                                    }
+                                    else
+                                    {
+                                        $('#info1').text('File size exceeded (4mb or less)');
+                                    }
                                 }
                                 else
                                 {
-                                    $('#info1').text('File size exceeded (4mb or less)');
+                                    $('#info1').text('File format is not supported (suported formats: jpg, png, gif, webp)');
                                 }
                             }
                             else
                             {
-                                $('#info1').text('File format is not supported (suported formats: jpg, png, gif, webp)');
+                                $('#info1').text('File name is too long, must be 50 characters of less');
                             }
                         }
-                        else
-                        {
-                            $('#info1').text('File name is too long, must be 50 characters of less');
-                        }
+                    }
+                    else
+                    {
+                        alert("Limit reached");
                     }
                 }
                 else
@@ -992,6 +1046,216 @@ function appFunction()
                 else
                 {
                     $('#info1').text("Unfortunately, your rank just dropped below the post rank");
+                }
+            }
+            else
+            {
+                $('#info1').text("Session expired. Please log in");
+            }
+        });
+    });
+    
+    $('a.editSubComOnTheGo').each(function (index){
+        $(this).click(function (ev){
+            ev.preventDefault();
+            $('#dynamicFormDiv').addClass('hidden');
+            $('div.subcommentsOnTheGo').addClass('hidden');
+            $('div.dynamicQuote').addClass('hidden');
+            
+            if(checkSession())
+            {
+                var commentid = $($('span.commentid')[index]).text();
+                var selectQuote = $('div.dynamicEditSubComment')[index];
+                $(selectQuote).toggleClass('hidden');
+                
+                disableButtonsZ();
+                    
+                $.ajax({
+                    type: 'GET',
+                    url: "user/getCommentToQuote",
+                    data: "comment_id=" + encodeURIComponent(commentid),
+                    processData: false,
+                    contentType: "text",
+                    cache: false,
+                    timeout: 600000,
+                    success: function (data) {
+                    if(data)
+                        {
+                            $($('textarea.editSubCommentContent')[index]).val(data);
+                        }
+                        enableButtonsZ();
+                    },
+                    error: function () {
+                        $(selectQuote).addClass('hidden');
+                    }
+                });
+                    
+                $('div.dynamicEditSubComment').each(function (e){
+                    if(index !== e)
+                    {
+                        var otherQuoteOnTheGoDivs = $('div.dynamicEditSubComment')[e];
+                        if($(otherQuoteOnTheGoDivs).is(':visible'))
+                        {
+                            $(otherQuoteOnTheGoDivs).addClass('hidden');
+                        }
+                    }
+                });
+            }
+            else
+            {
+                $('#info1').text("Session expired. Please log in");
+            }
+        });
+    });
+    
+    $('input.editSubCommentAddimg').each(function (index){
+        $(this).change(function (){
+            if(checkSession())
+            {
+                var textArea = $($('textarea.editSubCommentContent')[index]);
+                var textAreaContent = textArea.val();
+                if(textAreaContent.length < 646) // so 646 in Javascript is html's 700 character length
+                {
+                    var fileName = $($('input.editSubCommentAddimg')[index]).val();
+                    var fakePath = 'C:\\fakepath\\';
+                    if(fileName !== "")
+                    {
+                        fileName = fileName.replace(fakePath, "");
+                        var imgFile = $('input.editSubCommentAddimg')[index].files[0];
+                        
+                        if(fileName.length <= 50)
+                        {
+                            if(fileName.endsWith(".jpg") || fileName.endsWith(".png") || fileName.endsWith(".gif") 
+                            || fileName.endsWith(".jpeg") || fileName.endsWith(".JPG") || fileName.endsWith(".PNG") 
+                            || fileName.endsWith(".GIF") || fileName.endsWith(".JPEG") || fileName.endsWith(".webp") 
+                            || fileName.endsWith(".WEBP"))
+                            {
+                                if(imgFile.size <= 4000000)
+                                {
+                                    $('#info1').text('');
+                                    var file = '<_'+ fileName +'_>';
+                                    
+                                    disableButtonsZ();
+
+                                    var myFormData = new FormData();
+                                    myFormData.append("dynamicUpload", imgFile);
+                        
+                                    $.ajax({
+                                        enctype: 'multipart/form-data',
+                                        type: 'POST',
+                                        url: "ajaxDynamicFileUpload",
+                                        data: myFormData,
+                                        processData: false,
+                                        contentType: false,
+                                        cache: false,
+                                        timeout: 600000,
+                                        success: function (data) {
+                                            if(data)
+                                            {
+                                                textArea.val(textAreaContent + file);
+                                            }
+                                            enableButtonsZ();
+                                        },
+                                        error: function () {
+                                            textArea.val(textAreaContent);
+                                            enableButtonsY();
+                                        }
+                                    });
+                                }
+                                else
+                                {
+                                    $('#info1').text('File size exceeded (4mb or less)');
+                                }
+                            }
+                            else
+                            {
+                                $('#info1').text('File format is not supported (suported formats: jpg, png, gif, webp)');
+                            }
+                        }
+                        else
+                        {
+                            $('#info1').text('File name is too long, must be 50 characters of less');
+                        }
+                    }
+                }
+                else
+                {
+                    alert("Limit reached");
+                }
+            }
+            else
+            {
+                $('#info1').text("Session expired. Please log in");
+            }
+        });
+    });
+    
+    $('button.editDynamicSubmitSubComment').each(function (index){
+        $(this).click(function (ev){
+            ev.preventDefault();
+            if(checkSession())
+            {
+                var editTextArea = $($('textarea.editSubCommentContent')[index]);
+                var theEdit = editTextArea.val();
+                    
+                if(!theEdit.match(/^\s*$/))
+                {
+                    if(checkTag(theEdit))
+                    {
+                        if(checkScript(theEdit))
+                        {
+                            if(theEdit.length < 801)
+                            {
+                                disableButtonsZ();
+                                var sentContent = {
+                                    content: theEdit, 
+                                    pos: $('#postid').text(),
+                                    cid: $($('span.commentid')[index]).text(),
+                                    title: $('#title').text(),
+                                    page: $('#commentPaginate').text(),
+                                    pg: $('#pagePaginate').text()
+                                };
+                    
+                                $.ajax({
+                                    type: 'GET',
+                                    url: "user/ajaxSubCommentDynamicComment_editcomment",
+                                    data: "sent=" + encodeURIComponent(JSON.stringify(sentContent)),
+                                    processData: false,
+                                    contentType: "json",
+                                    cache: false,
+                                    timeout: 600000,
+                                    success: function () {
+                                        editTextArea.val("");
+                                        $($('div.dynamicEditSubComment')[index]).fadeOut(300);
+                                        enableButtonsZ();
+                                        location.reload(true);
+                                        alert("posted");
+                                    },
+                                    error: function () {
+                                        editTextArea.val(theEdit);  //Update the textarea
+                                        enableButtonsZ();
+                                        alert("Not posted");
+                                    }
+                                });
+                            }
+                            else
+                            {
+                                alert("Please keep it concise");
+                            }
+                        }
+                        else
+                        {
+                            alert("Malformed text, script not allowed");
+                        }
+                    }
+                    else
+                    {
+                        alert("Malformed text, <_ must be followed by _>");
+                    }
+                }
+                else
+                {
+                    alert("Edit cannot be empty");
                 }
             }
             else
