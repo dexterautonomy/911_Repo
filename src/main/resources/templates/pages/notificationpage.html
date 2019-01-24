@@ -41,7 +41,7 @@
                         <div class="list-group">
                             <div th:each="mo : ${messageobj}" class="ccc">
                                 <div class="aaa">
-                                    <a th:href="@{'/' + ${mo.postlink}}" class="media">
+                                    <a th:href="@{'/' + ${mo.postlink}}" class="media noUnderLine">
                                         <div class="list-group-item" th:classappend="${mo.unread}">
                                             <div class="autoOverflow">
                                                 <span class="postcomment_username">Me</span>

@@ -160,40 +160,6 @@ function appFunction()
             event.stopPropagation();
        });
     });
-    
-    /*
-    $('#postRank').click(function(e){
-        $('body.container').text($(this).text());
-    });
-    */
-    
-    /*
-    $('#commentOnPost').hover(function (){
-        if($('#sessionOn').text() !== 'no session')// && $('#userRank').text() !== null)
-        {
-            var postrank = $('#postRank').text().replace("PR: ", "");
-            if(parseInt($('#userRank').text()) >= parseInt(postrank))
-            {
-                $(this).click(function (e){
-                    $('#dynamicForm').fadeIn(1500).toggleClass('hidden');
-                    return false;
-                });
-            }
-            else
-            {
-                $(this).click(function (e){
-                    return false;
-                });
-            }
-        }
-        else
-        {
-            window.alert('Please log in');
-        }
-    }, function (){
-        
-    });
-    */
    
    function checkSession()
     {
@@ -219,13 +185,13 @@ function appFunction()
     $('#commentOnPost').click(function (){
         $('div.subcommentsOnTheGo').addClass('hidden');
         $('div.dynamicQuote').addClass('hidden');
-        $('div.dynamicEditSubComment').addClass('hidden');
+        $('div.dynamicEditComment').addClass('hidden');
             
         if(checkSession())
         {
             if(checkRank())
             {
-                $('#dynamicFormDiv').removeClass('hidden');
+                $('#dynamicFormDiv').toggleClass('hidden');
                 $('#kontent').val("");
                 $('#info1').text("");
             }
@@ -366,12 +332,26 @@ function appFunction()
     
     function enableButtonsZ()
     {
+        $('input.editCommentAddimg').prop("disabled", false);
+        $('button.editDynamicSubmitComment').prop("disabled", false);
+        $('button.editCommentSmiley').prop("disabled", false);
+    }
+    
+    function disableButtonsZ()
+    {
+        $('input.editCommentAddimg').prop("disabled", true);
+        $('button.editDynamicSubmitComment').prop("disabled", true);
+        $('button.editCommentSmiley').prop("disabled", true);
+    }
+    
+    function enableButtonsP()
+    {
         $('input.editSubCommentAddimg').prop("disabled", false);
         $('button.editDynamicSubmitSubComment').prop("disabled", false);
         $('button.editSubCommentSmiley').prop("disabled", false);
     }
     
-    function disableButtonsZ()
+    function disableButtonsP()
     {
         $('input.editSubCommentAddimg').prop("disabled", true);
         $('button.editDynamicSubmitSubComment').prop("disabled", true);
@@ -570,12 +550,15 @@ function appFunction()
             ev.preventDefault();
             $('#dynamicFormDiv').addClass('hidden');
             $('div.dynamicQuote').addClass('hidden');
+            $('div.dynamicEditComment').addClass('hidden');
             $('div.dynamicEditSubComment').addClass('hidden');
+            $('textarea.editSubCommentContent').val("");
             
             if(checkSession())
             {
                 if(checkRank())
                 {
+                    $('form.dynamicSubComment').removeClass('hidden');
                     var selectSubComment = $('div.subcommentsOnTheGo')[index];
                     $(selectSubComment).toggleClass('hidden');
                     $('textarea.subCommentContent').val("");
@@ -790,7 +773,7 @@ function appFunction()
             ev.preventDefault();
             $('#dynamicFormDiv').addClass('hidden');
             $('div.subcommentsOnTheGo').addClass('hidden');
-            $('div.dynamicEditSubComment').addClass('hidden');
+            $('div.dynamicEditComment').addClass('hidden');
             
             if(checkSession())
             {
@@ -812,10 +795,7 @@ function appFunction()
                         cache: false,
                         timeout: 600000,
                         success: function (data) {
-                            if(data)
-                            {
-                                $($('textarea.quotedTextarea')[index]).val(data);
-                            }
+                            $($('textarea.quotedTextarea')[index]).val(data);
                             enableButtonsY();
                         },
                         error: function () {
@@ -1055,7 +1035,7 @@ function appFunction()
         });
     });
     
-    $('a.editSubComOnTheGo').each(function (index){
+    $('a.editComOnTheGo').each(function (index){
         $(this).click(function (ev){
             ev.preventDefault();
             $('#dynamicFormDiv').addClass('hidden');
@@ -1065,7 +1045,7 @@ function appFunction()
             if(checkSession())
             {
                 var commentid = $($('span.commentid')[index]).text();
-                var selectQuote = $('div.dynamicEditSubComment')[index];
+                var selectQuote = $('div.dynamicEditComment')[index];
                 $(selectQuote).toggleClass('hidden');
                 
                 disableButtonsZ();
@@ -1079,10 +1059,7 @@ function appFunction()
                     cache: false,
                     timeout: 600000,
                     success: function (data) {
-                    if(data)
-                        {
-                            $($('textarea.editSubCommentContent')[index]).val(data);
-                        }
+                        $($('textarea.editCommentContent')[index]).val(data);
                         enableButtonsZ();
                     },
                     error: function () {
@@ -1090,12 +1067,220 @@ function appFunction()
                     }
                 });
                     
+                $('div.dynamicEditComment').each(function (e){
+                    if(index !== e)
+                    {
+                        var otherQuoteOnTheGoDivs = $('div.dynamicEditComment')[e];
+                        if($(otherQuoteOnTheGoDivs).is(':visible'))
+                        {
+                            $(otherQuoteOnTheGoDivs).addClass('hidden');
+                        }
+                    }
+                });
+            }
+            else
+            {
+                $('#info1').text("Session expired. Please log in");
+            }
+        });
+    });
+    
+    $('input.editCommentAddimg').each(function (index){
+        $(this).change(function (){
+            if(checkSession())
+            {
+                var textArea = $($('textarea.editCommentContent')[index]);
+                var textAreaContent = textArea.val();
+                if(textAreaContent.length < 646) // so 646 in Javascript is html's 700 character length
+                {
+                    var fileName = $($('input.editCommentAddimg')[index]).val();
+                    var fakePath = 'C:\\fakepath\\';
+                    if(fileName !== "")
+                    {
+                        fileName = fileName.replace(fakePath, "");
+                        var imgFile = $('input.editCommentAddimg')[index].files[0];
+                        
+                        if(fileName.length <= 50)
+                        {
+                            if(fileName.endsWith(".jpg") || fileName.endsWith(".png") || fileName.endsWith(".gif") 
+                            || fileName.endsWith(".jpeg") || fileName.endsWith(".JPG") || fileName.endsWith(".PNG") 
+                            || fileName.endsWith(".GIF") || fileName.endsWith(".JPEG") || fileName.endsWith(".webp") 
+                            || fileName.endsWith(".WEBP"))
+                            {
+                                if(imgFile.size <= 4000000)
+                                {
+                                    $('#info1').text('');
+                                    var file = '<_'+ fileName +'_>';
+                                    
+                                    disableButtonsZ();
+
+                                    var myFormData = new FormData();
+                                    myFormData.append("dynamicUpload", imgFile);
+                        
+                                    $.ajax({
+                                        enctype: 'multipart/form-data',
+                                        type: 'POST',
+                                        url: "ajaxDynamicFileUpload",
+                                        data: myFormData,
+                                        processData: false,
+                                        contentType: false,
+                                        cache: false,
+                                        timeout: 600000,
+                                        success: function (data) {
+                                            if(data)
+                                            {
+                                                textArea.val(textAreaContent + file);
+                                            }
+                                            enableButtonsZ();
+                                        },
+                                        error: function () {
+                                            textArea.val(textAreaContent);
+                                            enableButtonsZ();
+                                        }
+                                    });
+                                }
+                                else
+                                {
+                                    $('#info1').text('File size exceeded (4mb or less)');
+                                }
+                            }
+                            else
+                            {
+                                $('#info1').text('File format is not supported (suported formats: jpg, png, gif, webp)');
+                            }
+                        }
+                        else
+                        {
+                            $('#info1').text('File name is too long, must be 50 characters of less');
+                        }
+                    }
+                }
+                else
+                {
+                    alert("Limit reached");
+                }
+            }
+            else
+            {
+                $('#info1').text("Session expired. Please log in");
+            }
+        });
+    });
+    
+    $('button.editDynamicSubmitComment').each(function (index){
+        $(this).click(function (ev){
+            ev.preventDefault();
+            if(checkSession())
+            {
+                var editTextArea = $($('textarea.editCommentContent')[index]);
+                var theEdit = editTextArea.val();
+                    
+                if(!theEdit.match(/^\s*$/))
+                {
+                    if(checkTag(theEdit))
+                    {
+                        if(checkScript(theEdit))
+                        {
+                            if(theEdit.length < 801)
+                            {
+                                disableButtonsZ();
+                                var sentContent = {
+                                    content: theEdit, 
+                                    pos: $('#postid').text(),
+                                    cid: $($('span.commentid')[index]).text(),
+                                    title: $('#title').text(),
+                                    page: $('#commentPaginate').text(),
+                                    pg: $('#pagePaginate').text()
+                                };
+                    
+                                $.ajax({
+                                    type: 'GET',
+                                    url: "user/ajaxSubCommentDynamicComment_editcomment",
+                                    data: "sent=" + encodeURIComponent(JSON.stringify(sentContent)),
+                                    processData: false,
+                                    contentType: "json",
+                                    cache: false,
+                                    timeout: 600000,
+                                    success: function () {
+                                        editTextArea.val("");
+                                        $($('div.dynamicEditComment')[index]).fadeOut(300);
+                                        enableButtonsZ();
+                                        location.reload(true);
+                                        alert("posted");
+                                    },
+                                    error: function () {
+                                        editTextArea.val(theEdit);  //Update the textarea
+                                        enableButtonsZ();
+                                        alert("Not posted");
+                                    }
+                                });
+                            }
+                            else
+                            {
+                                alert("Please keep it concise");
+                            }
+                        }
+                        else
+                        {
+                            alert("Malformed text, script not allowed");
+                        }
+                    }
+                    else
+                    {
+                        alert("Malformed text, <_ must be followed by _>");
+                    }
+                }
+                else
+                {
+                    alert("Edit cannot be empty");
+                }
+            }
+            else
+            {
+                $('#info1').text("Session expired. Please log in");
+            }
+        });
+    });
+    
+    $('a.editSubComOnTheGo').each(function (index){
+        $(this).click(function (ev){
+            ev.preventDefault();
+            //$('#dynamicFormDiv').addClass('hidden');
+            $('form.dynamicSubComment').addClass('hidden');
+            //$('div.dynamicQuote').addClass('hidden');
+            
+            if(checkSession())  //This is roundtrip
+            {
+                var subcommentid = $($('span.subcommentid')[index]).text();
+                var selectQuote = $('div.dynamicEditSubComment')[index];
+                $(selectQuote).toggleClass('hidden');
+                
+                disableButtonsP();
+                
+                $.ajax({
+                    type: 'GET',
+                    url: "user/getSubCommentToEdit",
+                    data: "subcomment_id=" + encodeURIComponent(subcommentid),
+                    processData: false,
+                    contentType: "text",
+                    cache: false,
+                    timeout: 600000,
+                    success: function (data) {
+                        $($('textarea.editSubCommentContent')[index]).val(data);
+                        enableButtonsP();
+                    },
+                    error: function () {
+                        $(selectQuote).addClass('hidden');
+                    }
+                });
+                
                 $('div.dynamicEditSubComment').each(function (e){
                     if(index !== e)
                     {
                         var otherQuoteOnTheGoDivs = $('div.dynamicEditSubComment')[e];
                         if($(otherQuoteOnTheGoDivs).is(':visible'))
                         {
+                            $($('textarea.editSubCommentContent')[e]).val('');
                             $(otherQuoteOnTheGoDivs).addClass('hidden');
                         }
                     }
@@ -1135,7 +1320,7 @@ function appFunction()
                                     $('#info1').text('');
                                     var file = '<_'+ fileName +'_>';
                                     
-                                    disableButtonsZ();
+                                    disableButtonsP();
 
                                     var myFormData = new FormData();
                                     myFormData.append("dynamicUpload", imgFile);
@@ -1154,11 +1339,11 @@ function appFunction()
                                             {
                                                 textArea.val(textAreaContent + file);
                                             }
-                                            enableButtonsZ();
+                                            enableButtonsP();
                                         },
                                         error: function () {
                                             textArea.val(textAreaContent);
-                                            enableButtonsY();
+                                            enableButtonsP();
                                         }
                                     });
                                 }
@@ -1206,11 +1391,11 @@ function appFunction()
                         {
                             if(theEdit.length < 801)
                             {
-                                disableButtonsZ();
+                                disableButtonsP();
                                 var sentContent = {
                                     content: theEdit, 
                                     pos: $('#postid').text(),
-                                    cid: $($('span.commentid')[index]).text(),
+                                    sid: $($('span.subcommentid')[index]).text(),
                                     title: $('#title').text(),
                                     page: $('#commentPaginate').text(),
                                     pg: $('#pagePaginate').text()
@@ -1218,7 +1403,7 @@ function appFunction()
                     
                                 $.ajax({
                                     type: 'GET',
-                                    url: "user/ajaxSubCommentDynamicComment_editcomment",
+                                    url: "user/ajaxDynamik_submit_edited_sub_comment_",
                                     data: "sent=" + encodeURIComponent(JSON.stringify(sentContent)),
                                     processData: false,
                                     contentType: "json",
@@ -1227,13 +1412,13 @@ function appFunction()
                                     success: function () {
                                         editTextArea.val("");
                                         $($('div.dynamicEditSubComment')[index]).fadeOut(300);
-                                        enableButtonsZ();
+                                        enableButtonsP();
                                         location.reload(true);
                                         alert("posted");
                                     },
                                     error: function () {
                                         editTextArea.val(theEdit);  //Update the textarea
-                                        enableButtonsZ();
+                                        enableButtonsP();
                                         alert("Not posted");
                                     }
                                 });
@@ -1264,4 +1449,96 @@ function appFunction()
             }
         });
     });
+    
+    $('button.editDynamicSubmitSubCommentExtraSubcommentPage').each(function (index){
+        $(this).click(function (ev){
+            ev.preventDefault();
+            if(checkSession())
+            {
+                var editTextArea = $($('textarea.editSubCommentContent')[index]);
+                var theEdit = editTextArea.val();
+                    
+                if(!theEdit.match(/^\s*$/))
+                {
+                    if(checkTag(theEdit))
+                    {
+                        if(checkScript(theEdit))
+                        {
+                            if(theEdit.length < 801)
+                            {
+                                disableButtonsP();
+                                var sentContent = {
+                                    content: theEdit, 
+                                    pos: $('#postid').text(),
+                                    cid: $('#cid').text(),
+                                    sid: $($('span.subcommentid')[index]).text(),
+                                    title: $('#title').text(),
+                                    p2: $('#p2').text(),
+                                    pg: $('#pg').text(),
+                                    page: $('#page').text()
+                                };
+                    
+                                $.ajax({
+                                    type: 'GET',
+                                    url: "user/ajaxDynamik_submit_edited_sub_comment_2",
+                                    data: "sent=" + encodeURIComponent(JSON.stringify(sentContent)),
+                                    processData: false,
+                                    contentType: "json",
+                                    cache: false,
+                                    timeout: 600000,
+                                    success: function () {
+                                        editTextArea.val("");
+                                        $($('div.dynamicEditSubComment')[index]).fadeOut(300);
+                                        enableButtonsP();
+                                        location.reload(true);
+                                        alert("posted");
+                                    },
+                                    error: function () {
+                                        editTextArea.val(theEdit);  //Update the textarea
+                                        enableButtonsP();
+                                        alert("Not posted");
+                                    }
+                                });
+                            }
+                            else
+                            {
+                                alert("Please keep it concise");
+                            }
+                        }
+                        else
+                        {
+                            alert("Malformed text, script not allowed");
+                        }
+                    }
+                    else
+                    {
+                        alert("Malformed text, <_ must be followed by _>");
+                    }
+                }
+                else
+                {
+                    alert("Edit cannot be empty");
+                }
+            }
+            else
+            {
+                $('#info1').text("Session expired. Please log in");
+            }
+        });
+    });
+    
+    /*
+    function addDynamic1()
+    {
+        return '<form id="dynamicForm" action="" enctype="multipart/form-data" method="POST">'+
+            '<div>'+
+            '<textarea id="kontent" class="form-control" name="dynamicFormContent" placeholder="Comment" cols="20" rows="7" required="" maxlength="700"></textarea><br/></div>'+
+            '<div class="uploadbtnwrapper">'+
+            '<input id="addimg" class="btn btn-sm btn-default" name="dynamicFormFile" type="file" style="display: inline"/>'+
+            '<button class="btn btn-sm btn-info" name="doesNothing"><span class="glyphicon glyphicon-cloud-upload" style="display: inline"></span> Attach Image</button>'+
+            '<button id="smiley" class="btn btn-sm btn-primary" name="smiley" style="display: inline"><span class="glyphicon glyphicon-cloud-upload"></span> Smileys</button>'+
+            '<button id="dynamicSubmit" class="btn btn-sm btn-success" style="display: inline"><span class=" glyphicon glyphicon-send"></span> Post</button>'+
+        '</div></form>';
+    }
+    */
 }

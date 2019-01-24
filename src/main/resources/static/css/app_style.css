@@ -784,3 +784,14 @@ a:hover
 {
     background-color: rgb(255,215,255);
 }
+
+a.gimmeChance
+{
+    margin-right: 20px;
+    text-decoration: none;
+}
+
+a.noUnderLine
+{
+    text-decoration: none;
+}

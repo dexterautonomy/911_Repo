@@ -6,9 +6,11 @@ public class DynamicContent
     private String content2;
     private Long pos;
     private Long cid;
+    private Long sid;
     private String title;
     private int page;
     private int pg;
+    private int p2;
     
     public DynamicContent(Long pos, String title, int page, int pg, String content)
     {
@@ -37,6 +39,28 @@ public class DynamicContent
         this.title = title;
         this.page = page;
         this.pg = pg;
+    }
+    
+    public DynamicContent(Long pos, String title, int page, int pg, String content, Long sid)
+    {
+        this.content = content;
+        this.sid = sid;
+        this.pos = pos;
+        this.title = title;
+        this.page = page;
+        this.pg = pg;
+    }
+    
+    public DynamicContent(Long pos, Long cid, Long sid, String title, int p2, int pg, int page, String content)
+    {
+        this.pos = pos;
+        this.cid = cid;
+        this.sid = sid;
+        this.title = title;
+        this.p2 = p2;
+        this.pg = pg;
+        this.page = page;
+        this.content = content;
     }
     
     public void setContent(String content)
@@ -79,6 +103,16 @@ public class DynamicContent
         return cid;
     }
     
+    public void setSid(Long sid)
+    {
+        this.sid = sid;
+    }
+    
+    public Long getSid()
+    {
+        return sid;
+    }
+    
     public void setTitle(String title)
     {
         this.title = title;
@@ -109,4 +143,13 @@ public class DynamicContent
         return pg;
     }
     
+    public void setP2(int p2)
+    {
+        this.p2 = p2;
+    }
+    
+    public int getP2()
+    {
+        return p2;
+    }
 }

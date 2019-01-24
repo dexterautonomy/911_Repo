@@ -3279,4 +3279,66 @@ public class UserController
         */
         return "redirect:/b_ch?pos="+post_id+"&t="+title+"&page="+dc.getPage()+"&p="+dc.getPg()+"&alertx=Posted";
     }
+    
+            
+    @RequestMapping("/getSubCommentToEdit")
+    @ResponseBody
+    public String getSubCommentToEdit(@RequestParam("subcomment_id")Long subcomment_id)
+    {
+        Optional<SubCommentClass> scc = sccr.findById(subcomment_id);
+        String content = scc.get().getContent();
+        
+        content = content.replaceAll("<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/", "<_");
+        content = content.replaceAll("'/><br/><br/>", "_>");
+        
+        return content;
+    }
+    
+    @RequestMapping("/ajaxDynamik_submit_edited_sub_comment_")
+    @ResponseBody
+    public String dynamicEditSubComment(@RequestParam("sent")String sent)
+    {
+        Gson gson = new Gson();
+        DynamicContent dc = gson.fromJson(sent, DynamicContent.class);
+        String content = dc.getContent();
+        Long post_id = dc.getPos();
+        Long subcomment_id = dc.getSid();
+        String title = dc.getTitle();
+        
+        content = content.replaceAll("<_", "<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
+        content = content.replaceAll("_>", "'/><br/><br/>");
+        
+        Optional<SubCommentClass> scc = sccr.findById(subcomment_id);
+        scc.get().setContent(content);
+        sccr.save(scc.get());
+                                    
+        /*
+        //Notify the owner of the comment here: Very important
+        Optional<CommentClass> cLass = ccr.findById(comment_id.get());
+        String postlink = "s_ch?pos="+post_id.get()+"&t="+title.get()+"&p="+pg.get()+"&cid="+comment_id.get()+"#"+comment_id.get();
+        utc.updateInbox(mobjr, cLass.get().getUser_id(), comment_id.get(), postlink);
+        */
+        return "redirect:/b_ch?pos="+post_id+"&t="+title+"&page="+dc.getPage()+"&p="+dc.getPg()+"&alertx=Posted";
+    }
+    
+    @RequestMapping("/ajaxDynamik_submit_edited_sub_comment_2")
+    @ResponseBody
+    public String dynamicEditSubComment2(@RequestParam("sent")String sent)
+    {
+        Gson gson = new Gson();
+        DynamicContent dc = gson.fromJson(sent, DynamicContent.class);
+        String content = dc.getContent();
+        Long post_id = dc.getPos();
+        Long subcomment_id = dc.getSid();
+        String title = dc.getTitle();
+        
+        content = content.replaceAll("<_", "<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
+        content = content.replaceAll("_>", "'/><br/><br/>");
+        
+        Optional<SubCommentClass> scc = sccr.findById(subcomment_id);
+        scc.get().setContent(content);
+        sccr.save(scc.get());
+        
+        return "redirect:/mresu_b?p2="+dc.getP2()+"&pos="+post_id+"&t="+title+"&page="+dc.getPage()+"&pg="+dc.getPg()+"&cid="+dc.getCid();
+    }
 }
