@@ -51,7 +51,6 @@
                         </div><br/>
 
                         <div class="hidden">
-                            <!--For JQuery very important-->
                             <span id="sessionOn" th:text="${session.username} == null ? 'no session' : ${session.username}"></span>
                             <span id="userRank" th:text="${session.myRank}"></span>
                             <span id="postid" th:text="${pos}"></span>
@@ -74,9 +73,15 @@
                             </form>
                         </div>
                         
-                        <ul class="pager centertinz">
+                        <ul class="pager centertinz" th:if="${cog} == null">
                             <li>
                                 <a th:href="@{/(page=${pg})}">Back</a>
+                            </li>
+                        </ul>
+                        
+                        <ul class="pager centertinz" th:unless="${cog} == null">
+                            <li>
+                                <a th:href="@{/linkz(cat=${cog}, page=${pg})}">Back</a>
                             </li>
                         </ul>
                         
@@ -111,7 +116,6 @@
                                     </div>
                                     
                                     <div class="hidden">
-                                        <!--For JQuery very important-->
                                         <span class="commentid" th:text="${comment.id}"></span>
                                     </div>
                                     
@@ -152,7 +156,6 @@
                                     </div>
                                     
                                     <div class="subcommentsOnTheGo hidden">
-                                        <!-- This form is for Javascript subcomment -->
                                         <form class="dynamicSubComment" action="" enctype="multipart/form-data">
                                             <div>
                                                 <textarea class="form-control subCommentContent" name="dynamicFormContent" placeholder="Comment" cols="20" rows="5" required="" maxlength="700"></textarea><br/>
@@ -182,7 +185,6 @@
                                                 
                                                 <div th:utext="${subcom.content}"></div><br/>
                                                 <div class="hidden">
-                                                    <!--For JQuery very important-->
                                                     <span class="subcommentid" th:text="${subcom.id}"></span>
                                                 </div>
                                                 
@@ -213,7 +215,6 @@
                                                 </div>
                                                 
                                                 <div class="dynamicEditSubComment hidden"></br>
-                                                    <!-- This form is for Javascript edit_subcomment -->
                                                     <form action="" enctype="multipart/form-data">
                                                         <div>
                                                             <textarea class="form-control editSubCommentContent" name="dynamicFormContent" placeholder="Comment" cols="20" rows="5" required="" maxlength="700"></textarea><br/>
@@ -229,15 +230,22 @@
                                             </div>
                                         </div>
                                         
-                                        <div th:if="${#lists.size(comment.subcomment) &gt; 10}">
-                                            <a style="float: right; text-decoration: none;" th:href="@{mresu_b(p2=2, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, pg=${pg}, cid=${comment.id})}">
-                                                <span class="smallfont">More Comments</span>
-                                            </a>
+                                        <div th:if="${#lists.size(comment.subcomment) &gt; 10 }">
+                                            <div th:if="${cog} == null">
+                                                <a style="float: right; text-decoration: none;" th:href="@{mresu_b(p2=2, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, pg=${pg}, cid=${comment.id})}">
+                                                    <span class="smallfont">More Comments</span>
+                                                </a>
+                                            </div>
+                                            
+                                            <div th:unless="${cog} == null">
+                                                <a style="float: right; text-decoration: none;" th:href="@{mresu_b(p2=2, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, pg=${pg}, cid=${comment.id}, cog=${cog})}">
+                                                    <span class="smallfont">More Comments</span>
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                     
                                     <div class="dynamicQuote hidden">
-                                        <!-- This form is for Javascript quote -->
                                         <form action="" enctype="multipart/form-data">
                                             <div>
                                                 <textarea class="form-control quotedTextarea" name="dynamicFormContent" placeholder="Comment" cols="20" rows="5" required="" maxlength="700"></textarea><br/>
@@ -253,7 +261,6 @@
                                     </div>
                                     
                                     <div class="dynamicEditComment hidden">
-                                        <!-- This form is for Javascript edit_comment -->
                                         <form action="" enctype="multipart/form-data">
                                             <div>
                                                 <textarea class="form-control editCommentContent" name="dynamicFormContent" placeholder="Comment" cols="20" rows="5" required="" maxlength="700"></textarea><br/>
@@ -270,7 +277,7 @@
                             </div>
                         </div>
                         
-                        <div th:style="'display:'+@{${dispAlpha}}+';'">
+                        <div th:style="'display:'+@{${dispAlpha}}+';'" th:if="${cog} == null">
                             <div class="centertinz">
                                 <ul class="pagination pagination-sm">
                                     <li th:style="'display:'+@{${disp1}}+';'">
@@ -290,6 +297,31 @@
                                     </li>
                                     <li th:style="'display:'+@{${disp2}}+';'">
                                         <a class="btn" th:href="@{s_ch(pos=${pos}, t=${title}, page=${commentsExt.totalPages}, p=${pg})}"> » </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div th:style="'display:'+@{${dispAlpha}}+';'" th:unless="${cog} == null">
+                            <div class="centertinz">
+                                <ul class="pagination pagination-sm">
+                                    <li th:style="'display:'+@{${disp1}}+';'">
+                                        <a class="btn" th:href="@{s_ch(pos=${pos}, t=${title}, page=1, p=${pg}, cog=${cog})}"> « </a>
+                                    </li>
+                                    <li th:style="'display:'+@{${disp1}}+';'">
+                                        <a class="btn" th:href="@{s_ch(pos=${pos}, t=${title}, page=${commentsExt.number}, p=${pg}, cog=${cog})}"> ← </a>
+                                    </li>
+                    
+                                    <li th:each="page : ${#numbers.sequence(pgn.startPage, pgn.endPage)}" 
+                                        th:class="${commentsExt.number == (page - 1)} ? 'active pointerx'">
+                                        <a class="btn" th:href="@{s_ch(pos=${pos}, t=${title}, page=${page}, p=${pg}, cog=${cog})}" th:text="${page}"></a>
+                                    </li>
+                    
+                                    <li th:style="'display:'+@{${disp2}}+';'">
+                                        <a class="btn" th:href="@{s_ch(pos=${pos}, t=${title}, page=${commentsExt.number + 2}, p=${pg}, cog=${cog})}"> → </a>
+                                    </li>
+                                    <li th:style="'display:'+@{${disp2}}+';'">
+                                        <a class="btn" th:href="@{s_ch(pos=${pos}, t=${title}, page=${commentsExt.totalPages}, p=${pg}, cog=${cog})}"> » </a>
                                     </li>
                                 </ul>
                             </div>

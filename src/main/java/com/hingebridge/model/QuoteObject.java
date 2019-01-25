@@ -32,7 +32,6 @@ public class QuoteObject implements Serializable
     @JoinColumn(name = "comment_id", insertable = false, updatable = false, nullable = false)
     private CommentClass commentquoteobj;
     
-    
     @Transient
     private String duration;
     

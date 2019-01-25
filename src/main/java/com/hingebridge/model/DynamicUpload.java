@@ -32,5 +32,4 @@ public class DynamicUpload
     {
         return file;
     }
-    
 }

@@ -84,7 +84,6 @@ public class SubCommentClass implements Serializable
         this.unread = read;
     }
     
-    
     public long getId()
     {
         return id;

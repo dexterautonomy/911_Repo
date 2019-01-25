@@ -34,10 +34,7 @@
                         <span th:text="${alertFallback}"></span>
                     </div>
                     
-                    <!--firstBlock create new ad or manage ad
-                        @RequestParam: ct_= nw and
-                        @RequestParam: pg = 1
-                    -->
+                    <!--firstBlock create ad -->
                     <div class="adDiv" th:classappend="${firstBlock}">
                         <div class="col-sm-6">
                             <a th:href="@{/user/ads(ct_=nw)}" class="newAd noUnderLine">Create New Ad</a>
@@ -48,10 +45,7 @@
                         </div>
                     </div>
                     
-                    <!--secondBlock new ad form
-                        post with
-                        @RequestParam: pt_ad
-                    -->
+                    <!--second new ad -->
                     <div class="advertForm" th:classappend="${secondBlock}" th:if="${advertObject} != null"><br/>
                         
                         <div>
@@ -83,10 +77,7 @@
                         </div><br/>
                     </div>
                     
-                    <!--thirdBlock displays the ads as a list
-                        and gets each ad
-                        @RequestParam: edit, pos and pg
-                    -->
+                    <!--third display ads -->
                     <div class="" th:classappend="${thirdBlock}" th:if="${unExpiredAdObjList} != null"><br/>
                         
                         <div th:classappend="${theclass}">
@@ -111,8 +102,6 @@
                                             </div>
                                             <div>
                                                 <span>Option: </span>
-                                                <!--<span th:text="${adObj.payOption} == 'CPC' ? 'Cost/Click' : 'Cost/Mille'"></span>-->
-                                                
                                                 <span th:if="${adObj.payOption} == 'CPC'">
                                                     <span>Cost/Click @</span>
                                                     <span th:text="${adObj.userAdvert.cpc} + 'pts/click'"></span>
@@ -155,10 +144,7 @@
                     </div>
                     
                     
-                    <!--fourthBlock post edited ad
-                    post with    
-                    @RequestParam: pt_adx, edit_, posx and pg
-                    -->
+                    <!--fourth edited ad -->
                     
                     <div class="" th:classappend="${fourthBlock}" th:if="${editAdvertObject} != null"><br/>                        
                         <div>                            

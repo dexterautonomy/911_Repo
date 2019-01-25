@@ -20,7 +20,6 @@ public class FollowedPostDeleteObject implements Serializable
     @Column(name = "flagread")
     private int flagRead = 1;
     
-    
     public FollowedPostDeleteObject(){}
     
     public FollowedPostDeleteObject(long postId, long userId)   //Constructor for deleting followed post
@@ -36,7 +35,6 @@ public class FollowedPostDeleteObject implements Serializable
         this.flagDelete = 0;
         this.flagRead = flagRead;
     }
-    
     
     public long getId()
     {

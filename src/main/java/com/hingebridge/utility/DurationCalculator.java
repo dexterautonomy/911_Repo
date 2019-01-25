@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class DurationCalculator
 {    
-    protected String dateSuffix(String sdf)//this method removes the st, nd, rd, and th from SimpleDateFormat so you can manipulate it into a proper date object
+    protected String dateSuffix(String sdf)  //this method removes the st, nd, rd, and th from SimpleDateFormat so you can manipulate it into a proper date object
     {
         String date_string = null;
         
@@ -33,7 +33,7 @@ public class DurationCalculator
     
     public String calculateDuration(String date)
     {
-        String duree = null;
+        String duree;
         String postDate = dateSuffix(date);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d yyyy,  hh:mm:ss a");
         LocalDateTime now = LocalDateTime.now();

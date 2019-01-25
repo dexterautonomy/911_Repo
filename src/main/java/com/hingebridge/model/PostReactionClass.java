@@ -96,7 +96,6 @@ public class PostReactionClass implements Serializable
         return starflag;
     }
     
-    
     public void setPostlikeclass(PostClass pc)
     {
         postlikeclass = pc;

@@ -17,44 +17,7 @@
             
             <div th:include="pages/adfragments :: headLogo"/>
             <div th:include="pages/adfragments :: navigationHome"/>
-            <!--Fragment used to display top ad (simple and clean)-->
             <div th:include="pages/adfragments :: adTop(${adObject}, ${top})"/>
-            <!--
-            <div class="row">
-                <h1>
-                    <a><img src="" th:src="@{/files/system_img/logo.jpg}" width="50" height="50" alt="onenaijalogo" style="border-radius: 50%;"/> TwikTok</a>
-                </h1>
-            </div>
-            
-            
-            <div class="row">
-                <nav class="navbar navbar-inverse container-fluid">
-                    <ul class="nav navbar-nav">
-                        <li><a th:href="@{/user/login}">Switch</a></li>
-                        <li><a th:href="@{/}">Home</a></li>
-                        <li><a>Opinions</a></li>
-                        <li><a>Memelogic</a></li>
-                        <li><a>Poetic Justice</a></li>
-                        <li><a>Battle Of The Sexes</a></li>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a th:href="@{/user/login}"><span class="glyphicon glyphicon-user"></span> Login</a></li>
-                        <li><a th:href="@{/signup}"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                    </ul>
-                </nav>
-            </div>
-            -->
-            
-            
-            <!--MAIN top advert markup just in case
-            <div class="centertinz" th:if="${adObject.size()} != 0">
-                <p th:each="counter : ${#numbers.sequence(0, top-1)}" style="display: inline-block;">
-                    <a th:href="@{/rdr(uk_=${adObject[counter].id})}">
-                        <img class="adBanner" th:src="@{'/files/ad_img/' + ${adObject[counter].adsImage}}" src="" th:alt="${adObject[counter].adsImage}" alt="advert"/>
-                    </a>&nbsp;&nbsp;
-                </p>
-            </div>
-            -->
         
             <div class="row">
                 <h1 class="well homewell">Trending</h1>
@@ -77,22 +40,7 @@
                     </div>
                 </div>
                 
-                <!--Fragment used to display bottom ad (simple and clean)-->
                 <div th:include="pages/adfragments :: adBottom(${adObject}, ${bottom})"/>
-                
-                <!--MAIN bottom advert markup just in case
-                <div class="centertinz" th:if="${adObject.size()} > 3">
-                    <p th:each="counter : ${#numbers.sequence(top, bottom-1)}" style="display: inline-block;">
-                        <a th:href="@{/rdr(uk_=${adObject[counter].id})}">
-                            <img class="adBanner" th:src="@{'/files/ad_img/' + ${adObject[counter].adsImage}}" src="" th:alt="${adObject[counter].adsImage}" alt="advert"/>
-                        </a>&nbsp;&nbsp;
-                    </p>
-                </div>
-                -->
-                
-                <!--
-                <a th:href="${check}">Confirm registration</a>
-                -->
                 
                 <div>
                     <div class="centertinz">

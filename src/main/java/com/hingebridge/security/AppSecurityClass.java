@@ -42,30 +42,8 @@ public class AppSecurityClass extends WebSecurityConfigurerAdapter
         .and()
         .logout().deleteCookies("remove").invalidateHttpSession(true)
         .logoutUrl("/j_spring_security_logout").logoutSuccessUrl("/")
-                .and().csrf().disable();
+                .and().csrf().disable();  //come back here to enable csrf
     }
-    
-    /*
-    @Override
-    protected void configure(HttpSecurity http) throws Exception
-    {
-    	http.authorizeRequests()
-    	.antMatchers("/").permitAll()
-        .antMatchers("/user/**").hasRole("USER")
-        .antMatchers("/admin/**").hasRole("ADMIN")
-        .and()
-        .formLogin()
-        .loginProcessingUrl("/j_spring_security_check")
-        .usernameParameter("user")
-        .passwordParameter("pswd")
-        .loginPage("/login").permitAll()
-        .failureUrl("/login?error")
-        .defaultSuccessUrl("/test")
-        .and()
-        .logout().deleteCookies("remove").invalidateHttpSession(true)
-        .logoutUrl("/j_spring_security_logout").logoutSuccessUrl("/");
-    }
-    */
     
     @Bean
     public BCryptPasswordEncoder getPasswordEncoder()

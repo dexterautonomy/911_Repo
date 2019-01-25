@@ -23,10 +23,10 @@
                     <ul class="nav navbar-nav">
                         <li><a th:href="@{/user/login}">Switch</a></li>
                         <li><a th:href="@{/}">Home</a></li>
-                        <li><a>Opinion</a></li>
-                        <li><a>Memelogic</a></li>
-                        <li><a>Poem/Sarcasm</a></li>
-                        <li><a>The Sexes</a></li>
+                        <li><a th:href="@{/linkz(cat=opinion)}">Opinion</a></li>
+                        <li><a th:href="@{/linkz(cat=memelogic)}">Memelogic</a></li>
+                        <li><a th:href="@{/linkz(cat=poem_sarc)}">Poem/Sarcasm</a></li>
+                        <li><a th:href="@{/linkz(cat=d_sexes)}">The Sexes</a></li>
                         
                         <li><a th:href="@{/securedadminLogin/entry}"><span class="glyphicon glyphicon-adjust"></span>&nbsp;Admin</a></li>
                     </ul>
@@ -44,10 +44,10 @@
                     <ul class="nav navbar-nav">
                         <li><a th:href="@{/user/login}">Switch</a></li>
                         <li><a th:href="@{/}">Home</a></li>
-                        <li><a>Opinion</a></li>
-                        <li><a>Memelogic</a></li>
-                        <li><a>Poem/Sarcasm</a></li>
-                        <li><a>The Sexes</a></li>
+                        <li><a th:href="@{/linkz(cat=opinion)}">Opinion</a></li>
+                        <li><a th:href="@{/linkz(cat=memelogic)}">Memelogic</a></li>
+                        <li><a th:href="@{/linkz(cat=poem_sarc)}">Poem/Sarcasm</a></li>
+                        <li><a th:href="@{/linkz(cat=d_sexes)}">The Sexes</a></li>
                     </ul>
                 </nav>
             </div>

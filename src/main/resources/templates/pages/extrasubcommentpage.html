@@ -27,7 +27,6 @@
                     <div class="smallfont centertinz blueColor" th:classappend="${theClass}" th:text="${alert}"></div>
                 
                     <div class="hidden">
-                        <!--For JQuery very important-->
                         <span id="sessionOn" th:text="${session.username} == null ? 'no session' : ${session.username}"></span>
                         <span id="postid" th:text="${pos}"></span>
                         <span id="title" th:text="${t}"></span>
@@ -55,7 +54,6 @@
                                                 
                                 <div th:utext="${subcom.content}"></div><br/>
                                 <div class="hidden">
-                                    <!--For JQuery very important-->
                                     <span class="subcommentid" th:text="${subcom.id}"></span>
                                 </div>
                                 <div class="commentBck2">
@@ -85,7 +83,6 @@
                                 </div>
                                 
                                 <div class="dynamicEditSubComment hidden"></br>
-                                    <!-- This form is for Javascript edit_subcomment in the extrasubcommentpage.html -->
                                     <form action="" enctype="multipart/form-data">
                                         <div>
                                             <textarea class="form-control editSubCommentContent" name="dynamicFormContent" placeholder="Comment" cols="20" rows="5" required="" maxlength="700"></textarea><br/>
@@ -101,7 +98,7 @@
                             </div>
                         </div>
                         
-                        <div>
+                        <div th:if="${cog} == null">
                             <ul class="pager centertinz">
                                 <li th:style="'display:'+@{${disp1}}+';'">
                                     <a class="btn" th:href="@{mresu_b(p2=${prev}, pos=${pos}, t=${t}, page=${page}, pg=${p}, cid=${cid})}"> Previous </a>
@@ -113,6 +110,22 @@
                                 
                                 <li th:style="'display:'+@{${disp2}}+';'">
                                     <a class="btn" th:href="@{mresu_b(p2=${next}, pos=${pos}, t=${t}, page=${page}, pg=${p}, cid=${cid})}"> Next </a>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div th:unless="${cog} == null">
+                            <ul class="pager centertinz">
+                                <li th:style="'display:'+@{${disp1}}+';'">
+                                    <a class="btn" th:href="@{mresu_b(p2=${prev}, pos=${pos}, t=${t}, page=${page}, pg=${p}, cid=${cid}, cog=${cog})}"> Previous </a>
+                                </li>
+                                
+                                <li>
+                                    <a class="btn" th:href="@{s_ch(pos=${pos}, t=${t}, page=${page}, p=${p}, cog=${cog})}"> Back </a>
+                                </li>
+                                
+                                <li th:style="'display:'+@{${disp2}}+';'">
+                                    <a class="btn" th:href="@{mresu_b(p2=${next}, pos=${pos}, t=${t}, page=${page}, pg=${p}, cid=${cid}, cog=${cog})}"> Next </a>
                                 </li>
                             </ul>
                         </div>

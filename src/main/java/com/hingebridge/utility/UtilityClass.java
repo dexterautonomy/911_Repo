@@ -59,20 +59,6 @@ public class UtilityClass
     @Value("${users.size}")
     private int userSize;
     
-    /*
-    @Value("${value.d}")
-    private int d;
-    @Value("${value.f}")
-    private int f;
-    @Value("${value.g}")
-    private int g;
-    @Value("${value.h}")
-    private int h;
-    @Value("${value.i}")
-    private int i;
-    @Value("${value.j}")
-    private int j;
-    */
     @Value("${hosting.context.path}")
     String contextPath;
             
@@ -217,7 +203,6 @@ public class UtilityClass
                 {
                     followers = 0l;
                 }
-                
             }
             break;
         }
@@ -265,7 +250,6 @@ public class UtilityClass
             uc.setColorclass("user_god");
         }
     }
-    
     
     public void alterUserRankingParameters(long user_id, String action)
     {
@@ -320,7 +304,6 @@ public class UtilityClass
             
             case "save_unredflag":
             {
-                //rank = rank + e;
                 long redflag = uc.get().getRedflag();
                 redflag = redflag - 1;
                 
@@ -509,7 +492,6 @@ public class UtilityClass
         long size;
         long count = 0;
         List<MessageObject> mo = mobjr.getMyMessage(getUser().getId());
-        //List<MessageObject> unReadMessagesList = new LinkedList<>();
         if(!mo.isEmpty())
         {
             for(MessageObject mObj : mo)
@@ -517,14 +499,12 @@ public class UtilityClass
                 if(mObj.getUnread().equals("unread"))
                 {
                     count++;
-                    //unReadMessagesList.add(mObj);
                 }
             }
         
-            if(count != 0)//if(!unReadMessagesList.isEmpty())
+            if(count != 0)
             {
                 size = count;
-                //size = unReadMessagesList.size();
                 model.addAttribute("orangeAlertNotification", "alertNote");
             }
             else
@@ -613,7 +593,6 @@ public class UtilityClass
         long size;
         long count = 0;
         LinkedList<PostClass> pcList = new LinkedList<>();
-        //LinkedList<PostClass> unReadPcList = new LinkedList<>();
         List<FollowerObject> followedObj = fobjr.getSelectedFollow(getUser().getId()); //Gets the people you are following
         
         if(!followedObj.isEmpty())
@@ -639,14 +618,12 @@ public class UtilityClass
                     if(!var)  //You have not read them
                     {
                         count++;
-                        //unReadPcList.add(pcObj);
                     }
                 }
         
-                if(count != 0)//if(!unReadPcList.isEmpty())
+                if(count != 0)
                 {
                     size = count;
-                    //size = unReadPcList.size();
                     model.addAttribute("orangeAlertFollowedPost", "alertNote");
                 }
                 else
@@ -780,21 +757,7 @@ public class UtilityClass
         }
         
         return shortPassword;
-    }
-    /*
-    public boolean appBan()    //If true, you cannot make comments
-    {
-        boolean banned = false;
-        Optional<UserClass> uc = ucr.findById(getUser().getId());
-        
-        if(uc.get().getAppban()== 1)
-        {
-            banned = true;
-        }
-        
-        return banned;
-    }
-    */    
+    }   
 
     public boolean checkPostBan()   //If true, you cannot make posts
     {
@@ -821,9 +784,6 @@ public class UtilityClass
         
         return banned;
     }
-    
-    
-    
     
     //For admin
     public void adminModel(ModelMap model)
@@ -870,11 +830,16 @@ public class UtilityClass
     public boolean checkTag(String content)
     {
         boolean test = false;
-        int countOpeningtag = StringUtils.countOccurrencesOf(content, "<_");
-        int countClosingTag = StringUtils.countOccurrencesOf(content, "_>");
         
-        if(countOpeningtag == countClosingTag)
+        if(content.contains("<_") && content.contains("_>"))
         {
+            int countOpeningtag = StringUtils.countOccurrencesOf(content, "<_");
+            int countClosingTag = StringUtils.countOccurrencesOf(content, "_>");
+        
+            if(countOpeningtag != countClosingTag)
+            {
+                return test;
+            }
             if(content.lastIndexOf("_>") > content.lastIndexOf("<_"))
             {
                 if(!content.contains("<script>") && !content.contains("</script>") && !content.contains("<script/>"))
@@ -883,6 +848,14 @@ public class UtilityClass
                 }
             }
         }
+        else if(!content.contains("<_") && !content.contains("_>"))
+        {
+            if(!content.contains("<script>") && !content.contains("</script>") && !content.contains("<script/>"))
+            {
+                test = true;
+            }
+        }
+        
         return test;
     }
     

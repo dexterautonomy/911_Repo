@@ -35,7 +35,6 @@ import com.hingebridge.utility.AdvertAlgorithmClass;
 import com.hingebridge.utility.UtilityClass;
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -47,7 +46,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -85,7 +83,7 @@ public class HomeController
         final int INITIAL_PAGE_SIZE = 5;    //pageSize is the offset
         int page = (page_1.orElse(0) < 1 ? INITIAL_PAGE : page_1.get() - 1);    //page is the LIMIT            
         
-        Page<PostClass> postpage = pcr.getApprovedPost("memelogic", PageRequest.of(page, INITIAL_PAGE_SIZE));
+        Page<PostClass> postpage = pcr.getApprovedPost("mypost", PageRequest.of(page, INITIAL_PAGE_SIZE));
         PagerModel pgn = new PagerModel(postpage.getTotalPages(), postpage.getNumber());
         
         model.addAttribute("postpage", postpage);
@@ -216,7 +214,6 @@ public class HomeController
             uc.get().setPassword(pswd);
             ucr.save(uc.get());
             ra.addFlashAttribute("error", "Password resetted successfully");
-            //session.invalidate();   //Konfirm this line
             session.removeAttribute("lostAccountEmail");
             session.removeAttribute("dateApplied");
             return "redirect:/login";
@@ -288,9 +285,6 @@ public class HomeController
                             */
                             String url = "reg_2/?id_tk="+username+"&u_tk="+encodedPassword+"&e_tk="+email+"&c_tk="+encodedUsernameAsEmail+"&x_tk="+gender;
                             String confirmation = utc.getAppContextPath() + url;
-
-                            //String confirmation = "http://localhost:8090/9jaforum/reg_2/?" + url;
-                            //model.addAttribute("check", confirmation);  //This is for testing purpose
                             
                             String info = "Please click the link below to complete your registration.<br/>";
                             String action = "Complete registration";
@@ -359,7 +353,6 @@ public class HomeController
 						
 				urcr.save(new UserRoleClass(uc2.get().getId(), role.getId()));
                                 ra.addFlashAttribute("error", "Registration complete, you can login now");
-                                //session.invalidate();
                                 
                                 session.removeAttribute("usernameReg");
                                 session.removeAttribute("passwordReg");
@@ -403,7 +396,8 @@ public class HomeController
     public String getStory(@RequestParam("pos")Optional<Long> id, @RequestParam("t")Optional<String> title, 
     @RequestParam("p") Optional<Integer> pg, ModelMap model, @RequestParam("page")Optional<Integer> commentPaginate, 
     @RequestParam("alertx")Optional<String> alert, @RequestParam("apvVal")Optional<Integer> trendApproveValue, 
-    @RequestParam("pgn") Optional<Integer> pgnx, @RequestParam("cid") Optional<Long> commentid, @RequestParam("spt") Optional<String> separateAction)
+    @RequestParam("pgn") Optional<Integer> pgnx, @RequestParam("cid") Optional<Long> commentid, 
+    @RequestParam("spt") Optional<String> separateAction, @RequestParam("cog") Optional<String> cog)
     {
         aac.displayAdvert(model);   //This line is for adverts
         
@@ -413,7 +407,7 @@ public class HomeController
         final int INITIAL_PAGE_SIZE = 10;    //pageSize is the offset
         int page = (commentPaginate.orElse(0) < 1 ? INITIAL_PAGE : commentPaginate.get() - 1);    //page is the LIMIT            
         
-        Optional<PostClass> pc;    // = pcr.getPostReader(id.get(), title.get());
+        Optional<PostClass> pc;
         int tid = trendApproveValue.orElse(1);
         
         switch(tid)
@@ -434,10 +428,6 @@ public class HomeController
                         FollowedPostDeleteObject fpdo = new FollowedPostDeleteObject(id.get(), utc.getUser().getId(), 1);
                         fpdor.save(fpdo);
                     }
-                    
-                    //Optional<FollowedPostDeleteObject> fpdobj = fpdor.getDeletedPost(id.get(), utc.getUser().getId());
-                    //FollowedPostDeleteObject fpdo = new FollowedPostDeleteObject(id.get(), utc.getUser().getId(), 1);
-                    //fpdor.save(fpdo);
                     
                     model.addAttribute("unapprovedPost", pc.get());
                     model.addAttribute("pgn", pgnx.orElse(1));
@@ -471,20 +461,6 @@ public class HomeController
                         FollowedPostDeleteObject fpdo = new FollowedPostDeleteObject(id.get(), utc.getUser().getId(), 1);
                         fpdor.save(fpdo);
                     }
-                    /*
-                    Optional<FollowedPostDeleteObject> fpdobj = fpdor.getDeletedPost(id.get(), utc.getUser().getId());
-                    
-                    if(fpdobj.orElse(null) != null)
-                    {
-                        fpdobj.get().setFlagRead(1);
-                        fpdor.save(fpdobj.get());
-                    }
-                    else
-                    {
-                        FollowedPostDeleteObject fpdo = new FollowedPostDeleteObject(id.get(), utc.getUser().getId(), 1);
-                        fpdor.save(fpdo);
-                    }
-                    */
                 }
                 
                 if(commentid.orElse(null) != null)
@@ -517,6 +493,11 @@ public class HomeController
                 model.addAttribute("postclass", pc.get());
                 model.addAttribute("commentsExt", cc);
         	model.addAttribute("pgn", pgn);
+                
+                if(cog.orElse(null) != null)
+                {
+                    model.addAttribute("cog", cog.get());
+                }
         
                 if(cc.getNumber() == 0)
                 {
@@ -664,35 +645,6 @@ public class HomeController
         return outcome;
     }
     
-    /*
-    @RequestMapping("/ajaxDynamicFileUpload3")
-    @ResponseBody
-    public String dynamicUpload2nd(MultipartHttpServletRequest req)
-    {
-        try
-        {
-            String path = utc.getFilePath() + "dist_img";
-            Iterator<String> filename = req.getFileNames();
-            while(filename.hasNext())
-            {
-                MultipartFile mpf = req.getFile(filename.next());
-                if(mpf != null)
-                {
-                    File pathToFile=new File(path, mpf.getOriginalFilename());
-                    mpf.transferTo(pathToFile);
-                }
-            }
-            
-        }
-        catch (IOException | IllegalStateException ex)
-        {
-            Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        return "success";
-    }
-    */
-    
     @RequestMapping("/ajaxDynamicFileUpload")
     @ResponseBody
     public boolean dynamicUpload(@RequestParam("dynamicUpload")MultipartFile file)
@@ -714,9 +666,6 @@ public class HomeController
     
             
     @RequestMapping("/ajaxDynamicComment")
-    //@ResponseBody
-    //public boolean dynamicComment(@RequestParam("content")String content, @RequestParam("pos")Long post_id,
-    //@RequestParam("title")String title, @RequestParam("page")int commentPaginate, @RequestParam("pg")int pg)
     public String dynamicComment(@RequestParam("sent")String sent)
     {
         Gson gson = new Gson();
@@ -735,7 +684,7 @@ public class HomeController
     @RequestMapping("/mresu_b")
     public String moreSubComment(@RequestParam("p2")int paginate, @RequestParam("cid")Long cid, @RequestParam("pos")Long post_id,
     @RequestParam("t")String title, @RequestParam("page")int commentPaginate, @RequestParam("pg")int pg, 
-    ModelMap model)
+    ModelMap model, @RequestParam("cog") Optional<String> cog)
     {
         aac.displayAdvert(model);
         
@@ -776,6 +725,11 @@ public class HomeController
         
         model.addAttribute("prev", paginate - 1);
         model.addAttribute("next", paginate + 1);
+        
+        if(cog.orElse(null) != null)
+        {
+            model.addAttribute("cog", cog.get());
+        }
                 
         if((paginate - 1) == 1)
         {
@@ -789,5 +743,74 @@ public class HomeController
         }
         
         return "pages/extrasubcommentpage";
+    }
+    
+    @GetMapping("/linkz")
+    public String getOpinion(HttpServletRequest req, HttpSession session, ModelMap model, @RequestParam("page") Optional<Integer> page_1, 
+    @RequestParam("cat") Optional<String> link_category)
+    {
+        String tagHeader = "";
+        
+        aac.displayAdvert(model);
+        session = req.getSession();
+        
+        final int INITIAL_PAGE = 0;
+        final int INITIAL_PAGE_SIZE = 5;
+        int page = (page_1.orElse(0) < 1 ? INITIAL_PAGE : page_1.get() - 1);
+        
+        Page<PostClass> postpage = null;
+        PagerModel pgn;
+        
+        switch(link_category.orElse("opinion"))
+        {
+            case "opinion":
+            {
+                postpage = pcr.getApprovedPost("opinion", PageRequest.of(page, INITIAL_PAGE_SIZE));
+                tagHeader = "Opinion";
+            }
+            break;
+            
+            case "memelogic":
+            {
+                postpage = pcr.getApprovedPost("memelogic", PageRequest.of(page, INITIAL_PAGE_SIZE));
+                tagHeader = "Memelogic";
+            }
+            break;
+            
+            case "poem_sarc":
+            {
+                postpage = pcr.getApprovedPost("poem_sarc", PageRequest.of(page, INITIAL_PAGE_SIZE));
+                tagHeader = "Poem/Sarcasm";
+            }
+            break;
+            
+            case "d_sexes":
+            {
+                postpage = pcr.getApprovedPost("zex_battle", PageRequest.of(page, INITIAL_PAGE_SIZE));
+                tagHeader = "The Sexes";
+            }
+            break;
+        }
+        
+        if(postpage != null)
+        {
+            pgn = new PagerModel(postpage.getTotalPages(), postpage.getNumber());
+            model.addAttribute("postpage", postpage);
+            model.addAttribute("pgn", pgn);
+            model.addAttribute("pg", (page+1));
+            model.addAttribute("cog", link_category.get());
+            model.addAttribute("tagHeader", tagHeader);
+        
+            if(postpage.getNumber() == 0)
+            {
+                model.addAttribute("disp1", "none");
+            }
+            if(postpage.getNumber() + 1 == postpage.getTotalPages())
+            {
+                model.addAttribute("disp2", "none");
+            }
+        }
+        
+        return "pages/cat_page";
     }
 }

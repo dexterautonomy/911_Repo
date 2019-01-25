@@ -15,7 +15,6 @@
         <div class="col-sm-10">
             <div th:include="pages/adfragments :: headLogo"/>
             <div th:include="pages/adfragments :: navigationUser"/>
-            
             <div th:include="pages/adfragments :: adTop(${adObject}, ${top})"/>
             
             <div class="row">
@@ -85,49 +84,6 @@
                                 </div>
                             </div>
                         </div>
-                    
-                        <!--
-                        <div class="list-group">
-                            <div th:each="mo : ${messageobj}">
-                                <div class="list-group-item" th:classappend="${mo.unread}">
-                                    <div class="autoOverflow">
-                                        <span class="postcomment_username">Me</span>
-                                        <span style="float: right;">
-                                            <span class="smallfont" th:text="${mo.commentmessage.duration}"></span>&nbsp;&nbsp;&nbsp;&nbsp;
-                                            <a th:href="@{/user/dlt_(cid=${mo.commentid}, pgn=${pgn}, akt=dlt_cmt)}">
-                                                <span class="glyphicon glyphicon-trash" style="color: red;"></span>
-                                            </a>
-                                        </span>
-                                    </div>
-                                    <div class="list-group-item-text justify smallfont3A" th:utext="${mo.commentmessage.content}"></div><br/>
-                                    <div>
-                                        <span style="color: green;" class="glyphicon glyphicon-thumbs-up"></span>&nbsp;<span class="smallfont" th:text="${mo.commentmessage.likes}"></span>&nbsp;&nbsp;
-                                        <span style="color: red;" class="glyphicon glyphicon-flag"></span>&nbsp;<span class="smallfont" th:text="${mo.commentmessage.redflag}"></span>&nbsp;&nbsp;
-                                        <span style="color: yellow;" class="glyphicon glyphicon-star"></span>&nbsp;<span class="smallfont" th:text="${mo.commentmessage.star}"></span>
-                                    </div><br/>
-                                    <a th:href="@{'/' + ${mo.postlink}}" class="media">
-                                        <div class="row list-group-item-text smallPadding" th:each="mosubcomment: ${mo.commentmessage.subcomment}">
-                                            <div class="media-left media-top">
-                                                <img th:classappend="${mosubcomment.userthree.colorclass}" class="readerImage2" src="" th:src="@{'/files/profile_img/' + ${mosubcomment.userthree.pix}}" alt="" th:alt="${mosubcomment.userthree.username + ' pic'}" />
-                                            </div>
-                                            <div class="media-body justify panel panel-body" th:classappend="${mosubcomment.unread} == 'unread' ? 'unreadSub' : 'postsubcomment_body2'">
-                                                <div class="autoOverflow">
-                                                    <span class="postcomment_username" th:text="${mosubcomment.userthree.username} == ${session.username} ? 'Me' : ${'@' + mosubcomment.userthree.username}"></span>
-                                                    <span class="postcomment_duration smallfont" th:text="${mosubcomment.duration}"></span>
-                                                </div>
-                                                <div class="smallfont3" th:utext="${mosubcomment.content}" style="color: black;"></div><br/>
-                                                <div>
-                                                    <span style="color: green;" class="glyphicon glyphicon-thumbs-up"></span>&nbsp;<span class="smallfont" th:text="${mosubcomment.likes}"></span>&nbsp;&nbsp;
-                                                    <span style="color: red;" class="glyphicon glyphicon-flag"></span>&nbsp;<span class="smallfont" th:text="${mosubcomment.likes}"></span>&nbsp;&nbsp;
-                                                    <span style="color: yellow;" class="glyphicon glyphicon-star"></span>&nbsp;<span class="smallfont" th:text="${mosubcomment.likes}"></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div><br/>
-                            </div>
-                        </div>
-                        -->
                         
                         <div>
                             <ul class="pager centertinz">

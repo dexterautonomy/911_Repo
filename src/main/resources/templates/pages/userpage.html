@@ -22,58 +22,13 @@
             <div th:include="pages/adfragments :: headLogo"/>
             <div th:include="pages/adfragments :: navigationUser"/>
             <div th:include="pages/adfragments :: adTop(${adObject}, ${top})"/>
-            <!--
-            <div class="row">
-                <h1>
-                    <a><img class="appLogo" src="" th:src="@{/files/system_img/logo.jpg}" alt="onenaijalogo"/> TwikTok</a>
-                </h1>
-            </div>
-        
-            <div class="row">
-                <nav class="navbar navbar-inverse container-fluid">
-                    <ul class="nav navbar-nav">
-                        <li><a th:href="@{/}">Switch</a></li>
-                        <li><a th:href="@{/user/login}">Home</a></li>
-                        <li><a>Opinion</a></li>
-                        <li><a>Memelogic</a></li>
-                        <li><a>Poem/Sarcasm</a></li>
-                        <li><a>The Sexes</a></li>
-                    </ul>
-                </nav>
-            </div>
-            -->
-            
             
             <div class="row">
                 <div th:include="pages/adfragments :: leftPane(${user}, ${size}, ${pize}, ${tize}, ${bize})"/>
-                <!--
-                <div class="col-sm-3">
-                    <a class="smallfont2" th:href="@{/user/prf}">
-                        <div class="thumbNailX">
-                            <img th:classappend="${user.colorclass}" class="profileImage" src="" th:src="@{'/files/profile_img/' + ${user.pix}}" th:alt="${user.username + ' pic'}" alt=""/><br/><br/>
-                            <div class="postcomment_username" th:text="${'@' + user.username + ' - ' + user.userrank}"></div>
-                        </div>
-                    </a><br/>
-                        
-                    <div>
-                        <a class="smallfont2" th:href="@{/user/login}">Compose</a><hr/>
-                        <a class="smallfont2" th:href="@{/user/inbox(pg=1)}">Inbox <span class="badge smallfont" th:text="${size}"></span></a><hr/>
-                        <a class="smallfont2" th:href="@{/user/flpost(pg=1)}">Followed Posts <span class="badge smallfont" th:text="${pize}"></span></a><hr/>
-                        <a class="smallfont2" th:href="@{/user/rcd(pg=1)}">My Trend <span class="badge smallfont" th:text="${tize}"></span></a><hr/>
-                        <a class="smallfont2" th:href="@{/user/ads}">Ads</a><hr/>
-            	        
-                        <form th:action="@{/j_spring_security_logout}" method="POST">
-                            <input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
-                            <button class="btn btn-link" name="xx" value="logout"><span class="glyphicon glyphicon-user"></span> Logout</button><br/><br/>
-                        </form>
-                    </div>
-                </div>
-                -->
                 
                 <div th:if="${user.postban} != 1" class="col-sm-9" th:classappend="${firstBlock}">
                     
                     <div class="hidden">
-                        <!--For JQuery very important-->
                         <span id="sessionOn" th:text="${session.username} == null ? 'no session' : ${session.username}"></span>
                     </div>
                     
@@ -114,18 +69,18 @@
                                 </div>
                                 <div class="radio-inline">
                                     <label class="normalFont">
-                                        <input type="radio" th:field="*{category}" value="poetic_justice"/> Poetic Justice
+                                        <input type="radio" th:field="*{category}" value="poem_sarc"/> Poems/Sarcasm
                                     </label>
                                 </div>
                                 <div class="radio-inline">
                                     <label class="normalFont">
-                                        <input type="radio" th:field="*{category}" value="zex_battle"/> Battle of the sexes
+                                        <input type="radio" th:field="*{category}" value="zex_battle"/> The Sexes
                                     </label>
                                 </div><br/>
                                 
                                 <div class="checkbox">
                                     <label>
-                                        <input type="checkbox" th:field="*{rank}" value="rank" checked=""/> Rank this post
+                                        <input type="checkbox" th:field="*{rank}" value="rank" checked=""/> Rank my post
                                     </label>
                                 </div><br/>
                                 

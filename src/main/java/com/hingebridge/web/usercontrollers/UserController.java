@@ -197,7 +197,6 @@ public class UserController
                 pc.setCategory(category);
                 pc.setRank(rankMyPost);
                 PostClass postClass = null;
-                //Long user_id = utc.getUser().getId();
                 
                 if(!utc.checkTag2(title))  //Arrange this well
                 {
@@ -272,7 +271,7 @@ public class UserController
                                                 }
                                                 break;
                                     
-                                                case "poetic_justice":
+                                                case "poem_sarc":
                                                 {
                                                     if(content.length() < 1500)
                                                     {
@@ -299,10 +298,6 @@ public class UserController
                                             utc.updatePosts(); //Updates your number of posts
                                             File pathToFile=new File(path, coverFileName);
                                             coverFile.transferTo(pathToFile);
-                                            /*
-                                            PostClass postklass = pcr.getOnePost(user_id, date, title);
-                                            mor.save(new MessageObject(postklass.getId(), user_id));    //for followers seeing ur posts
-                                            */
                                             ra.addFlashAttribute("alert", "Posted");
                                             return "redirect:/user/login";
                                         }
@@ -351,7 +346,7 @@ public class UserController
                                             return "pages/userpage";
                                         }
                                     
-                                        case "poetic_justice":
+                                        case "poem_sarc":
                                         {
                                             if(content.length() < 1500)
                                             {
@@ -375,10 +370,6 @@ public class UserController
                     
                                     pcr.save(postClass);
                                     utc.updatePosts(); //Updates your number of posts
-                                    /*
-                                    PostClass postklass = pcr.getOnePost(user_id, date, title);
-                                    mor.save(new MessageObject(postklass.getId(), user_id));
-                                    */
                                     ra.addFlashAttribute("alert", "Posted");
                                     return "redirect:/user/login";
                                 }
@@ -433,11 +424,11 @@ public class UserController
                                                     {
                                                         model.addAttribute("alert", "Content must have at least one image file");
                                                         return "pages/userpage";
-                                                }
+                                                    }
                                                 }
                                                 break;
                                     
-                                                case "poetic_justice":
+                                                case "poem_sarc":
                                                 {
                                                     if(content.length() < 1500)
                                                     {
@@ -464,10 +455,6 @@ public class UserController
                                             utc.updatePosts(); //Updates your number of posts
                                             File pathToFile=new File(path, coverFileName);
                                             coverFile.transferTo(pathToFile);
-                                            /*
-                                            PostClass postklass = pcr.getOnePost(user_id, date, title);
-                                            mor.save(new MessageObject(postklass.getId(), user_id));    //for followers seeing ur posts
-                                            */
                                             ra.addFlashAttribute("alert", "Posted");
                                             return "redirect:/user/login";
                                         }
@@ -516,7 +503,7 @@ public class UserController
                                             return "pages/userpage";
                                         }
                                     
-                                        case "poetic_justice":
+                                        case "poem_sarc":
                                         {
                                             if(content.length() < 1500)
                                             {
@@ -540,10 +527,6 @@ public class UserController
                     
                                     pcr.save(postClass);
                                     utc.updatePosts(); //Updates your number of posts
-                                    /*
-                                    PostClass postklass = pcr.getOnePost(user_id, date, title);
-                                    mor.save(new MessageObject(postklass.getId(), user_id));
-                                    */
                                     ra.addFlashAttribute("alert", "Posted");
                                     return "redirect:/user/login";
                                 }
@@ -606,7 +589,6 @@ public class UserController
                     }
                     else
                     {
-                        //ra.addFlashAttribute("alertx", "Your rank is lesser than the post rank");
                         String alert = "Your rank is lesser than the post rank";
                         ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
                     }
@@ -751,27 +733,16 @@ public class UserController
                 
                     if(userrank >= pc.get().getPostrank())
                     {
-                        Optional<CommentClass> cClass = ccr.findById(comment_id.get());
-                        
-                        //if(cClass.get().getSubcomment().size() != 10)
-                        //{
-                            model.addAttribute("postclass", new PostClass());
-                            model.addAttribute("pos", post_id.get());
-                            model.addAttribute("cid", comment_id.get());
-                            model.addAttribute("t", title.get());
-                            model.addAttribute("p", pg.get());
-                            model.addAttribute("page", commentPaginate.get());
-                            ret = "pages/subcommentpage";
-                        //}
-                        /*else
-                        {
-                            String alert = "Limit exceeded";
-                            ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
-                        }*/
+                        model.addAttribute("postclass", new PostClass());
+                        model.addAttribute("pos", post_id.get());
+                        model.addAttribute("cid", comment_id.get());
+                        model.addAttribute("t", title.get());
+                        model.addAttribute("p", pg.get());
+                        model.addAttribute("page", commentPaginate.get());
+                        ret = "pages/subcommentpage";
                     }
                     else
                     {
-                        //ra.addFlashAttribute("alertx", "Your rank is lesser than the post rank");
                         String alert = "Your rank is lesser than the post rank";
                         ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
                     }
@@ -812,7 +783,6 @@ public class UserController
                     }
                     else
                     {
-                        //ra.addFlashAttribute("alertx", "Your rank is lesser than the post rank");
                         String alert = "Your rank is lesser than the post rank";
                         ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
                     }
@@ -1935,16 +1905,12 @@ public class UserController
             }
             else    //If there is no followed post
             {
-                //ra.addFlashAttribute("alert", "No post available");
-                //return "redirect:/user/fallback";
                 model.addAttribute("nothing", "realcentertinz");
                 model.addAttribute("alertFallback", "No post available");
             }
         }
         else    //If you do not have followers
         {
-            //ra.addFlashAttribute("alert", "You really are not following anyone at the moment");
-            //return "redirect:/user/fallback";
             model.addAttribute("nothing", "realcentertinz");
             model.addAttribute("alertFallback", "You really are not following anyone at the moment");
         }
@@ -1999,8 +1965,6 @@ public class UserController
         }
         else    //If there are no messages
         {
-            //ra.addFlashAttribute("alert", "No notifications");
-            //return "redirect:/user/fallback";
             model.addAttribute("nothing", "realcentertinz");
             model.addAttribute("alertFallback", "No notifications");
             
@@ -2055,8 +2019,6 @@ public class UserController
         }
         else    //If there are no messages
         {
-            //ra.addFlashAttribute("alert", "You are yet to make a post");
-            //return "redirect:/user/fallback";
             model.addAttribute("nothing", "realcentertinz");
             model.addAttribute("alertFallback", "You are yet to make a post");
         }
@@ -2396,14 +2358,12 @@ public class UserController
                             }
                             else
                             {
-                                //model.addAttribute("editAdvert", ao.get());
                                 aor.save(ao.get());
                                 model.addAttribute("alert", "Ad updated successfully");                
                             }
                         }
                         else
                         {
-                            //model.addAttribute("editAdvertObject", ao.get());
                             model.addAttribute("alert", "Enter a URL");
                         }
                     }
@@ -3023,7 +2983,6 @@ public class UserController
                 }
                 else
                 {
-                    String alert = "Cannot edit comment";
                     ret = "redirect:/mresu_b?p2="+currentPage.get()+"&pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&pg="+pg.get()+"&cid="+comment_id.get();
                 }
             }
@@ -3202,7 +3161,6 @@ public class UserController
         }
         return ret;
     }
-    
     
     @RequestMapping("/ajaxSubCommentDynamicComment_")
     @ResponseBody
