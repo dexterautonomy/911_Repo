@@ -528,7 +528,7 @@ public class HomeController
     @GetMapping("/b_ch")
     public String backDoor(@RequestParam("pos")Optional<Long> id, @RequestParam("t")Optional<String> title, 
     @RequestParam("p") Optional<Integer> pg, ModelMap model, @RequestParam("page")Optional<Integer> commentPaginate, 
-    @RequestParam("alertx")Optional<String> alert)
+    @RequestParam("alertx")Optional<String> alert, @RequestParam("cog")Optional<String> cog)
     {
         aac.displayAdvert(model);   //This line is for adverts
         
@@ -562,6 +562,11 @@ public class HomeController
         model.addAttribute("title", title.orElse(""));//important  for comment pagination
         model.addAttribute("pg", pg.orElse(1));//for going back gotten from getHome() method
         model.addAttribute("alertx", alert.orElse(""));
+        
+        if(cog.orElse(null) != null)
+        {
+            model.addAttribute("cog", cog.get());
+        }
         
         return "pages/reader";
     }

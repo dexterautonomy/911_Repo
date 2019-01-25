@@ -813,11 +813,6 @@ function appFunction()
                             }
                         }
                     });
-                    /*
-                    $($('textarea.quotedTextarea')[index]).val(commentForQuoting);
-            
-                    
-                    */
                 }
                 else
                 {

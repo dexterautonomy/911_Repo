@@ -560,7 +560,8 @@ public class UserController
     public String comment(@RequestParam("pos")Optional<Long> post_id, @RequestParam("t")Optional<String> title, 
     @RequestParam("p") Optional<Integer> pg, ModelMap model, @RequestParam("page")Optional<Integer> commentPaginate, 
     @RequestParam("akt")Optional<String> action, HttpServletRequest req, RedirectAttributes ra, 
-    @RequestParam("cid")Optional<Long> comment_id, @RequestParam("sid")Optional<Long> subcomment_id)
+    @RequestParam("cid")Optional<Long> comment_id, @RequestParam("sid")Optional<Long> subcomment_id, 
+    @RequestParam("cog")Optional<String> cog)
     {
         aac.displayAdvert(model);   //This line is for adverts
         
@@ -585,18 +586,39 @@ public class UserController
                         model.addAttribute("t", title.get());
                         model.addAttribute("p", pg.get());
                         model.addAttribute("page", commentPaginate.get());
+                        
+                        if(!cog.get().equals(""))
+                        {
+                            model.addAttribute("cog", cog.get());
+                        }
+                        
                         ret = "pages/commentpage";
                     }
                     else
                     {
                         String alert = "Your rank is lesser than the post rank";
-                        ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                        if(!cog.get().equals(""))
+                        {
+                            ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&cog="+cog.get()+"&alertx="+alert;
+                        }
+                        else
+                        {
+                            ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                        }
                     }
                 }
                 else
                 {
                     String alert = "No access";
-                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                    
+                    if(!cog.get().equals(""))
+                    {
+                        ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&cog="+cog.get()+"&alertx="+alert;
+                    }
+                    else
+                    {
+                        ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                    }
                 }
             }
             break;
@@ -639,7 +661,15 @@ public class UserController
                 }
                 
                 pcr.save(pc.get());
-                ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                
+                if(!cog.get().equals(""))
+                {
+                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&cog="+cog.get();
+                }
+                else
+                {
+                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                }
             }
             break;
             
@@ -680,7 +710,15 @@ public class UserController
                 }
                 
                 pcr.save(pc.get());
-                ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                
+                if(!cog.get().equals(""))
+                {
+                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&cog="+cog.get();
+                }
+                else
+                {
+                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                }
             }
             break;
             
@@ -721,7 +759,15 @@ public class UserController
                 }
                 
                 pcr.save(pc.get());
-                ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                
+                if(!cog.get().equals(""))
+                {
+                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&cog="+cog.get();
+                }
+                else
+                {
+                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                }
             }
             break;
             
@@ -739,18 +785,39 @@ public class UserController
                         model.addAttribute("t", title.get());
                         model.addAttribute("p", pg.get());
                         model.addAttribute("page", commentPaginate.get());
+                        
+                        if(!cog.get().equals(""))
+                        {
+                            model.addAttribute("cog", cog.get());
+                        }
                         ret = "pages/subcommentpage";
                     }
                     else
                     {
                         String alert = "Your rank is lesser than the post rank";
-                        ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                        
+                        if(!cog.get().equals(""))
+                        {
+                            ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&cog="+cog.get();
+                        }
+                        else
+                        {
+                            ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                        }
                     }
                 }
                 else
                 {
                     String alert = "No access";
-                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                    
+                    if(!cog.get().equals(""))
+                    {
+                        ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&cog="+cog.get();
+                    }
+                    else
+                    {
+                        ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                    }
                 }
             }
             break;
@@ -779,18 +846,39 @@ public class UserController
                         model.addAttribute("t", title.get());
                         model.addAttribute("p", pg.get());
                         model.addAttribute("page", commentPaginate.get());
+                        
+                        if(!cog.get().equals(""))
+                        {
+                            model.addAttribute("cog", cog.get());
+                        }
                         ret = "pages/quotepage";
                     }
                     else
                     {
                         String alert = "Your rank is lesser than the post rank";
-                        ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                        
+                        if(!cog.get().equals(""))
+                        {
+                            ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&cog="+cog.get();
+                        }
+                        else
+                        {
+                            ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                        }
                     }
                 }
                 else
                 {
                     String alert = "No access";
-                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                    
+                    if(!cog.get().equals(""))
+                    {
+                        ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&cog="+cog.get();
+                    }
+                    else
+                    {
+                        ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                    }
                 }
             }
             break;
@@ -831,7 +919,14 @@ public class UserController
                 ccr.save(cc.get());
                 utc.alterCommentRankingParameters(cc);
                 
-                ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                if(!cog.get().equals(""))
+                {
+                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&cog="+cog.get();
+                }
+                else
+                {
+                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                }
             }
             break;
             
@@ -870,7 +965,15 @@ public class UserController
                 
                 ccr.save(cc.get());
                 utc.alterCommentRankingParameters(cc);
-                ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                
+                if(!cog.get().equals(""))
+                {
+                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&cog="+cog.get();
+                }
+                else
+                {
+                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                }
             }
             break;
             
@@ -909,7 +1012,15 @@ public class UserController
                 
                 ccr.save(cc.get());
                 utc.alterCommentRankingParameters(cc);
-                ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                
+                if(!cog.get().equals(""))
+                {
+                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&cog="+cog.get();
+                }
+                else
+                {
+                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                }
             }
             break;
             
@@ -950,11 +1061,26 @@ public class UserController
                 
                     ccr.save(cc.get());
                     utc.alterCommentRankingParameters(cc);
-                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                    
+                    if(!cog.get().equals(""))
+                    {
+                        ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&cog="+cog.get();
+                    }
+                    else
+                    {
+                        ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                    }
                 }
                 else
                 {
-                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                    if(!cog.get().equals(""))
+                    {
+                        ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&cog="+cog.get();
+                    }
+                    else
+                    {
+                        ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                    }
                 }
             }
             break;
@@ -979,18 +1105,39 @@ public class UserController
                         model.addAttribute("t", title.get());
                         model.addAttribute("p", pg.get());
                         model.addAttribute("page", commentPaginate.get());
+                        
+                        if(!cog.get().equals(""))
+                        {
+                            model.addAttribute("cog", cog.get());
+                        }
                         ret = "pages/editcommentpage";
                     }
                     else
                     {
                         String alert = "Cannot edit comment";
-                        ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                        
+                        if(!cog.get().equals(""))
+                        {
+                            ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&cog="+cog.get()+"&alertx="+alert;
+                        }
+                        else
+                        {
+                            ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                        }
                     }
                 }
                 else
                 {
                     String alert = "No access";
-                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                    
+                    if(!cog.get().equals(""))
+                    {
+                        ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&cog="+cog.get()+"&alertx="+alert;
+                    }
+                    else
+                    {
+                        ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                    }
                 }
             }
             break;
@@ -1010,7 +1157,15 @@ public class UserController
                 {
                     alert = "Cannot delete comment";
                 }
-                ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                
+                if(!cog.get().equals(""))
+                {
+                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&cog="+cog.get()+"&alertx="+alert;
+                }
+                else
+                {
+                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                }
             }
             break;
             
@@ -1029,7 +1184,15 @@ public class UserController
                 {
                     alert = "Cannot delete comment";
                 }
-                ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                
+                if(!cog.get().equals(""))
+                {
+                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&cog="+cog.get()+"&alertx="+alert;
+                }
+                else
+                {
+                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                }
             }
             break;
             
@@ -1068,7 +1231,15 @@ public class UserController
                 
                 sccr.save(scc.get());
                 utc.alterSubCommentRankingParameters(scc, sccr);
-                ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                
+                if(!cog.get().equals(""))
+                {
+                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&cog="+cog.get();
+                }
+                else
+                {
+                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                }
             }
             break;
             
@@ -1107,7 +1278,15 @@ public class UserController
                 
                 sccr.save(scc.get());
                 utc.alterSubCommentRankingParameters(scc, sccr);
-                ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                
+                if(!cog.get().equals(""))
+                {
+                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&cog="+cog.get();
+                }
+                else
+                {
+                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                }
             }
             break;
             
@@ -1146,7 +1325,15 @@ public class UserController
                 
                 sccr.save(scc.get());
                 utc.alterSubCommentRankingParameters(scc, sccr);
-                ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                
+                if(!cog.get().equals(""))
+                {
+                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&cog="+cog.get();
+                }
+                else
+                {
+                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get();
+                }
             }
             break;
             
@@ -1169,12 +1356,25 @@ public class UserController
                     model.addAttribute("t", title.get());
                     model.addAttribute("p", pg.get());
                     model.addAttribute("page", commentPaginate.get());
+                    
+                    if(!cog.get().equals(""))
+                    {
+                        model.addAttribute("cog", cog.get());
+                    }
                     ret = "pages/editsubcommentpage";
                 }
                 else
                 {
                     String alert = "Cannot edit comment";
-                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                    
+                    if(!cog.get().equals(""))
+                    {
+                        ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&cog="+cog.get()+"&alertx="+alert;
+                    }
+                    else
+                    {
+                        ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                    }
                 }
             }
             break;
@@ -1194,7 +1394,15 @@ public class UserController
                 {
                     alert = "Cannot delete comment";
                 }
-                ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                
+                if(!cog.get().equals(""))
+                {
+                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&cog="+cog.get()+"&alertx="+alert;
+                }
+                else
+                {
+                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                }
             }
             break;
             
@@ -1213,7 +1421,15 @@ public class UserController
                 {
                     alert = "Cannot delete comment";
                 }
-                ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                
+                if(!cog.get().equals(""))
+                {
+                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&cog="+cog.get()+"&alertx="+alert;
+                }
+                else
+                {
+                    ret = "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx="+alert;
+                }
             }
             break;
         }
@@ -1224,7 +1440,8 @@ public class UserController
     public String cmtPost(@RequestParam("pos")Optional<Long> post_id, @RequestParam("t")Optional<String> title, 
     @RequestParam("p") Optional<Integer> pg, ModelMap model, @RequestParam("page")Optional<Integer> commentPaginate, 
     @ModelAttribute("postclass")PostClass pc, RedirectAttributes ra, @RequestParam("akt")Optional<String> action, 
-    @RequestParam("cid")Optional<Long> comment_id, @RequestParam("sid")Optional<Long> subcomment_id)
+    @RequestParam("cid")Optional<Long> comment_id, @RequestParam("sid")Optional<Long> subcomment_id, 
+    @RequestParam("cog")Optional<String> cog)
     {
         aac.displayAdvert(model);   //This line is for adverts
         
@@ -1252,6 +1469,11 @@ public class UserController
                         model.addAttribute("t", title.get());
                         model.addAttribute("p", pg.get());
                         model.addAttribute("page", commentPaginate.get());
+                        
+                        if(!cog.get().equals(""))
+                        {
+                            model.addAttribute("cog", cog.get());
+                        }
                 
                         pc.setContent(content);
                 
@@ -1315,35 +1537,53 @@ public class UserController
                             model.addAttribute("t", title.get());
                             model.addAttribute("p", pg.get());
                             model.addAttribute("page", commentPaginate.get());
-                            
                             model.addAttribute("alert", "Some tags are not properly closed [<_ must end with _>]");
+                            
+                            if(!cog.get().equals(""))
+                            {
+                                model.addAttribute("cog", cog.get());
+                            }
                             return "pages/commentpage";
-                        }
-                        
-                        content=content.replaceAll("<_", "<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
-                        content=content.replaceAll("_>", "'/><br/><br/>");
-                        
-                        if(!content.matches("\\s*"))
-                        {
-                            if(content.length() > 1500)
-                            {
-                                model.addAttribute("pos", post_id.get());
-                                model.addAttribute("t", title.get());
-                                model.addAttribute("p", pg.get());
-                                model.addAttribute("page", commentPaginate.get());
-                        
-                                model.addAttribute("alert", "Comment must be less than 1500 characters [" + pc.getContent().length() +"]");
-                            }
-                            else
-                            {
-                                CommentClass cc = new CommentClass(utc.getUser().getId(), post_id.get(), content, date);
-                                ccr.save(cc);
-                                return "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx=Posted";
-                            }
                         }
                         else
                         {
-                            ra.addFlashAttribute("alertx", "Comment cannot be empty");
+                            content=content.replaceAll("<_", "<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
+                            content=content.replaceAll("_>", "'/><br/><br/>");
+                        
+                            if(!content.matches("\\s*"))
+                            {
+                                if(content.length() > 1500)
+                                {
+                                    model.addAttribute("pos", post_id.get());
+                                    model.addAttribute("t", title.get());
+                                    model.addAttribute("p", pg.get());
+                                    model.addAttribute("page", commentPaginate.get());
+                                    model.addAttribute("alert", "Comment must be less than 1500 characters [" + pc.getContent().length() +"]");
+                                
+                                    if(!cog.get().equals(""))
+                                    {
+                                        model.addAttribute("cog", cog.get());
+                                    }
+                                }
+                                else
+                                {
+                                    CommentClass cc = new CommentClass(utc.getUser().getId(), post_id.get(), content, date);
+                                    ccr.save(cc);
+                                
+                                    if(!cog.get().equals(""))
+                                    {
+                                        return "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&cog="+cog.get()+"&alertx=Posted";
+                                    }
+                                    else
+                                    {
+                                        return "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx=Posted";
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                ra.addFlashAttribute("alertx", "Comment cannot be empty");
+                            }
                         }
                     }
                     break;
@@ -1363,6 +1603,11 @@ public class UserController
                         model.addAttribute("t", title.get());
                         model.addAttribute("p", pg.get());
                         model.addAttribute("page", commentPaginate.get());
+                        
+                        if(!cog.get().equals(""))
+                        {
+                            model.addAttribute("cog", cog.get());
+                        }
                 
                         pc.setContent(content);
                 
@@ -1427,52 +1672,69 @@ public class UserController
                             model.addAttribute("t", title.get());
                             model.addAttribute("p", pg.get());
                             model.addAttribute("page", commentPaginate.get());
-                            
                             model.addAttribute("alert", "Some tags are not properly closed [<_ must end with _>]");
+                            
+                            if(!cog.get().equals(""))
+                            {
+                                model.addAttribute("cog", cog.get());
+                            }
                             return "pages/subcommentpage";
-                        }
-                        
-                        content=content.replaceAll("<_", "<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
-                        content=content.replaceAll("_>", "'/><br/><br/>");
-                
-                        if(!content.matches("\\s*"))
-                        {
-                            if(content.length() > 1500)
-                            {
-                                model.addAttribute("pos", post_id.get());
-                                model.addAttribute("cid", comment_id.get());
-                                model.addAttribute("t", title.get());
-                                model.addAttribute("p", pg.get());
-                                model.addAttribute("page", commentPaginate.get());
-                        
-                                model.addAttribute("alert", "Comment must be less than 1500 characters [" + pc.getContent().length() +"]");
-                            }
-                            else
-                            {
-                                Optional<CommentClass> cc = ccr.findById(comment_id.get());  //Comment you are subcommenting on
-                                SubCommentClass scc;
-                                
-                                if(utc.getUser().getId().equals(cc.get().getUser_id()))  //No need marking your comment as unread na, abi no be you write am??
-                                {
-                                    scc = new SubCommentClass(utc.getUser().getId(), comment_id.get(), content, date, "read");
-                                }
-                                else
-                                {
-                                    scc = new SubCommentClass(utc.getUser().getId(), comment_id.get(), content, date);
-                                }
-                                
-                                sccr.save(scc);
-                                
-                                //Notify the owner of the comment here: Very important
-                                String postlink = "s_ch?pos="+post_id.get()+"&t="+title.get()+"&p="+pg.get()+"&cid="+comment_id.get()+"#"+comment_id.get();
-                                utc.updateInbox(cc.get().getUser_id(), comment_id.get(), postlink);
-                                
-                                return "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx=Posted";
-                            }
                         }
                         else
                         {
-                            ra.addFlashAttribute("alertx", "Comment cannot be empty");
+                            content=content.replaceAll("<_", "<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
+                            content=content.replaceAll("_>", "'/><br/><br/>");
+                
+                            if(!content.matches("\\s*"))
+                            {
+                                if(content.length() > 1500)
+                                {
+                                    model.addAttribute("pos", post_id.get());
+                                    model.addAttribute("cid", comment_id.get());
+                                    model.addAttribute("t", title.get());
+                                    model.addAttribute("p", pg.get());
+                                    model.addAttribute("page", commentPaginate.get());
+                                    model.addAttribute("alert", "Comment must be less than 1500 characters [" + pc.getContent().length() +"]");
+                                
+                                    if(!cog.get().equals(""))
+                                    {
+                                        model.addAttribute("cog", cog.get());
+                                    }
+                                }
+                                else
+                                {
+                                    Optional<CommentClass> cc = ccr.findById(comment_id.get());  //Comment you are subcommenting on
+                                    SubCommentClass scc;
+                                
+                                    if(utc.getUser().getId().equals(cc.get().getUser_id()))  //No need marking your comment as unread na, abi no be you write am??
+                                    {
+                                        scc = new SubCommentClass(utc.getUser().getId(), comment_id.get(), content, date, "read");
+                                    }
+                                    else
+                                    {
+                                        scc = new SubCommentClass(utc.getUser().getId(), comment_id.get(), content, date);
+                                    }
+                                
+                                    sccr.save(scc);
+                                
+                                    //Notify the owner of the comment here: Very important
+                                    String postlink = "s_ch?pos="+post_id.get()+"&t="+title.get()+"&p="+pg.get()+"&cid="+comment_id.get()+"#"+comment_id.get();
+                                    utc.updateInbox(cc.get().getUser_id(), comment_id.get(), postlink);
+                                
+                                    if(!cog.get().equals(""))
+                                    {
+                                        return "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&cog="+cog.get()+"&alertx=Posted";
+                                    }
+                                    else
+                                    {
+                                        return "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx=Posted";
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                ra.addFlashAttribute("alertx", "Comment cannot be empty");
+                            }
                         }
                     }
                     break;
@@ -1494,6 +1756,10 @@ public class UserController
                         model.addAttribute("p", pg.get());
                         model.addAttribute("page", commentPaginate.get());
                 
+                        if(!cog.get().equals(""))
+                        {
+                            model.addAttribute("cog", cog.get());
+                        }
                         pc.setContent_2(content_2);
                         pc.setContent(content);
                 
@@ -1552,56 +1818,105 @@ public class UserController
                         pc.setContent_2(content_2);
                         pc.setContent(content);
                 
-                        content=content.replaceAll("<_", "<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
-                        content=content.replaceAll("_>", "'/><br/><br/>");
-                        
-                        content_2=content_2.replaceAll("<_", "<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
-                        content_2=content_2.replaceAll("_>", "'/><br/><br/>");
-                
-                        if(!content.matches("\\s*"))
+                        if(!utc.checkTag(content))
                         {
                             model.addAttribute("pos", post_id.get());
                             model.addAttribute("cid", comment_id.get());
                             model.addAttribute("t", title.get());
                             model.addAttribute("p", pg.get());
                             model.addAttribute("page", commentPaginate.get());
-                                
-                            if(content.length() > 1500)
+                            model.addAttribute("alert", "Some tags in textarea 2 are not properly closed [<_ must end with _>]");
+                
+                            if(!cog.get().equals(""))
                             {
-                                model.addAttribute("alert", "Comment must be less than 1500 characters [" + pc.getContent().length() +"]");
+                                model.addAttribute("cog", cog.get());
                             }
-                            else
-                            {
-                                Optional<CommentClass> ccid = ccr.findById(comment_id.get());
-                                String main_comment = ccid.get().getContent();
-                                 
-                                if(main_comment.contains(content_2))
-                                {
-                                    CommentClass cc = new CommentClass(utc.getUser().getId(), post_id.get(), content, date);
-                                    ccr.save(cc);
-                                    Optional<CommentClass> quickCom = ccr.getExactPost(utc.getUser().getId(), post_id.get(), date);
-                                    QuoteObject qobj = new QuoteObject(ccid.get().getUser_id(), quickCom.get().getId(), content_2, ccid.get().getPostdate());
-                                    qobjr.save(qobj);
-                                    
-                                    /*
-                                    //Notify the owner of the comment here: Very important
-                                    Optional<CommentClass> cLass = ccr.findById(comment_id.get());
-                                    String postlink = "s_ch?pos="+post_id.get()+"&t="+title.get()+"&p="+pg.get()+"&cid="+comment_id.get()+"#"+comment_id.get();
-                                    utc.updateInbox(mobjr, cLass.get().getUser_id(), comment_id.get(), postlink);
-                                    */
-                                    
-                                    return "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx=Posted";
-                                }
-                                else
-                                {
-                                    //wrong quote
-                                    model.addAttribute("alert", "You did not quote @"+ ccid.get().getUsertwo().getUsername() + " properly");
-                                }
-                            }
+                            
+                            return "pages/quotepage";
                         }
                         else
                         {
-                            ra.addFlashAttribute("alertx", "Comment cannot be empty");
+                            content=content.replaceAll("<_", "<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
+                            content=content.replaceAll("_>", "'/><br/><br/>");
+                
+                            if(!content.matches("\\s*"))
+                            {
+                                model.addAttribute("pos", post_id.get());
+                                model.addAttribute("cid", comment_id.get());
+                                model.addAttribute("t", title.get());
+                                model.addAttribute("p", pg.get());
+                                model.addAttribute("page", commentPaginate.get());
+                            
+                                if(!cog.get().equals(""))
+                                {
+                                    model.addAttribute("cog", cog.get());
+                                }    
+                                if(content.length() > 1500)
+                                {
+                                    model.addAttribute("alert", "Comment must be less than 1500 characters [" + pc.getContent().length() +"]");
+                                }
+                                else
+                                {
+                                    Optional<CommentClass> ccid = ccr.findById(comment_id.get());
+                                    String main_comment = ccid.get().getContent();
+                                
+                                    if(!utc.checkTag(content_2))
+                                    {
+                                        model.addAttribute("pos", post_id.get());
+                                        model.addAttribute("cid", comment_id.get());
+                                        model.addAttribute("t", title.get());
+                                        model.addAttribute("p", pg.get());
+                                        model.addAttribute("page", commentPaginate.get());
+                                        model.addAttribute("alert", "Some tags in textarea 1 are not properly closed [<_ must end with _>]");
+                                        
+                                        if(!cog.get().equals(""))
+                                        {
+                                            model.addAttribute("cog", cog.get());
+                                        }
+                            
+                                        return "pages/quotepage";
+                                    }
+                                    else
+                                    {
+                                        content_2=content_2.replaceAll("<_", "<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
+                                        content_2=content_2.replaceAll("_>", "'/><br/><br/>");
+                                        
+                                        if(main_comment.contains(content_2))
+                                        {
+                                            CommentClass cc = new CommentClass(utc.getUser().getId(), post_id.get(), content, date);
+                                            ccr.save(cc);
+                                            Optional<CommentClass> quickCom = ccr.getExactPost(utc.getUser().getId(), post_id.get(), date);
+                                            QuoteObject qobj = new QuoteObject(ccid.get().getUser_id(), quickCom.get().getId(), content_2, ccid.get().getPostdate());
+                                            qobjr.save(qobj);
+                                            
+                                            /*  
+                                            //Notify the owner of the comment here: Very important
+                                            Optional<CommentClass> cLass = ccr.findById(comment_id.get());
+                                            String postlink = "s_ch?pos="+post_id.get()+"&t="+title.get()+"&p="+pg.get()+"&cid="+comment_id.get()+"#"+comment_id.get();
+                                            utc.updateInbox(mobjr, cLass.get().getUser_id(), comment_id.get(), postlink);
+                                            */
+                                    
+                                            if(!cog.get().equals(""))
+                                            {
+                                                return "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&cog="+cog.get()+"&alertx=Posted";
+                                            }
+                                            else
+                                            {
+                                                return "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx=Posted";
+                                            }
+                                        }
+                                        else
+                                        {
+                                            //wrong quote
+                                            model.addAttribute("alert", "You did not quote @"+ ccid.get().getUsertwo().getUsername() + " properly");
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                ra.addFlashAttribute("alertx", "Comment cannot be empty");
+                            }
                         }
                     }
                     break;
@@ -1622,6 +1937,10 @@ public class UserController
                         model.addAttribute("p", pg.get());
                         model.addAttribute("page", commentPaginate.get());
                 
+                        if(!cog.get().equals(""))
+                        {
+                            model.addAttribute("cog", cog.get());
+                        }
                         pc.setContent(content);
                 
                         MultipartFile contentFile =  pc.getContentFile();
@@ -1678,32 +1997,61 @@ public class UserController
                     {
                         pc.setContent(content);
                 
-                        content=content.replaceAll("<_", "<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
-                        content=content.replaceAll("_>", "'/><br/><br/>");
-                
-                        if(!content.matches("\\s*"))
+                        if(!utc.checkTag(content))
                         {
-                            if(content.length() > 1500)
+                            model.addAttribute("pos", post_id.get());
+                            model.addAttribute("cid", comment_id.get());
+                            model.addAttribute("t", title.get());
+                            model.addAttribute("p", pg.get());
+                            model.addAttribute("page", commentPaginate.get());
+                            model.addAttribute("alert", "Some tags are not properly closed [<_ must end with _>]");
+                            
+                            if(!cog.get().equals(""))
                             {
-                                model.addAttribute("pos", post_id.get());
-                                model.addAttribute("cid", comment_id.get());
-                                model.addAttribute("t", title.get());
-                                model.addAttribute("p", pg.get());
-                                model.addAttribute("page", commentPaginate.get());
-                        
-                                model.addAttribute("alert", "Comment must be less than 1500 characters [" + pc.getContent().length() +"]");
-                            }
-                            else
-                            {
-                                Optional<CommentClass> ccObj = ccr.findById(comment_id.get());
-                                ccObj.get().setContent(content);
-                                ccr.save(ccObj.get());
-                                return "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx=Posted";
+                                model.addAttribute("cog", cog.get());
                             }
                         }
                         else
                         {
-                            ra.addFlashAttribute("alertx", "Comment cannot be empty");
+                            content=content.replaceAll("<_", "<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
+                            content=content.replaceAll("_>", "'/><br/><br/>");
+                
+                            if(!content.matches("\\s*"))
+                            {
+                                if(content.length() > 1500)
+                                {
+                                    model.addAttribute("pos", post_id.get());
+                                    model.addAttribute("cid", comment_id.get());
+                                    model.addAttribute("t", title.get());
+                                    model.addAttribute("p", pg.get());
+                                    model.addAttribute("page", commentPaginate.get());
+                                    model.addAttribute("alert", "Comment must be less than 1500 characters [" + pc.getContent().length() +"]");
+                                
+                                    if(!cog.get().equals(""))
+                                    {
+                                        model.addAttribute("cog", cog.get());
+                                    }
+                                }
+                                else
+                                {
+                                    Optional<CommentClass> ccObj = ccr.findById(comment_id.get());
+                                    ccObj.get().setContent(content);
+                                    ccr.save(ccObj.get());
+                                
+                                    if(!cog.get().equals(""))
+                                    {
+                                        return "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&cog="+cog.get()+"&alertx=Posted";
+                                    }
+                                    else
+                                    {
+                                        return "redirect:/b_ch?pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&p="+pg.get()+"&alertx=Posted";
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                ra.addFlashAttribute("alertx", "Comment cannot be empty");
+                            }
                         }
                     }
                     break;
@@ -2830,7 +3178,7 @@ public class UserController
     @RequestParam("p") Optional<Integer> pg, ModelMap model, @RequestParam("page")Optional<Integer> commentPaginate, 
     @RequestParam("akt")Optional<String> action, HttpServletRequest req, RedirectAttributes ra, 
     @RequestParam("cid")Optional<Long> comment_id, @RequestParam("sid")Optional<Long> subcomment_id, 
-    @RequestParam("p2")Optional<Integer> currentPage)
+    @RequestParam("p2")Optional<Integer> currentPage, @RequestParam("cog")Optional<String> cog)
     {
         aac.displayAdvert(model);   //This line is for adverts
         
@@ -2875,7 +3223,15 @@ public class UserController
                 
                 sccr.save(scc.get());
                 utc.alterSubCommentRankingParameters(scc, sccr);
-                ret = "redirect:/mresu_b?p2="+currentPage.get()+"&pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&pg="+pg.get()+"&cid="+comment_id.get();
+                
+                if(cog.orElse(null) != null)
+                {
+                    ret = "redirect:/mresu_b?p2="+currentPage.get()+"&pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&pg="+pg.get()+"&cog="+cog.get()+"&cid="+comment_id.get();
+                }
+                else
+                {
+                    ret = "redirect:/mresu_b?p2="+currentPage.get()+"&pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&pg="+pg.get()+"&cid="+comment_id.get();
+                }
             }
             break;
             
@@ -2914,7 +3270,15 @@ public class UserController
                 
                 sccr.save(scc.get());
                 utc.alterSubCommentRankingParameters(scc, sccr);
-                ret = "redirect:/mresu_b?p2="+currentPage.get()+"&pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&pg="+pg.get()+"&cid="+comment_id.get();
+                
+                if(cog.orElse(null) != null)
+                {
+                    ret = "redirect:/mresu_b?p2="+currentPage.get()+"&pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&pg="+pg.get()+"&cog="+cog.get()+"&cid="+comment_id.get();
+                }
+                else
+                {
+                    ret = "redirect:/mresu_b?p2="+currentPage.get()+"&pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&pg="+pg.get()+"&cid="+comment_id.get();
+                }                
             }
             break;
             
@@ -2953,7 +3317,15 @@ public class UserController
                 
                 sccr.save(scc.get());
                 utc.alterSubCommentRankingParameters(scc, sccr);
-                ret = "redirect:/mresu_b?p2="+currentPage.get()+"&pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&pg="+pg.get()+"&cid="+comment_id.get();
+                
+                if(cog.orElse(null) != null)
+                {
+                    ret = "redirect:/mresu_b?p2="+currentPage.get()+"&pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&pg="+pg.get()+"&cog="+cog.get()+"&cid="+comment_id.get();
+                }
+                else
+                {
+                    ret = "redirect:/mresu_b?p2="+currentPage.get()+"&pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&pg="+pg.get()+"&cid="+comment_id.get();
+                }
             }
             break;
             
@@ -2979,11 +3351,22 @@ public class UserController
                     model.addAttribute("page", commentPaginate.get());
                     model.addAttribute("p2", currentPage.get());
                     
+                    if(cog.orElse(null) != null)
+                    {
+                        model.addAttribute("cog", cog.get());
+                    }
                     ret = "pages/editextrasubcommentpage";
                 }
                 else
                 {
-                    ret = "redirect:/mresu_b?p2="+currentPage.get()+"&pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&pg="+pg.get()+"&cid="+comment_id.get();
+                    if(cog.orElse(null) != null)
+                    {
+                        ret = "redirect:/mresu_b?p2="+currentPage.get()+"&pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&pg="+pg.get()+"&cog="+cog.get()+"&cid="+comment_id.get();
+                    }
+                    else
+                    {
+                        ret = "redirect:/mresu_b?p2="+currentPage.get()+"&pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&pg="+pg.get()+"&cid="+comment_id.get();
+                    }
                 }
             }
             break;
@@ -3003,7 +3386,15 @@ public class UserController
                 {
                     alert = "Cannot delete comment";
                 }
-                ret = "redirect:/mresu_b?p2="+currentPage.get()+"&pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&pg="+pg.get()+"&cid="+comment_id.get();
+                
+                if(cog.orElse(null) != null)
+                {
+                    ret = "redirect:/mresu_b?p2="+currentPage.get()+"&pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&pg="+pg.get()+"&cog="+cog.get()+"&cid="+comment_id.get();
+                }
+                else
+                {
+                    ret = "redirect:/mresu_b?p2="+currentPage.get()+"&pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&pg="+pg.get()+"&cid="+comment_id.get();
+                }
             }
             break;
             
@@ -3022,7 +3413,15 @@ public class UserController
                 {
                     alert = "Cannot delete comment";
                 }
-                ret = "redirect:/mresu_b?p2="+currentPage.get()+"&pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&pg="+pg.get()+"&cid="+comment_id.get();
+                
+                if(cog.orElse(null) != null)
+                {
+                    ret = "redirect:/mresu_b?p2="+currentPage.get()+"&pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&pg="+pg.get()+"&cog="+cog.get()+"&cid="+comment_id.get();
+                }
+                else
+                {
+                    ret = "redirect:/mresu_b?p2="+currentPage.get()+"&pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&pg="+pg.get()+"&cid="+comment_id.get();
+                }
             }
             break;
         }

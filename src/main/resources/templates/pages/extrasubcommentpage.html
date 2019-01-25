@@ -58,25 +58,25 @@
                                 </div>
                                 <div class="commentBck2">
                                     <span>
-                                        <a class="gimmeChance" th:href="@{user/mre_cmt(akt=lk_x, sid=${subcom.id}, cid=${cid}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage})}">
+                                        <a class="gimmeChance" th:href="@{user/mre_cmt(akt=lk_x, sid=${subcom.id}, cid=${cid}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage}, cog=${cog})}">
                                             <span style="color: green;" class="glyphicon glyphicon-thumbs-up"></span> <span class="smallfont" th:text="${subcom.likes}"></span>
                                         </a>
-                                        <a class="gimmeChance" th:href="@{user/mre_cmt(akt=flg_x, sid=${subcom.id}, cid=${cid}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage})}">
+                                        <a class="gimmeChance" th:href="@{user/mre_cmt(akt=flg_x, sid=${subcom.id}, cid=${cid}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage}, cog=${cog})}">
                                             <span style="color: red;" class="glyphicon glyphicon-flag"></span> <span class="smallfont" th:text="${subcom.redflag}"></span>
                                         </a>
-                                        <a class="gimmeChance" th:href="@{user/mre_cmt(akt=str_x, sid=${subcom.id}, cid=${cid}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage})}">
+                                        <a class="gimmeChance" th:href="@{user/mre_cmt(akt=str_x, sid=${subcom.id}, cid=${cid}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage}, cog=${cog})}">
                                             <span style="color: yellow;" class="glyphicon glyphicon-star"></span> <span class="smallfont" th:text="${subcom.star}"></span>
                                         </a>
-                                        <a class="editSubComOnTheGo gimmeChance" th:href="@{user/mre_cmt(akt=edit_x, sid=${subcom.id}, cid=${cid}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage})}">
+                                        <a class="editSubComOnTheGo gimmeChance" th:href="@{user/mre_cmt(akt=edit_x, sid=${subcom.id}, cid=${cid}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage}, cog=${cog})}">
                                             <span style="color: grey;" class="glyphicon glyphicon-pencil" th:classappend="${subcom.userthree.username} == ${session.username} ? '' : 'hidden'"></span>
                                         </a>
-                                        <a th:href="@{user/mre_cmt(akt=dlt_x, sid=${subcom.id}, cid=${cid}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage})}">
+                                        <a th:href="@{user/mre_cmt(akt=dlt_x, sid=${subcom.id}, cid=${cid}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage}, cog=${cog})}">
                                             <span style="color: red;" class="glyphicon glyphicon-trash" th:classappend="${subcom.userthree.username} == ${session.username} ? '' : 'hidden'"></span>
                                         </a>
                                     <span/>
                                                     
                                     <span style="float: right;">
-                                        <a th:href="@{user/cmt(akt=dlt_xMod, sid=${subcom.id}, cid=${cid}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage})}">
+                                        <a th:href="@{user/cmt(akt=dlt_xMod, sid=${subcom.id}, cid=${cid}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage}, cog=${cog})}">
                                             <span style="color: blue;" class="glyphicon glyphicon-trash" th:classappend="${session.usercolorclass} == 'user_mod' ? '' : 'hidden'"></span>
                                         </a>
                                     <span/>&nbsp;
