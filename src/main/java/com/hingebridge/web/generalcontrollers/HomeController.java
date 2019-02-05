@@ -678,8 +678,8 @@ public class HomeController
         String content = dc.getContent();
         Long post_id = dc.getPos();
         
-        content=content.replaceAll("<_", "<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
-        content=content.replaceAll("_>", "'/><br/><br/>");
+        content=content.replaceAll("<_", "<br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
+        content=content.replaceAll("_>", "'/><br/>");
         
         CommentClass cc = new CommentClass(utc.getUser().getId(), post_id, content, utc.getDate());
         ccr.save(cc);

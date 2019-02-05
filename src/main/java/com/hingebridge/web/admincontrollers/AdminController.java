@@ -2,9 +2,7 @@ package com.hingebridge.web.admincontrollers;
 
 import com.hingebridge.model.AdvertObject;
 import com.hingebridge.model.CommentClass;
-import com.hingebridge.model.FollowedPostDeleteObject;
 import com.hingebridge.model.InboxObject;
-import com.hingebridge.model.MessageObject;
 import com.hingebridge.model.PagerModel;
 import com.hingebridge.model.PostClass;
 import com.hingebridge.model.QuoteObject;
@@ -22,16 +20,15 @@ import com.hingebridge.repository.PostClassRepo;
 import com.hingebridge.repository.PostReactionClassRepo;
 import com.hingebridge.repository.QuoteObjectRepo;
 import com.hingebridge.repository.ReplyObjectRepo;
-import com.hingebridge.repository.RoleClassRepo;
 import com.hingebridge.repository.SubCommentClassRepo;
 import com.hingebridge.repository.SubCommentReactionClassRepo;
 import com.hingebridge.repository.UserClassRepo;
-import com.hingebridge.repository.UserRoleClassRepo;
 import com.hingebridge.utility.AdvertAlgorithmClass;
 import com.hingebridge.utility.UtilityClass;
 import com.hingebridge.web.usercontrollers.UserController;
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -1397,4 +1394,138 @@ public class AdminController
         
         return "redirect:_src_admin_math_physics?usr="+userId.get();
     }
+    
+    @RequestMapping("/adminmresu_b")
+    public String moreSubComment(@RequestParam("p2")int paginate, @RequestParam("cid")Long cid, @RequestParam("pos")Long post_id,
+    @RequestParam("t")String title, @RequestParam("page")int commentPaginate, @RequestParam("pg")int pg, 
+    ModelMap model)//, @RequestParam("cog") Optional<String> cog)
+    {
+        aac.displayAdvert(model);
+        
+        int init = 0;
+        int end = 10;
+        
+        if(paginate > 1)
+        {
+            init = (paginate - 1) * end;
+            end = end * paginate;
+        }
+        
+        Optional<CommentClass> cc = ccr.findById(cid);
+        List<SubCommentClass> subcommentList = cc.get().getSubcomment();
+        List<SubCommentClass> scc = new LinkedList<>();
+        
+        if(subcommentList.size() < end)
+        {
+            end = subcommentList.size();
+        }
+        
+        for(int count = init; count < end; count++)
+        {
+            scc.add(subcommentList.get(count));
+        }
+        
+        if(!scc.isEmpty())
+        {
+            model.addAttribute("extraSubComments", scc);
+        }
+        
+        model.addAttribute("cid", cid);
+        model.addAttribute("pos", post_id);
+        model.addAttribute("t", title);
+        model.addAttribute("p", pg);
+        model.addAttribute("page", commentPaginate);
+        model.addAttribute("currentPage", paginate);
+        
+        model.addAttribute("prev", paginate - 1);
+        model.addAttribute("next", paginate + 1);
+        
+        /*
+        if(cog.orElse(null) != null)
+        {
+            model.addAttribute("cog", cog.get());
+        }
+        */
+        
+        if((paginate - 1) == 1)
+        {
+            model.addAttribute("disp1", "none");
+        }
+        if(scc.isEmpty())
+        {
+            model.addAttribute("theClass", "realcentertinz");
+            model.addAttribute("alert", "No more comments");
+            model.addAttribute("disp2", "none");
+        }
+        
+        return "adminpages/adminextrasubcommentpage";
+    }
+    
+    @GetMapping("/adminmre_cmt")
+    public String subCommentExtra(@RequestParam("pos")Optional<Long> post_id, @RequestParam("t")Optional<String> title, 
+    @RequestParam("p") Optional<Integer> pg, ModelMap model, @RequestParam("page")Optional<Integer> commentPaginate, 
+    @RequestParam("akt")Optional<String> action, HttpServletRequest req, RedirectAttributes ra, 
+    @RequestParam("cid")Optional<Long> comment_id, @RequestParam("sid")Optional<Long> subcomment_id, 
+    @RequestParam("p2")Optional<Integer> currentPage, @RequestParam("cog")Optional<String> cog)
+    {
+        aac.displayAdvert(model);   //This line is for adverts
+        
+        String ret= null;
+        utc.sessionUserDetails(req);    //Do not ever remove this
+        long id = utc.getUser().getId();
+        
+        switch(action.get())
+        {
+            case "lk_x":
+            {
+                Optional<SubCommentClass> scc = sccr.findById(subcomment_id.get());
+                long likes = scc.get().getLikes();
+                likes = likes + 50;
+                scc.get().setLikes(likes);
+                utc.alterUserRankingParameters(scc.get().getUser_id(), "save_like");
+                sccr.save(scc.get());
+                utc.alterSubCommentRankingParameters(scc, sccr);
+                
+                ret = "redirect:adminmresu_b?p2="+currentPage.get()+"&pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&pg="+pg.get()+"&cid="+comment_id.get();
+            }
+            break;
+            
+            case "flg_x":
+            {
+                Optional<SubCommentClass> scc = sccr.findById(subcomment_id.get());
+                long redflag = scc.get().getRedflag();
+                redflag = redflag + 50;
+                scc.get().setRedflag(redflag);
+                utc.alterUserRankingParameters(scc.get().getUser_id(), "save_redflag");
+                sccr.save(scc.get());
+                utc.alterSubCommentRankingParameters(scc, sccr);
+                ret = "redirect:adminmresu_b?p2="+currentPage.get()+"&pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&pg="+pg.get()+"&cid="+comment_id.get();
+            }
+            break;
+            
+            case "str_x":
+            {
+                Optional<SubCommentClass> scc = sccr.findById(subcomment_id.get());
+                long starred = scc.get().getStar();
+                starred = starred + 50;
+                scc.get().setStar(starred);
+                utc.alterUserRankingParameters(scc.get().getUser_id(), "save_star");
+                sccr.save(scc.get());
+                utc.alterSubCommentRankingParameters(scc, sccr);
+                ret = "redirect:adminmresu_b?p2="+currentPage.get()+"&pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&pg="+pg.get()+"&cid="+comment_id.get();
+            }
+            break;
+            
+            case "dlt_x":
+            {
+                Optional<SubCommentClass> scc = sccr.findById(subcomment_id.get());
+                scc.get().setApproved(0);
+                sccr.save(scc.get());
+                ret = "redirect:adminmresu_b?p2="+currentPage.get()+"&pos="+post_id.get()+"&t="+title.get()+"&page="+commentPaginate.get()+"&pg="+pg.get()+"&cid="+comment_id.get();
+            }
+            break;
+        }
+        return ret;
+    }
+    
 }

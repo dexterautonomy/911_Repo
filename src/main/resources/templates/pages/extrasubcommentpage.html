@@ -37,8 +37,8 @@
                     </div>
                     
                     <div>
-                        <div class="media smallPadding" th:each="subcom : ${extraSubComments}">
-                            <div class="media-left media-top">
+                        <div class="media" th:each="subcom : ${extraSubComments}">
+                            <div class="media-left media-top smallPadding">
                                 <a th:href="@{/prf_src(usr=${subcom.userthree.id})}">
                                     <img th:classappend="${subcom.userthree.colorclass}" class="readerImage2" src="" th:src="@{'/files/profile_img/' + ${subcom.userthree.pix}}" th:alt="${subcom.userthree.username + ' pic'}" alt=""/>
                                 </a>
@@ -52,37 +52,33 @@
                                     <span class="postcomment_duration" th:text="${subcom.duration}"></span>
                                 </div>
                                                 
-                                <div th:utext="${subcom.content}"></div><br/>
+                                <div th:utext="${subcom.content}"></div>
                                 <div class="hidden">
                                     <span class="subcommentid" th:text="${subcom.id}"></span>
                                 </div>
                                 <div class="commentBck2">
-                                    <span>
-                                        <a class="gimmeChance" th:href="@{user/mre_cmt(akt=lk_x, sid=${subcom.id}, cid=${cid}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage}, cog=${cog})}">
-                                            <span style="color: green;" class="glyphicon glyphicon-thumbs-up"></span> <span class="smallfont" th:text="${subcom.likes}"></span>
-                                        </a>
-                                        <a class="gimmeChance" th:href="@{user/mre_cmt(akt=flg_x, sid=${subcom.id}, cid=${cid}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage}, cog=${cog})}">
-                                            <span style="color: red;" class="glyphicon glyphicon-flag"></span> <span class="smallfont" th:text="${subcom.redflag}"></span>
-                                        </a>
-                                        <a class="gimmeChance" th:href="@{user/mre_cmt(akt=str_x, sid=${subcom.id}, cid=${cid}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage}, cog=${cog})}">
-                                            <span style="color: yellow;" class="glyphicon glyphicon-star"></span> <span class="smallfont" th:text="${subcom.star}"></span>
-                                        </a>
-                                        <a class="editSubComOnTheGo gimmeChance" th:href="@{user/mre_cmt(akt=edit_x, sid=${subcom.id}, cid=${cid}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage}, cog=${cog})}">
-                                            <span style="color: grey;" class="glyphicon glyphicon-pencil" th:classappend="${subcom.userthree.username} == ${session.username} ? '' : 'hidden'"></span>
-                                        </a>
-                                        <a th:href="@{user/mre_cmt(akt=dlt_x, sid=${subcom.id}, cid=${cid}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage}, cog=${cog})}">
-                                            <span style="color: red;" class="glyphicon glyphicon-trash" th:classappend="${subcom.userthree.username} == ${session.username} ? '' : 'hidden'"></span>
-                                        </a>
-                                    <span/>
+                                    <a class="gimmeChance" th:href="@{user/mre_cmt(akt=lk_x, sid=${subcom.id}, cid=${cid}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage}, cog=${cog})}">
+                                        <span style="color: green;" class="glyphicon glyphicon-thumbs-up smallfont"></span> <span class="smallfont" th:text="${subcom.likes}"></span>
+                                    </a>
+                                    <a class="gimmeChance" th:href="@{user/mre_cmt(akt=flg_x, sid=${subcom.id}, cid=${cid}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage}, cog=${cog})}">
+                                        <span style="color: red;" class="glyphicon glyphicon-flag smallfont"></span> <span class="smallfont" th:text="${subcom.redflag}"></span>
+                                    </a>
+                                    <a class="gimmeChance" th:href="@{user/mre_cmt(akt=str_x, sid=${subcom.id}, cid=${cid}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage}, cog=${cog})}">
+                                        <span style="color: yellow;" class="glyphicon glyphicon-star smallfont"></span> <span class="smallfont" th:text="${subcom.star}"></span>
+                                    </a>
+                                    <a class="editSubComOnTheGo gimmeChance" th:href="@{user/mre_cmt(akt=edit_x, sid=${subcom.id}, cid=${cid}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage}, cog=${cog})}">
+                                        <span style="color: grey;" class="glyphicon glyphicon-pencil smallfont" th:classappend="${subcom.userthree.username} == ${session.username} ? '' : 'hidden'"></span>
+                                    </a>
+                                    <a th:href="@{user/mre_cmt(akt=dlt_x, sid=${subcom.id}, cid=${cid}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage}, cog=${cog})}">
+                                        <span style="color: red;" class="glyphicon glyphicon-trash smallfont" th:classappend="${subcom.userthree.username} == ${session.username} ? '' : 'hidden'"></span>
+                                    </a>
                                                     
-                                    <span style="float: right;">
-                                        <a th:href="@{user/cmt(akt=dlt_xMod, sid=${subcom.id}, cid=${cid}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage}, cog=${cog})}">
-                                            <span style="color: blue;" class="glyphicon glyphicon-trash" th:classappend="${session.usercolorclass} == 'user_mod' ? '' : 'hidden'"></span>
-                                        </a>
-                                    <span/>&nbsp;
+                                    <a class="floatRight" th:href="@{user/mre_cmt(akt=dlt_xMod, sid=${subcom.id}, cid=${cid}, pos=${pos}, t=${t}, page=${page}, p=${p}, p2=${currentPage}, cog=${cog})}">
+                                        <span style="color: blue;" class="glyphicon glyphicon-trash smallfont" th:classappend="${session.usercolorclass} == 'user_mod' ? '' : 'hidden'"></span>
+                                    </a>
                                 </div>
                                 
-                                <div class="dynamicEditSubComment hidden"></br>
+                                <div class="dynamicEditSubComment hidden"><br/>
                                     <form action="" enctype="multipart/form-data">
                                         <div>
                                             <textarea class="form-control editSubCommentContent" name="dynamicFormContent" placeholder="Comment" cols="20" rows="5" required="" maxlength="700"></textarea><br/>

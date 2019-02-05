@@ -25,7 +25,11 @@
                         <div th:each="post : ${postpage}">
                             <a class="list-group-item" th:classappend="${post.approved == 1 ? 'approvedPost' : 'unApprovedPost'}" th:href="@{/securedadminLogin/s_ch_admin_(pos=${post.id}, t=${post.title}, p=${pg})}">
                                 <div class="row">
-                                    <div class="col-sm-2"></div>
+                                    <div class="col-sm-2">
+                                        <div th:if="${post.coverImage != 'empty.png'}">
+                                            <img class="memelogicstyle" src="" th:src="@{'/files/dist_img/' + ${post.coverImage}}" th:alt="${post.coverImage + ' pic'}" alt=""/>
+                                        </div>
+                                    </div>
                                     <div class="col-sm-8">
                                         <div id="chead" class="list-group-item-text" th:text="${post.title}"></div>
                                         <div>

@@ -94,7 +94,6 @@ div.col-sm-10
 
 .postsubcomment_body
 {
-    margin-left: 25px;
     border-right: 1px solid rgb(245,245,245);
     border-top: 1px solid rgb(245,245,245);
     border-radius: 10px;
@@ -113,6 +112,7 @@ div.col-sm-10
 {
     background-color: rgb(255,255,255);
     overflow: auto;
+    margin-top: 5px;
 }
 
 div.commentBck a:hover
@@ -123,6 +123,7 @@ div.commentBck a:hover
 .commentBck2
 {
     overflow: auto;
+    margin-top: 5px;
 }
 
 div.commentBck2 a:hover
@@ -682,7 +683,7 @@ a:hover
 
 .smallPadding
 {
-    padding: 10px;
+    padding: 5px;
 }
 
 .mediaExposed
@@ -756,11 +757,33 @@ a:hover
 
 a.gimmeChance
 {
-    margin-right: 20px;
+    margin-right: 15px;
     text-decoration: none;
 }
 
 a.noUnderLine
 {
     text-decoration: none;
+}
+
+.memelogicstyle
+{
+    width: 80px;
+    height: 50px;
+    border-radius: 3px;
+}
+
+.floatRight
+{
+    float: right;
+}
+
+.subcommentsOnTheGo, .dynamicQuote, .dynamicEditComment
+{
+    margin-top: 8px;
+}
+
+.marjTop
+{
+    margin-top: 10px;
 }

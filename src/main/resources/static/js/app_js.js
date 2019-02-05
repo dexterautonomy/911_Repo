@@ -197,12 +197,14 @@ function appFunction()
             }
             else
             {
-                $('#info1').text("Your rank is lesser than the post rank").fadeToggle(500);
+                alert("Your rank is lesser than the post rank");
+                //$('#info1').text("Your rank is lesser than the post rank").fadeToggle(500);
             }
         }
         else
         {
-            $('#info1').text("Please log in").fadeToggle(500);
+            alert("Please log in");
+            //$('#info1').text("Please log in").fadeToggle(500);
         }
         return false;
     });
@@ -263,28 +265,33 @@ function appFunction()
                             }
                             else
                             {
-                                $('#info1').text('File size exceeded (4mb or less)');
+                                alert("File size exceeded (4mb or less)");
+                                //$('#info1').text('File size exceeded (4mb or less)');
                             }
                         }
                         else
                         {
-                            $('#info1').text('File format is not supported (suported formats: jpg, png, gif, webp)');
+                            alert("File format is not supported (suported formats: jpg, png, gif, webp)");
+                            //$('#info1').text('File format is not supported (suported formats: jpg, png, gif, webp)');
                         }
                     }
                     else
                     {
-                        $('#info1').text('File name is too long, must be 50 characters of less');
+                        alert("File name is too long, must be 50 characters of less");
+                        //$('#info1').text('File name is too long, must be 50 characters of less');
                     }
                 }
             }
             else
             {
-                $('#info1').text("Unfortunately, your rank just dropped below the post rank");
+                alert("Your rank is lesser than the post rank");
+                //$('#info1').text("Unfortunately, your rank just dropped below the post rank");
             }
         }
         else
         {
-            $('#info1').text("Session expired. Please log in");
+            alert("Session expired. Please log in");
+            //$('#info1').text("Session expired. Please log in");
         }
     });
     
@@ -421,12 +428,14 @@ function appFunction()
             }
             else
             {
-                $('#info1').text("Unfortunately, your rank just dropped below the post rank");
+                alert("Your rank is lesser than the post rank");
+                //$('#info1').text("Unfortunately, your rank just dropped below the post rank");
             }
         }
         else
         {
-            $('#info1').text("Session expired. Please log in");
+            alert("Session expired. Please log in");
+            //$('#info1').text("Session expired. Please log in");
         }
     });
     
@@ -509,7 +518,6 @@ function appFunction()
                                 success: function (data) {
                                     if(data)
                                     {
-                                        alert(kontent);
                                         $('#userContentTextArea').val(kontent + file);  //Update the textarea
                                     }
                                     $('#userSubmitButton').prop("disabled", false);
@@ -524,24 +532,28 @@ function appFunction()
                         }
                         else
                         {
-                            $('#info1').text('File size exceeded (4mb or less)');
+                            alert("File size exceeded (4mb or less)");
+                            //$('#info1').text('File size exceeded (4mb or less)');
                         }
                     }
                     else
                     {
-                        $('#info1').text('File format is not supported (suported formats: jpg, png, gif, webp)');
+                        alert("File format is not supported (suported formats: jpg, png, gif, webp)");
+                        //$('#info1').text('File format is not supported (suported formats: jpg, png, gif, webp)');
                     }
                 }
                 else
                 {
-                    $('#info1').text('File name is too long, must be 50 characters of less');
+                    alert("File name is too long, must be 50 characters of less");
+                    //$('#info1').text('File name is too long, must be 50 characters of less');
                 }
             }
         }
         else
         {
+            alert("Session expired. Please log in");
             //come back here later to finalise it
-            $('#info1').text("Session expired. Please log in");
+            //$('#info1').text("Session expired. Please log in");
         }
     });
     
@@ -670,28 +682,33 @@ function appFunction()
                                 }
                                 else
                                 {
-                                    $('#info1').text('File size exceeded (4mb or less)');
+                                    alert("File size exceeded (4mb or less)");
+                                    //$('#info1').text('File size exceeded (4mb or less)');
                                 }
                             }
                             else
                             {
-                                $('#info1').text('File format is not supported (suported formats: jpg, png, gif, webp)');
+                                alert("File format is not supported (suported formats: jpg, png, gif, webp)");
+                                //$('#info1').text('File format is not supported (suported formats: jpg, png, gif, webp)');
                             }
                         }
                         else
                         {
-                            $('#info1').text('File name is too long, must be 50 characters of less');
+                            alert("File name is too long, must be 50 characters of less");
+                            //$('#info1').text('File name is too long, must be 50 characters of less');
                         }
                     }
                 }
                 else
                 {
-                    $('#info1').text("Unfortunately, your rank just dropped below the post rank");
+                    alert("Your rank is lesser than the post rank");
+                    //$('#info1').text("Unfortunately, your rank just dropped below the post rank");
                 }
             }
             else
             {
-                $('#info1').text("Session expired. Please log in");
+                alert("Session expired. Please log in");
+                //$('#info1').text("Session expired. Please log in");
             }
         });
     });
@@ -736,7 +753,6 @@ function appFunction()
                                         $($('subcommentsOnTheGo')[index]).fadeOut(300);
                                         enableButtonsX();
                                         location.reload(true);
-                                        alert("posted");
                                     },
                                     error: function () {
                                         textArea.val(textAreaContent);  //Update the textarea
@@ -758,12 +774,14 @@ function appFunction()
                 }
                 else
                 {
-                    $('#info1').text("Unfortunately, your rank just dropped below the post rank");
+                    alert("Your rank is lesser than the post rank");
+                    //$('#info1').text("Unfortunately, your rank just dropped below the post rank");
                 }
             }
             else
             {
-                $('#info1').text("Session expired. Please log in");
+                alert("Session expired. Please log in");
+                //$('#info1').text("Session expired. Please log in");
             }
         });
     });
@@ -816,12 +834,14 @@ function appFunction()
                 }
                 else
                 {
-                    $('#info1').text("Your rank is lesser than the post rank");
+                    alert("Your rank is lesser than the post rank");
+                    //$('#info1').text("Your rank is lesser than the post rank");
                 }
             }
             else
             {
-                $('#info1').text("Session expired. Please log in");
+                alert("Session expired. Please log in");
+                //$('#info1').text("Session expired. Please log in");
             }
         });
     });
@@ -885,17 +905,20 @@ function appFunction()
                                     }
                                     else
                                     {
-                                        $('#info1').text('File size exceeded (4mb or less)');
+                                        alert("File size exceeded (4mb or less)");
+                                        //$('#info1').text('File size exceeded (4mb or less)');
                                     }
                                 }
                                 else
                                 {
-                                    $('#info1').text('File format is not supported (suported formats: jpg, png, gif, webp)');
+                                    alert("File format is not supported (suported formats: jpg, png, gif, webp)");
+                                    //$('#info1').text('File format is not supported (suported formats: jpg, png, gif, webp)');
                                 }
                             }
                             else
                             {
-                                $('#info1').text('File name is too long, must be 50 characters of less');
+                                alert("File name is too long, must be 50 characters of less");
+                                //$('#info1').text('File name is too long, must be 50 characters of less');
                             }
                         }
                     }
@@ -906,12 +929,14 @@ function appFunction()
                 }
                 else
                 {
-                    $('#info1').text("Unfortunately, your rank just dropped below the post rank");
+                    alert("Your rank is lesser than the post rank");
+                    //$('#info1').text("Unfortunately, your rank just dropped below the post rank");
                 }
             }
             else
             {
-                $('#info1').text("Session expired. Please log in");
+                alert("Session expired. Please log in");
+                //$('#info1').text("Session expired. Please log in");
             }
         });
     });
@@ -969,7 +994,6 @@ function appFunction()
                                                             $($('div.dynamicQuote')[index]).fadeOut(300);
                                                             enableButtonsY();
                                                             location.reload(true);
-                                                            alert("posted");
                                                         },
                                                         error: function () {
                                                             quotingTextArea.val(theQuotingText);  //Update the textarea
@@ -980,7 +1004,7 @@ function appFunction()
                                                 }
                                                 else
                                                 {
-                                                    alert("Please keep it concise");
+                                                    alert("Limit exceeded");
                                                 }
                                             }
                                             else
@@ -1020,12 +1044,14 @@ function appFunction()
                 }
                 else
                 {
-                    $('#info1').text("Unfortunately, your rank just dropped below the post rank");
+                    alert("Your rank is lesser than the post rank");
+                    //$('#info1').text("Unfortunately, your rank just dropped below the post rank");
                 }
             }
             else
             {
-                $('#info1').text("Session expired. Please log in");
+                alert("Session expired. Please log in");
+                //$('#info1').text("Session expired. Please log in");
             }
         });
     });
@@ -1075,7 +1101,8 @@ function appFunction()
             }
             else
             {
-                $('#info1').text("Session expired. Please log in");
+                alert("Session expired. Please log in");
+                //$('#info1').text("Session expired. Please log in");
             }
         });
     });
@@ -1136,17 +1163,20 @@ function appFunction()
                                 }
                                 else
                                 {
-                                    $('#info1').text('File size exceeded (4mb or less)');
+                                    alert("File size exceeded (4mb or less)");
+                                    //$('#info1').text('File size exceeded (4mb or less)');
                                 }
                             }
                             else
                             {
-                                $('#info1').text('File format is not supported (suported formats: jpg, png, gif, webp)');
+                                alert("File format is not supported (suported formats: jpg, png, gif, webp)");
+                                //$('#info1').text('File format is not supported (suported formats: jpg, png, gif, webp)');
                             }
                         }
                         else
                         {
-                            $('#info1').text('File name is too long, must be 50 characters of less');
+                            alert("File name is too long, must be 50 characters of less");
+                            //$('#info1').text('File name is too long, must be 50 characters of less');
                         }
                     }
                 }
@@ -1157,7 +1187,8 @@ function appFunction()
             }
             else
             {
-                $('#info1').text("Session expired. Please log in");
+                alert("Session expired. Please log in");
+                //$('#info1').text("Session expired. Please log in");
             }
         });
     });
@@ -1201,7 +1232,6 @@ function appFunction()
                                         $($('div.dynamicEditComment')[index]).fadeOut(300);
                                         enableButtonsZ();
                                         location.reload(true);
-                                        alert("posted");
                                     },
                                     error: function () {
                                         editTextArea.val(theEdit);  //Update the textarea
@@ -1212,7 +1242,7 @@ function appFunction()
                             }
                             else
                             {
-                                alert("Please keep it concise");
+                                alert("Limit reached");
                             }
                         }
                         else
@@ -1227,12 +1257,13 @@ function appFunction()
                 }
                 else
                 {
-                    alert("Edit cannot be empty");
+                    alert("Cannot be empty");
                 }
             }
             else
             {
-                $('#info1').text("Session expired. Please log in");
+                alert("Session expired. Please log in");
+                //$('#info1').text("Session expired. Please log in");
             }
         });
     });
@@ -1283,7 +1314,8 @@ function appFunction()
             }
             else
             {
-                $('#info1').text("Session expired. Please log in");
+                alert("Session expired. Please log in");
+                //$('#info1').text("Session expired. Please log in");
             }
         });
     });
@@ -1344,17 +1376,20 @@ function appFunction()
                                 }
                                 else
                                 {
-                                    $('#info1').text('File size exceeded (4mb or less)');
+                                    alert("File size exceeded (4mb or less)");
+                                    //$('#info1').text('File size exceeded (4mb or less)');
                                 }
                             }
                             else
                             {
-                                $('#info1').text('File format is not supported (suported formats: jpg, png, gif, webp)');
+                                alert("File format is not supported (suported formats: jpg, png, gif, webp)");
+                                //$('#info1').text('File format is not supported (suported formats: jpg, png, gif, webp)');
                             }
                         }
                         else
                         {
-                            $('#info1').text('File name is too long, must be 50 characters of less');
+                            alert("File name is too long, must be 50 characters of less");
+                            //$('#info1').text('File name is too long, must be 50 characters of less');
                         }
                     }
                 }
@@ -1365,7 +1400,8 @@ function appFunction()
             }
             else
             {
-                $('#info1').text("Session expired. Please log in");
+                alert("Session expired. Please log in");
+                //$('#info1').text("Session expired. Please log in");
             }
         });
     });
@@ -1409,7 +1445,6 @@ function appFunction()
                                         $($('div.dynamicEditSubComment')[index]).fadeOut(300);
                                         enableButtonsP();
                                         location.reload(true);
-                                        alert("posted");
                                     },
                                     error: function () {
                                         editTextArea.val(theEdit);  //Update the textarea
@@ -1420,7 +1455,7 @@ function appFunction()
                             }
                             else
                             {
-                                alert("Please keep it concise");
+                                alert("Limit reached");
                             }
                         }
                         else
@@ -1435,12 +1470,13 @@ function appFunction()
                 }
                 else
                 {
-                    alert("Edit cannot be empty");
+                    alert("Cannot be empty");
                 }
             }
             else
             {
-                $('#info1').text("Session expired. Please log in");
+                alert("Session expired. Please log in");
+                //$('#info1').text("Session expired. Please log in");
             }
         });
     });
@@ -1486,7 +1522,6 @@ function appFunction()
                                         $($('div.dynamicEditSubComment')[index]).fadeOut(300);
                                         enableButtonsP();
                                         location.reload(true);
-                                        alert("posted");
                                     },
                                     error: function () {
                                         editTextArea.val(theEdit);  //Update the textarea
@@ -1497,7 +1532,7 @@ function appFunction()
                             }
                             else
                             {
-                                alert("Please keep it concise");
+                                alert("Limit reached");
                             }
                         }
                         else
@@ -1512,12 +1547,13 @@ function appFunction()
                 }
                 else
                 {
-                    alert("Edit cannot be empty");
+                    alert("Cannot be empty");
                 }
             }
             else
             {
-                $('#info1').text("Session expired. Please log in");
+                alert("Session expired. Please log in");
+                //$('#info1').text("Session expired. Please log in");
             }
         });
     });
@@ -1536,4 +1572,44 @@ function appFunction()
         '</div></form>';
     }
     */
+   /*
+   $('#adminCommentOnPost').click(function (){
+        //$('div.adminSubcommentsOnTheGo').addClass('hidden');
+        //$('div.adminDynamicQuote').addClass('hidden');
+        //$('div.adminDynamicEditComment').addClass('hidden');
+            
+        if(checkSession())
+        {
+            $('#adminDynamicFormDiv').toggleClass('hidden');
+            //$('#kontent').val("");
+            //$('#info1').text("");
+        }
+        else
+        {
+            $('#infox1').text("Please log in").fadeToggle(500);
+        }
+        return false;
+    });
+    */
+   
+   $('a.adminCommentsOnTheGo').each(function (index){
+        $(this).click(function (ev){
+            ev.preventDefault();
+            
+            var selectSubComment = $('div.adminSubcommentsOnTheGo')[index];
+            $(selectSubComment).toggleClass('hidden');
+            
+            $('div.adminSubcommentsOnTheGo').each(function (e){
+                if(index !== e)
+                {
+                    var otherSubcommentsOnTheGoDivs = $('div.adminSubcommentsOnTheGo')[e];
+                    if($(otherSubcommentsOnTheGoDivs).is(':visible'))
+                    {
+                        $(otherSubcommentsOnTheGoDivs).addClass('hidden');
+                    }
+                }
+            });
+        });
+    });
+    
 }
