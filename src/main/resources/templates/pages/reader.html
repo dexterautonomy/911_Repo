@@ -55,18 +55,25 @@
                             <span id="pagePaginate" th:text="${pg}"></span>
                         </div>
                         
-                        <div id="dynamicFormDiv" class="hidden" style="margin: 0 auto; width: 90%">
+                        <div id="dynamicFormDiv" class="hidden mainComment">
                             <form id="dynamicForm" action="" enctype="multipart/form-data" method="POST">
                                 <div>
-                                    <textarea id="kontent" class="form-control" name="dynamicFormContent" placeholder="Comment" cols="20" rows="7" required="" maxlength="700"></textarea><br/>
+                                    <textarea id="kontent" class="form-control" name="dynamicFormContent" placeholder="Comment" cols="20" rows="6" required="" maxlength="700"></textarea><br/>
                                 </div>
                                 <div class="uploadbtnwrapper">
                                     <input id="addimg" class="btn btn-sm btn-default" name="dynamicFormFile" type="file" style="display: inline"/>
-                                    <button class="btn btn-sm btn-info" name="doesNothing"><span class="glyphicon glyphicon-cloud-upload" style="display: inline"></span> Attach Image</button>
-                                    <button id="smiley" class="btn btn-sm btn-primary" name="smiley" style="display: inline"><span class="glyphicon glyphicon-cloud-upload"></span> Smileys</button>
-                                    <button id="dynamicSubmit" class="btn btn-sm btn-success" style="display: inline"><span class=" glyphicon glyphicon-send"></span> Post</button>
+                                    <button class="btn btn-sm uploadImgButtonClone" name="doesNothing">
+                                        <img src='' th:src="@{'/files/system_img/gallery.jpg'}" alt=""/>
+                                    </button>
+                                    <button id="smiley" class="btn btn-sm smileyButtonClone" name="smiley">
+                                        <img src='' th:src="@{'/files/system_img/smiley.jpg'}" alt=""/>
+                                    </button>
+                                    <button id="dynamicSubmit" class="btn btn-sm btn-success" style="display: inline"> Post</button>
                                 </div>
                             </form>
+                        </div>
+                        <div id="smileyBlock" class="hidden mainComment">
+                            This is where smiley would come in...
                         </div>
                         
                         <div th:if="${cog} == null">
@@ -151,17 +158,25 @@
                                     </div>
                                     
                                     <div class="subcommentsOnTheGo hidden">
-                                        <form class="dynamicSubComment" action="" enctype="multipart/form-data">
+                                        <form class="dynamicSubComment mainCommentX" action="" enctype="multipart/form-data">
                                             <div>
                                                 <textarea class="form-control subCommentContent" name="dynamicFormContent" placeholder="Comment" cols="20" rows="5" required="" maxlength="700"></textarea><br/>
                                             </div>
                                             <div class="uploadbtnwrapper">
-                                                <input class="btn btn-sm btn-default subCommentAddimg" name="dynamicFormFile" type="file" style="display: inline"/>
-                                                <button class="btn btn-sm btn-info" name="doesNothing"><span class="glyphicon glyphicon-cloud-upload" style="display: inline"></span> Attach Image</button>
-                                                <button class="btn btn-sm btn-primary subCommentSmiley" name="smiley" style="display: inline"><span class="glyphicon glyphicon-cloud-upload"></span> Smileys</button>
-                                                <button class="btn btn-sm btn-success dynamicSubmitSubComment" style="display: inline"><span class=" glyphicon glyphicon-send"></span> Post</button>
+                                                <input class="btn btn-sm btn-default subCommentAddimg" name="dynamicFormFile" type="file"/>
+                                                <button class="btn btn-sm uploadImgButtonClone" name="doesNothing">
+                                                    <img src='' th:src="@{'/files/system_img/gallery.jpg'}" alt=""/>
+                                                </button>
+                                                <button class="btn btn-sm subCommentSmiley smileyButtonClone" name="smiley">
+                                                    <img src='' th:src="@{'/files/system_img/smiley.jpg'}" alt=""/>
+                                                </button>
+                                                <button class="btn btn-sm btn-success dynamicSubmitSubComment">Post</button>
                                             </div>
                                         </form>
+                                        
+                                        <div class="smileyBlockSubCommentOnTheGo mainCommentX hidden">
+                                            This is where the subcomment smiley block will come...
+                                        </div>
                                         
                                         <div class="media" th:each="subcom, counter : ${comment.subcomment}" th:if="${counter.index &lt; 10}">
                                             <div class="media-left media-top smallPadding">
@@ -205,18 +220,26 @@
                                                     </a>
                                                 </div>
                                                 
-                                                <div class="dynamicEditSubComment hidden"><br/>
+                                                <div class="dynamicEditSubComment hidden mainCommentX"><br/>
                                                     <form action="" enctype="multipart/form-data">
                                                         <div>
                                                             <textarea class="form-control editSubCommentContent" name="dynamicFormContent" placeholder="Comment" cols="20" rows="5" required="" maxlength="700"></textarea><br/>
                                                         </div>
                                                         <div class="uploadbtnwrapper">
                                                             <input class="btn btn-sm btn-default editSubCommentAddimg" name="dynamicFormFile" type="file" style="display: inline"/>
-                                                            <button class="btn btn-sm btn-info" name="doesNothing"><span class="glyphicon glyphicon-cloud-upload" style="display: inline"></span> Attach Image</button>
-                                                            <button class="btn btn-sm btn-primary editSubCommentSmiley" name="smiley" style="display: inline"><span class="glyphicon glyphicon-cloud-upload"></span> Smileys</button>
-                                                            <button class="btn btn-sm btn-success editDynamicSubmitSubComment" style="display: inline"><span class=" glyphicon glyphicon-send"></span> Post</button>
+                                                            <button class="btn btn-sm uploadImgButtonClone" name="doesNothing">
+                                                                <img src='' th:src="@{'/files/system_img/gallery.jpg'}" alt=""/>
+                                                            </button>
+                                                            <button class="btn btn-sm editSubCommentSmiley smileyButtonClone" name="smiley">
+                                                                <img src='' th:src="@{'/files/system_img/smiley.jpg'}" alt=""/>
+                                                            </button>
+                                                            <button class="btn btn-sm btn-success editDynamicSubmitSubComment"> Post</button>
                                                         </div>
                                                     </form>
+                                                </div>
+                                                
+                                                <div class="smileyBlockDynamicEditSubComment mainCommentX hidden">
+                                                    This is where the dynamicEditSubComment smiley block will come...
                                                 </div>
                                             </div>
                                         </div>
@@ -236,7 +259,7 @@
                                         </div>
                                     </div>
                                     
-                                    <div class="dynamicQuote hidden">
+                                    <div class="dynamicQuote hidden mainCommentX">
                                         <form action="" enctype="multipart/form-data">
                                             <div>
                                                 <textarea class="form-control quotedTextarea" name="dynamicFormContent" placeholder="Comment" cols="20" rows="5" required="" maxlength="700"></textarea><br/>
@@ -244,25 +267,41 @@
                                             </div>
                                             <div class="uploadbtnwrapper">
                                                 <input class="btn btn-sm btn-default quoteCommentAddimg" name="dynamicFormFile" type="file" style="display: inline"/>
-                                                <button class="btn btn-sm btn-info" name="doesNothing"><span class="glyphicon glyphicon-cloud-upload" style="display: inline"></span> Attach Image</button>
-                                                <button class="btn btn-sm btn-primary quoteCommentSmiley" name="smiley" style="display: inline"><span class="glyphicon glyphicon-cloud-upload"></span> Smileys</button>
-                                                <button class="btn btn-sm btn-success dynamicSubmitQuote" style="display: inline"><span class=" glyphicon glyphicon-send"></span> Post</button>
+                                                <button class="btn btn-sm uploadImgButtonClone" name="doesNothing">
+                                                    <img src='' th:src="@{'/files/system_img/gallery.jpg'}" alt=""/>
+                                                </button>
+                                                <button class="btn btn-sm quoteCommentSmiley smileyButtonClone" name="smiley">
+                                                    <img src='' th:src="@{'/files/system_img/smiley.jpg'}" alt=""/>
+                                                </button>
+                                                <button class="btn btn-sm btn-success dynamicSubmitQuote"> Post</button>
                                             </div>
                                         </form>
                                     </div>
                                     
-                                    <div class="dynamicEditComment hidden">
+                                    <div class="smileyBlockDynamicQuote mainCommentX hidden">
+                                        This is where the dynamicquote smiley block will come...
+                                    </div>
+                                    
+                                    <div class="dynamicEditComment hidden mainCommentX">
                                         <form action="" enctype="multipart/form-data">
                                             <div>
                                                 <textarea class="form-control editCommentContent" name="dynamicFormContent" placeholder="Comment" cols="20" rows="5" required="" maxlength="700"></textarea><br/>
                                             </div>
                                             <div class="uploadbtnwrapper">
                                                 <input class="btn btn-sm btn-default editCommentAddimg" name="dynamicFormFile" type="file" style="display: inline"/>
-                                                <button class="btn btn-sm btn-info" name="doesNothing"><span class="glyphicon glyphicon-cloud-upload" style="display: inline"></span> Attach Image</button>
-                                                <button class="btn btn-sm btn-primary editCommentSmiley" name="smiley" style="display: inline"><span class="glyphicon glyphicon-cloud-upload"></span> Smileys</button>
-                                                <button class="btn btn-sm btn-success editDynamicSubmitComment" style="display: inline"><span class=" glyphicon glyphicon-send"></span> Post</button>
+                                                <button class="btn btn-sm uploadImgButtonClone" name="doesNothing">
+                                                    <img src='' th:src="@{'/files/system_img/gallery.jpg'}" alt=""/>
+                                                </button>
+                                                <button class="btn btn-sm editCommentSmiley smileyButtonClone" name="smiley">
+                                                    <img src='' th:src="@{'/files/system_img/smiley.jpg'}" alt=""/>
+                                                </button>
+                                                <button class="btn btn-sm btn-success editDynamicSubmitComment"> Post</button>
                                             </div>
                                         </form>
+                                    </div>
+                                    
+                                    <div class="smileyBlockDynamicEditComment mainCommentX hidden">
+                                        This is where the dynamicEditComment smiley block will come...
                                     </div>
                                 </div>
                             </div>

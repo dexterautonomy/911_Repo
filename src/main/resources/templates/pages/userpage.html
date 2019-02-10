@@ -38,12 +38,15 @@
                         <form th:action="@{/user/postcontrol}" method="post" th:object="${postclass}" enctype="multipart/form-data">
                             <div class="form-group">
                                 <input class="form-control" th:field="*{title}" type="text" placeholder="Title" required="" maxlength="100"/><br/>
-                                <textarea id="userContentTextArea" class="form-control" th:field="*{content}" placeholder="Compose" cols="20" rows="10" required="" maxlength="10000"></textarea>
+                                <textarea id="userContentTextArea" class="form-control" th:field="*{content}" placeholder="Compose" cols="20" rows="7" required="" maxlength="10000"></textarea>
                             </div>
                             
                             <div class="form-group uploadbtnwrapper">
                                 <input id="userContentAddImg" class="btn btn-sm btn-default" style="display: inline;" th:field="*{contentFile}" type="file"/>
-                                <button class="btn btn-sm btn-info"  style="display: inline;" name="actionButton" value="add_img"><span class="glyphicon glyphicon-cloud-upload"></span> Attach Image</button>
+                                <button class="btn btn-sm uploadImgButtonClone" name="doesNothing">
+                                    <img src='' th:src="@{'/files/system_img/gallery.jpg'}" alt=""/>
+                                </button>
+                                <!--<button class="btn btn-sm btn-info"  style="display: inline;" name="actionButton" value="add_img"><span class="glyphicon glyphicon-cloud-upload"></span> Attach Image</button>-->
                             </div>
                             
                             <div id="coverImgOptional" class="form-group hidden">
@@ -84,7 +87,7 @@
                                     </label>
                                 </div><br/>
                                 
-                                <button id="userSubmitButton" class="btn btn-success btn-block" name="actionButton" value="post"><span class="glyphicon glyphicon-send"></span> Post</button>    
+                                <button id="userSubmitButton" class="btn btn-success btn-block" name="actionButton" value="post"> Post</button>    
                             </div>
                         </form>
                     </div><br/>	

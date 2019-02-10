@@ -69,13 +69,13 @@
                                             
                                             <div class="smallfont3" th:utext="${inboxreply.content}" style="color: black;"></div><br/>
                                             <div class="smallfont">
-                                                <a th:href="@{/user/inbox_rkt_(rid=${inboxreply.id}, pgn=${pgn}, akt=rep_)}">
+                                                <a class="gimmeChance" th:href="@{/user/inbox_rkt_(rid=${inboxreply.id}, pgn=${pgn}, akt=rep_)}">
                                                     <span style="color: blue;" class="glyphicon glyphicon-share-alt"></span>&nbsp;<span>Reply</span>&nbsp;&nbsp;&nbsp;
                                                 </a>
-                                                <a th:href="@{/user/inbox_rkt_(rid=${inboxreply.id}, pgn=${pgn}, akt=_viewmark_)}" th:if="${inboxreply.userRead} == '0'">
+                                                <a class="gimmeChance" th:href="@{/user/inbox_rkt_(rid=${inboxreply.id}, pgn=${pgn}, akt=_viewmark_)}" th:if="${inboxreply.userRead} == '0'">
                                                     <span style="color: black;" class="glyphicon glyphicon-eye-open"></span>&nbsp;<span>Mark</span>&nbsp;&nbsp;&nbsp;
                                                 </a>
-                                                <a th:href="@{/user/inbox_rkt_(rid=${inboxreply.id}, pgn=${pgn}, akt=dlt_Mz)}">
+                                                <a class="gimmeChance" th:href="@{/user/inbox_rkt_(rid=${inboxreply.id}, pgn=${pgn}, akt=dlt_Mz)}">
                                                     <span style="color: red;" class="glyphicon glyphicon-trash"></span>&nbsp;<span>Delete</span>
                                                 </a>
                                             </div>

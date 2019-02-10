@@ -2,7 +2,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title>TwikTok</title>
+        <title>9jaForum</title>
         <meta charset="UTF-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </head>
@@ -12,7 +12,7 @@
         <div th:fragment="headLogo">
             <div class="row">
                 <h1>
-                    <a><img class="appLogo" src="" th:src="@{/files/system_img/logo.jpg}" alt="onenaijalogo"/> TwikTok</a>
+                    <a>&nbsp;<img class="appLogo" src="" th:src="@{/files/system_img/logo.jpg}" alt="onenaijalogo"/> 9jaForum</a>
                 </h1>
             </div>
         </div>
@@ -109,7 +109,7 @@
             	        
                     <form th:action="@{/j_spring_security_logout}" method="POST">
                         <input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
-                        <button class="btn btn-link" name="xx" value="logout"><span class="glyphicon glyphicon-log-out"></span>&nbsp;&nbsp;Logout</button><br/><br/>
+                        <button class="btn btn-link noUnderLine" name="xx" value="logout"><span class="glyphicon glyphicon-log-out"></span>&nbsp;&nbsp;Logout</button><br/><br/>
                     </form>
                 </div>
             </div>

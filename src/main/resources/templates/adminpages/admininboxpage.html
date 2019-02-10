@@ -58,7 +58,7 @@
                                     </div>
                                     <div class="list-group-item-text justify smallfont3A" th:utext="${inbox.content}"></div>
                                     
-                                    <a class="smallfont" th:href="@{_admin_inbox_rkt_(mid=${inbox.id}, pgn=${pg}, akt=rep_)}">
+                                    <a class="smallfont maj gimmeChance" th:href="@{_admin_inbox_rkt_(mid=${inbox.id}, pgn=${pg}, akt=rep_)}">
                                         <span class="glyphicon glyphicon-share-alt"></span> Reply
                                     </a><br/>
                                     
@@ -71,10 +71,10 @@
                                                 <span class="postcomment_username">Admin</span>
                                                 <span class="postcomment_duration smallfont" th:text="${inboxreply.duration}"></span>
                                             </div>
-                                            <div class="smallfont3" th:utext="${inboxreply.content}" style="color: black;"></div><br/>
-                                            <div class="smallfont">
-                                                <a class="smallfont" th:href="@{_admin_inbox_rkt_(rid=${inboxreply.id}, pgn=${pg}, akt=dlt_Mzz)}">
-                                                    <span style="color: red;" class="glyphicon glyphicon-trash"></span>&nbsp;<span>Delete</span>
+                                            <div class="smallfont3" th:utext="${inboxreply.content}" style="color: black;"></div>
+                                            <div class="smallfont maj">
+                                                <a class="smallfont gimmeChance" th:href="@{_admin_inbox_rkt_(rid=${inboxreply.id}, pgn=${pg}, akt=dlt_Mzz)}">
+                                                    <span style="color: red;" class="glyphicon glyphicon-trash"></span> Delete
                                                 </a>
                                             </div>
                                         </div>

@@ -26,14 +26,14 @@ public class UserClass implements Serializable
     private int cpm = 0;
     @Column(name="cpc")
     private int cpc = 0;
-    @Column(name="appban")
-    private int appban = 0;
+    //@Column(name="appban")
+    //private int appban = 0;
     @Column(name="postban")
     private int postban = 0;
     @Column(name="commentban")
     private int commentban = 0;
-    @Column(name="active")
-    private int active = 1;
+    //@Column(name="active")
+    //private int active = 1;
     
     @Column(name="yellow_star")
     private Long yellowstar = 0l;
@@ -164,6 +164,7 @@ public class UserClass implements Serializable
     	return cpc;
     }
 	
+    /*
     public void setAppban(int value)
     {
     	this.appban = value;
@@ -173,7 +174,8 @@ public class UserClass implements Serializable
     {
     	return appban;
     }
-	
+    */
+    
     public void setPostban(int value)
     {
     	this.postban = value;
@@ -194,6 +196,7 @@ public class UserClass implements Serializable
     	return commentban;
     }
 	
+    /*
     public void setActive(int value)
     {
     	this.active = value;
@@ -203,7 +206,8 @@ public class UserClass implements Serializable
     {
     	return active;
     }
-	
+    */
+    
     public void setPix(String value)
     {
     	this.pix = value;

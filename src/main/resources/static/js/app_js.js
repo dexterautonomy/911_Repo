@@ -186,6 +186,16 @@ function appFunction()
         $('div.subcommentsOnTheGo').addClass('hidden');
         $('div.dynamicQuote').addClass('hidden');
         $('div.dynamicEditComment').addClass('hidden');
+        
+        $('div.smileyBlockSubCommentOnTheGo').addClass('hidden');
+        $('div.smileyBlockDynamicQuote').addClass('hidden');
+        $('div.smileyBlockDynamicEditComment').addClass('hidden');
+        $('div.smileyBlockDynamicEditSubComment').addClass('hidden');
+        $('#smileyBlock').addClass('hidden');
+        /*if($('#smileyBlock').is(':visible'))
+        {
+            $('#smileyBlock').addClass('hidden');
+        }*/
             
         if(checkSession())
         {
@@ -209,7 +219,11 @@ function appFunction()
         return false;
     });
     
-    $('#addimg').change(function (e){
+    $('#addimg').click(function (){
+        $('#smileyBlock').addClass('hidden');
+    });
+    
+    $('#addimg').change(function (){
         if(checkSession())
         {
             if(checkRank())
@@ -373,6 +387,7 @@ function appFunction()
     
     $('#dynamicSubmit').click(function (e){
         e.preventDefault();
+        $('#smileyBlock').addClass('hidden');
         if(checkSession())
         {
             if(checkRank())
@@ -566,6 +581,17 @@ function appFunction()
             $('div.dynamicEditSubComment').addClass('hidden');
             $('textarea.editSubCommentContent').val("");
             
+            $('#smileyBlock').addClass('hidden');
+            $('div.smileyBlockDynamicQuote').addClass('hidden');
+            $('div.smileyBlockDynamicEditComment').addClass('hidden');
+            $('div.smileyBlockDynamicEditSubComment').addClass('hidden');
+            $('div.smileyBlockSubCommentOnTheGo').addClass('hidden');
+            
+            /*if($($('div.smileyBlockSubCommentOnTheGo')[index]).is(':visible'))
+            {
+                $($('div.smileyBlockSubCommentOnTheGo')[index]).addClass('hidden');
+            }*/
+            
             if(checkSession())
             {
                 if(checkRank())
@@ -624,6 +650,9 @@ function appFunction()
         });
     });
     
+    $('input.subCommentAddimg').click(function(){
+        $('div.smileyBlockSubCommentOnTheGo').addClass('hidden');
+    });
     
     $('input.subCommentAddimg').each(function (index){
         $(this).change(function (){
@@ -716,6 +745,7 @@ function appFunction()
     $('button.dynamicSubmitSubComment').each(function (index){
         $(this).click(function (ev){
             ev.preventDefault();
+            $('div.smileyBlockSubCommentOnTheGo').addClass('hidden');
             if(checkSession())
             {
                 if(checkRank())
@@ -786,12 +816,26 @@ function appFunction()
         });
     });
     
+    $('input.quoteCommentAddimg').click(function(){
+        $('div.smileyBlockDynamicQuote').addClass('hidden');
+    });
+    
     $('a.quotesOnTheGo').each(function (index){
         $(this).click(function (ev){
             ev.preventDefault();
             $('#dynamicFormDiv').addClass('hidden');
             $('div.subcommentsOnTheGo').addClass('hidden');
             $('div.dynamicEditComment').addClass('hidden');
+            
+            $('#smileyBlock').addClass('hidden');
+            $('div.smileyBlockSubCommentOnTheGo').addClass('hidden');
+            $('div.smileyBlockDynamicEditComment').addClass('hidden');
+            $('div.smileyBlockDynamicEditSubComment').addClass('hidden');
+            $('div.smileyBlockDynamicQuote').addClass('hidden');
+            /*if($($('div.smileyBlockDynamicQuote')[index]).is(':visible'))
+            {
+                $($('div.smileyBlockDynamicQuote')[index]).addClass('hidden');
+            }*/
             
             if(checkSession())
             {
@@ -944,18 +988,20 @@ function appFunction()
     $('button.dynamicSubmitQuote').each(function (index){
         $(this).click(function (ev){
             ev.preventDefault();
+            $('div.smileyBlockDynamicQuote').addClass('hidden');
             if(checkSession())
             {
                 if(checkRank())
                 {
                     var quotingTextArea = $($('textarea.dynamicQuoteContent1')[index]);
-                    var originalCommentBeforQuoting = $($('div.commentContentForQuoting')[index]).text();
+                    var originalCommentBeforeQuoting = $($('div.commentContentForQuoting')[index]).text();
                     var textAreaQuotedContent = $($('textarea.quotedTextarea')[index]).val();
+                    
                     var theQuotingText = quotingTextArea.val();
                     
                     if(!textAreaQuotedContent.match(/^\s*$/))
                     {
-                        if(originalCommentBeforQuoting.includes(textAreaQuotedContent))
+                        //if(originalCommentBeforeQuoting.includes(textAreaQuotedContent))
                         {
                             if(checkTag(textAreaQuotedContent))
                             {
@@ -1032,10 +1078,10 @@ function appFunction()
                                 alert("Malformed text, <_ must be followed by _>");
                             }
                         }
-                        else
+                        /*else
                         {
                             alert("Quote is out of context");
-                        }
+                        }*/
                     }
                     else
                     {
@@ -1056,12 +1102,26 @@ function appFunction()
         });
     });
     
+    $('input.editCommentAddimg').click(function(){
+        $('div.smileyBlockDynamicEditComment').addClass('hidden');
+    });
+    
     $('a.editComOnTheGo').each(function (index){
         $(this).click(function (ev){
             ev.preventDefault();
             $('#dynamicFormDiv').addClass('hidden');
             $('div.subcommentsOnTheGo').addClass('hidden');
             $('div.dynamicQuote').addClass('hidden');
+            
+            $('#smileyBlock').addClass('hidden');
+            $('div.smileyBlockSubCommentOnTheGo').addClass('hidden');
+            $('div.smileyBlockDynamicQuote').addClass('hidden');
+            $('div.smileyBlockDynamicEditSubComment').addClass('hidden');
+            $('div.smileyBlockDynamicEditComment').addClass('hidden');
+            /*if($($('div.smileyBlockDynamicEditComment')[index]).is(':visible'))
+            {
+                $($('div.smileyBlockDynamicEditComment')[index]).addClass('hidden');
+            }*/
             
             if(checkSession())
             {
@@ -1196,6 +1256,7 @@ function appFunction()
     $('button.editDynamicSubmitComment').each(function (index){
         $(this).click(function (ev){
             ev.preventDefault();
+            $('div.smileyBlockDynamicEditComment').addClass('hidden');
             if(checkSession())
             {
                 var editTextArea = $($('textarea.editCommentContent')[index]);
@@ -1268,12 +1329,23 @@ function appFunction()
         });
     });
     
+    $('input.editSubCommentAddimg').click(function(){
+        $('div.smileyBlockDynamicEditSubComment').addClass('hidden');
+    });
+    
     $('a.editSubComOnTheGo').each(function (index){
         $(this).click(function (ev){
             ev.preventDefault();
             //$('#dynamicFormDiv').addClass('hidden');
             $('form.dynamicSubComment').addClass('hidden');
+            //$('div.smileyBlockDynamicEditSubComment').addClass('hidden');
+            
             //$('div.dynamicQuote').addClass('hidden');
+            $('#smileyBlock').addClass('hidden');
+            $('div.smileyBlockSubCommentOnTheGo').addClass('hidden');
+            $('div.smileyBlockDynamicQuote').addClass('hidden');
+            $('div.smileyBlockDynamicEditComment').addClass('hidden');
+            $('div.smileyBlockDynamicEditSubComment').addClass('hidden');
             
             if(checkSession())  //This is roundtrip
             {
@@ -1409,6 +1481,7 @@ function appFunction()
     $('button.editDynamicSubmitSubComment').each(function (index){
         $(this).click(function (ev){
             ev.preventDefault();
+            $('div.smileyBlockDynamicEditSubComment').addClass('hidden');
             if(checkSession())
             {
                 var editTextArea = $($('textarea.editSubCommentContent')[index]);
@@ -1484,6 +1557,7 @@ function appFunction()
     $('button.editDynamicSubmitSubCommentExtraSubcommentPage').each(function (index){
         $(this).click(function (ev){
             ev.preventDefault();
+            $('div.smileyBlockDynamicEditSubComment').addClass('hidden');
             if(checkSession())
             {
                 var editTextArea = $($('textarea.editSubCommentContent')[index]);
@@ -1612,4 +1686,80 @@ function appFunction()
         });
     });
     
+    //SMILEY_ZONE
+    
+    //dynamicFormDiv
+    $('#smiley').click(function(e){
+        e.preventDefault();
+        $('#smileyBlock').toggleClass('hidden');
+    });
+    
+    //subcommentsOnTheGo
+    $('button.subCommentSmiley').each(function (index){
+        $(this).click(function(e){
+            e.preventDefault();
+            $($('div.smileyBlockSubCommentOnTheGo')[index]).toggleClass('hidden');
+            
+            /*$('div.smileyBlockSubCommentOnTheGo').each(function(index2){
+                if(index !== index2)
+                {
+                    $($('div.smileyBlockSubCommentOnTheGo')[index2]).addClass('hidden');
+                }
+            });*/
+        });
+    });
+    
+    //dynamicQuote
+    $('button.quoteCommentSmiley').each(function (index){
+        $(this).click(function(e){
+            e.preventDefault();
+            $($('div.smileyBlockDynamicQuote')[index]).toggleClass('hidden');
+            
+            /*$('div.smileyBlockDynamicQuote').each(function(index2){
+                if(index !== index2)
+                {
+                    $($('div.smileyBlockDynamicQuote')[index2]).addClass('hidden');
+                }
+            });*/
+        });
+    });
+    
+    //dynamicEditComment
+    $('button.editCommentSmiley').each(function (index){
+        $(this).click(function(e){
+            e.preventDefault();
+            $($('div.smileyBlockDynamicEditComment')[index]).toggleClass('hidden');
+            
+            /*$('div.smileyBlockDynamicEditComment').each(function(index2){
+                if(index !== index2)
+                {
+                    $($('div.smileyBlockDynamicEditComment')[index2]).addClass('hidden');
+                }
+            });*/
+        });
+    });
+    
+    //dynamicEditSubComment
+    $('button.editSubCommentSmiley').each(function (index){
+        $(this).click(function(e){
+            e.preventDefault();
+            $($('div.smileyBlockDynamicEditSubComment')[index]).toggleClass('hidden');
+            
+            /*$('div.smileyBlockDynamicEditSubComment').each(function(index2){
+                if(index !== index2)
+                {
+                    $($('div.smileyBlockDynamicEditSubComment')[index2]).addClass('hidden');
+                }
+            });*/
+        });
+    });
 }
+
+
+/*
+$('#smileyBlock').addClass('hidden');
+        $('div.smileyBlockSubCommentOnTheGo').addClass('hidden');
+        $('div.smileyBlockDynamicQuote').addClass('hidden');
+        $('div.smileyBlockDynamicEditComment').addClass('hidden');
+        $('div.smileyBlockDynamicEditSubComment').addClass('hidden');
+        */

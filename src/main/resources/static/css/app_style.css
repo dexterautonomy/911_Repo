@@ -683,7 +683,7 @@ a:hover
 
 .smallPadding
 {
-    padding: 5px;
+    padding: 8px;
 }
 
 .mediaExposed
@@ -742,7 +742,44 @@ a:hover
     opacity: 0;
     font-size: 5px;
     padding: 10px 5px;
+    
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
 }
+
+.uploadImgButtonClone
+{
+    padding: 0px;
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    background-color: white;
+}
+
+.uploadImgButtonClone img
+{
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+}
+
+.smileyButtonClone
+{
+    border-radius: 50%;
+    padding: 0px;
+    width: 34px;
+    height: 34px;
+    background-color: white;
+}
+
+.smileyButtonClone img
+{
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+}
+
 
 .extracomments
 {
@@ -762,6 +799,11 @@ a.gimmeChance
 }
 
 a.noUnderLine
+{
+    text-decoration: none;
+}
+
+button.noUnderLine:hover
 {
     text-decoration: none;
 }
@@ -786,4 +828,15 @@ a.noUnderLine
 .marjTop
 {
     margin-top: 10px;
+}
+
+.mainComment
+{
+    margin: 0 auto;
+    width: 750px;
+}
+
+.mainCommentX
+{
+    width: 600px;
 }
