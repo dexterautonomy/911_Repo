@@ -668,7 +668,6 @@ public class HomeController
         
         return true;
     }
-    
             
     @RequestMapping("/ajaxDynamicComment")
     public String dynamicComment(@RequestParam("sent")String sent)

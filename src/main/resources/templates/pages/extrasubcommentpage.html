@@ -81,23 +81,24 @@
                                 <div class="dynamicEditSubComment hidden mainCommentX"><br/>
                                     <form action="" enctype="multipart/form-data">
                                         <div>
-                                            <textarea class="form-control editSubCommentContent" name="dynamicFormContent" placeholder="Comment" cols="20" rows="5" required="" maxlength="700"></textarea><br/>
+                                            <!--<textarea class="form-control editSubCommentContent" name="dynamicFormContent" placeholder="Comment" cols="20" rows="5" required="" maxlength="700"></textarea><br/>-->
+                                            <div class="editableDiv2 editSubCommentContent" contenteditable="true"></div>
                                         </div>
                                         <div class="uploadbtnwrapper">
                                             <input class="btn btn-sm btn-default editSubCommentAddimg" name="dynamicFormFile" type="file" style="display: inline"/>
                                             <button class="btn btn-sm uploadImgButtonClone" name="doesNothing">
-                                                <img src='' th:src="@{'/files/system_img/gallery.jpg'}" alt=""/>
+                                                <img src='' th:src="@{'/files/system_img/gallery.png'}" alt=""/>
                                             </button>
                                             <button class="btn btn-sm editSubCommentSmiley smileyButtonClone" name="smiley">
-                                                <img src='' th:src="@{'/files/system_img/smiley.jpg'}" alt=""/>
+                                                <img src='' th:src="@{'/files/system_img/smiley.png'}" alt=""/>
                                             </button>
                                             <button class="btn btn-sm btn-success editDynamicSubmitSubCommentExtraSubcommentPage"> Post</button>
+                                            
+                                            <div class="smileyBlockDynamicEditSubComment mainCommentX1 hidden sml">
+                                                This is where the dynamicEditSubComment smiley block will come...
+                                            </div>
                                         </div>
                                     </form>
-                                </div>
-                                
-                                <div class="smileyBlockDynamicEditSubComment mainCommentX hidden">
-                                    This is where the dynamicEditSubComment smiley block will come...
                                 </div>
                             </div>
                         </div>

@@ -743,7 +743,7 @@ a:hover
     font-size: 5px;
     padding: 10px 5px;
     
-    border-radius: 50%;
+    border-radius: 0px;
     width: 34px;
     height: 34px;
 }
@@ -759,7 +759,7 @@ a:hover
 
 .uploadImgButtonClone img
 {
-    border-radius: 50%;
+    border-radius: 5px;
     width: 32px;
     height: 32px;
 }
@@ -771,6 +771,11 @@ a:hover
     width: 34px;
     height: 34px;
     background-color: white;
+}
+
+.smileyButtonClone:focus
+{
+    outline: none;
 }
 
 .smileyButtonClone img
@@ -833,10 +838,71 @@ button.noUnderLine:hover
 .mainComment
 {
     margin: 0 auto;
-    width: 750px;
+    width: 90%;
 }
 
 .mainCommentX
 {
-    width: 600px;
+    width: 100%;
+}
+
+.mainCommentX1
+{
+    margin-top: 7px;
+    padding: 3px;
+    border: 2px solid rgb(245, 245, 245);
+    border-radius: 20px;
+}
+
+.editableDiv1
+{
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    min-height: 80px;
+    outline: none;
+}
+
+.editableDiv1:focus
+{
+    border-color: #66afe9;
+    outline: 0;
+   -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+}
+
+.contentImgDimension
+{
+    width: 250px;
+    height: 250px;
+}
+
+img.smileyImgDimension
+{
+    width: 20px;
+    display: inline-block;
+}
+
+.editableDiv2
+{
+    padding: 9px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    min-height: 80px;
+    outline: none;
+}
+
+.editableDiv2:focus
+{
+    border-color: #66afe9;
+    outline: 0;
+   -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+}
+
+div.sml span
+{
+    cursor: pointer;
 }

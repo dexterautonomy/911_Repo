@@ -202,7 +202,8 @@ function appFunction()
             if(checkRank())
             {
                 $('#dynamicFormDiv').toggleClass('hidden');
-                $('#kontent').val("");
+                //$('#kontent').val("");
+                $('#kontent').text("");
                 $('#info1').text("");
             }
             else
@@ -228,7 +229,9 @@ function appFunction()
         {
             if(checkRank())
             {
-                var kontent = $('#kontent').val();  //content of the textarea
+                //var kontent = $('#kontent').val();  //content of the textarea
+                //var kontent = $('#kontent').text();  //content of the textarea
+                
                 var fileName = $(this).val();
                 var fakePath = 'C:\\fakepath\\';  //fakepath that comes with the filename
                 if(fileName !== "")  //If a file was chosen at all
@@ -246,8 +249,8 @@ function appFunction()
                             if(imgFile.size <= 4000000)
                             {
                                 $('#info1').text('');
-                                //var form = $('#dynamicForm');
                                 var file = '<_'+ fileName +'_>';  //you know this already
+                                //var file = "<br/><img alt='content image' class='contentImgDimension' src='/9jaforum/files/dist_img/"+ fileName +"'/><br/>";  //you know this already
             
                                 //Now this is where Ajax is used to send the image to the server endpoint
                                 disableButtons();
@@ -267,12 +270,13 @@ function appFunction()
                                     success: function (data) {
                                         if(data)
                                         {
-                                            $('#kontent').val(kontent + file);  //Update the textarea
+                                            //$('#kontent').val(kontent + file);  //Update the textarea
+                                            $('#kontent').append(file);  //Update the textarea
                                         }
                                         enableButtons();
                                     },
-                                    error: function (e) {
-                                        $('#kontent').val(kontent);  //Update the textarea
+                                    error: function () {
+                                        //$('#kontent').val(kontent);  //Update the textarea
                                         enableButtons();
                                     }
                                 });
@@ -381,7 +385,7 @@ function appFunction()
     
     
     //Clear info on focus in of textarea
-    $('#kontent').focusin(function (e){
+    $('#kontent').focusin(function (){
         $('#info1').text("");
     });
     
@@ -392,7 +396,10 @@ function appFunction()
         {
             if(checkRank())
             {
-                var kontent = $('#kontent').val();
+                //var kontent = $('#kontent').val();
+                var kontent = $('#kontent').html();
+                kontent = replaceEvery(kontent, "&lt;", "<");
+                kontent = replaceEvery(kontent, "&gt;", ">");
                 
                 if(!kontent.match(/^\s*$/))
                 {
@@ -403,7 +410,8 @@ function appFunction()
                             disableButtons();
                     
                             var sentContent = {
-                                content: $('#kontent').val(),
+                                //content: $('#kontent').val(),
+                                content: kontent,
                                 pos: $('#postid').text(),
                                 title: $('#title').text(),
                                 page: $('#commentPaginate').text(),
@@ -419,13 +427,15 @@ function appFunction()
                                 cache: false,
                                 timeout: 600000,
                                 success: function () {
-                                    $('#kontent').val("");  //Update the textarea
+                                    //$('#kontent').val("");  //Update the textarea
+                                    $('#kontent').text("");  //Update the textarea
                                     $('#dynamicFormDiv').fadeOut(300);
                                     enableButtons();
                                     location.reload(true);
                                 },
-                                error: function (e) {
-                                    $('#kontent').val(kontent);  //Update the textarea
+                                error: function () {
+                                    //$('#kontent').val(kontent);  //Update the textarea
+                                    //$('#kontent').append(kontent);  //Update the textarea
                                     enableButtons();
                                 }                    
                             });
@@ -579,7 +589,8 @@ function appFunction()
             $('div.dynamicQuote').addClass('hidden');
             $('div.dynamicEditComment').addClass('hidden');
             $('div.dynamicEditSubComment').addClass('hidden');
-            $('textarea.editSubCommentContent').val("");
+            //$('textarea.editSubCommentContent').val("");
+            $('div.editSubCommentContent').text("");
             
             $('#smileyBlock').addClass('hidden');
             $('div.smileyBlockDynamicQuote').addClass('hidden');
@@ -599,7 +610,8 @@ function appFunction()
                     $('form.dynamicSubComment').removeClass('hidden');
                     var selectSubComment = $('div.subcommentsOnTheGo')[index];
                     $(selectSubComment).toggleClass('hidden');
-                    $('textarea.subCommentContent').val("");
+                    //$('textarea.subCommentContent').val("");
+                    $('div.subCommentContent').text("");
             
                     $('div.subcommentsOnTheGo').each(function (e){
                         if(index !== e)
@@ -661,7 +673,10 @@ function appFunction()
                 if(checkRank())
                 {
                     var textArea = $($('textarea.subCommentContent')[index]);
-                    var textAreaContent = textArea.val();
+                    //var textArea = $($('div.subCommentContent')[index]);
+                    //var textAreaContent = textArea.val();
+                    //var textAreaContent = textArea.html();
+                    
                     var fileName = $($('input.subCommentAddimg')[index]).val();
                     var fakePath = 'C:\\fakepath\\';
                     if(fileName !== "")
@@ -699,12 +714,13 @@ function appFunction()
                                         success: function (data) {
                                             if(data)
                                             {
-                                                textArea.val(textAreaContent + file);
+                                                //textArea.val(textAreaContent + file);
+                                                textArea.append(file);
                                             }
                                             enableButtonsX();
                                         },
                                         error: function () {
-                                            textArea.val(textAreaContent);
+                                            //textArea.val(textAreaContent);
                                             enableButtonsX();
                                         }
                                     });
@@ -750,8 +766,12 @@ function appFunction()
             {
                 if(checkRank())
                 {
-                    var textArea = $($('textarea.subCommentContent')[index]);
-                    var textAreaContent = textArea.val();
+                    //var textArea = $($('textarea.subCommentContent')[index]);
+                    var textArea = $($('div.subCommentContent')[index]);
+                    //var textAreaContent = textArea.val();
+                    var textAreaContent = textArea.html();
+                    textAreaContent = replaceEvery(textAreaContent, "&lt;", "<");
+                    textAreaContent = replaceEvery(textAreaContent, "&gt;", ">");
                 
                     if(!textAreaContent.match(/^\s*$/))
                     {
@@ -779,13 +799,14 @@ function appFunction()
                                     cache: false,
                                     timeout: 600000,
                                     success: function () {
-                                        textArea.val("");
+                                        //textArea.val("");
+                                        textArea.text("");
                                         $($('subcommentsOnTheGo')[index]).fadeOut(300);
                                         enableButtonsX();
                                         location.reload(true);
                                     },
                                     error: function () {
-                                        textArea.val(textAreaContent);  //Update the textarea
+                                        //textArea.val(textAreaContent);  //Update the textarea
                                         enableButtonsX();
                                         alert("error");
                                     }                    
@@ -832,6 +853,8 @@ function appFunction()
             $('div.smileyBlockDynamicEditComment').addClass('hidden');
             $('div.smileyBlockDynamicEditSubComment').addClass('hidden');
             $('div.smileyBlockDynamicQuote').addClass('hidden');
+            $('div.dynamicQuoteContent1').text('');
+            
             /*if($($('div.smileyBlockDynamicQuote')[index]).is(':visible'))
             {
                 $($('div.smileyBlockDynamicQuote')[index]).addClass('hidden');
@@ -857,7 +880,8 @@ function appFunction()
                         cache: false,
                         timeout: 600000,
                         success: function (data) {
-                            $($('textarea.quotedTextarea')[index]).val(data);
+                            //$($('textarea.quotedTextarea')[index]).val(data);
+                            $($('div.quotedTextarea')[index]).text("").append(data);
                             enableButtonsY();
                         },
                         error: function () {
@@ -896,9 +920,11 @@ function appFunction()
             {
                 if(checkRank())
                 {
-                    var textArea = $($('textarea.dynamicQuoteContent1')[index]);
-                    var textAreaContent = textArea.val();
-                    if(textAreaContent.length < 646) // so 646 in Javascript is html's 700 character length
+                    //var textArea = $($('textarea.dynamicQuoteContent1')[index]);
+                    var textArea = $($('div.dynamicQuoteContent1')[index]);
+                    //var textAreaContent = textArea.val();
+                    //var textAreaContent = textArea.text();
+                    //if(textAreaContent.length < 646) // so 646 in Javascript is html's 700 character length
                     {
                         var fileName = $($('input.quoteCommentAddimg')[index]).val();
                         var fakePath = 'C:\\fakepath\\';
@@ -937,12 +963,13 @@ function appFunction()
                                             success: function (data) {
                                                 if(data)
                                                 {
-                                                    textArea.val(textAreaContent + file);
+                                                    //textArea.val(textAreaContent + file);
+                                                    textArea.append(file);
                                                 }
                                                 enableButtonsY();
                                             },
                                             error: function () {
-                                                textArea.val(textAreaContent);
+                                                //textArea.val(textAreaContent);
                                                 enableButtonsY();
                                             }
                                         });
@@ -966,10 +993,10 @@ function appFunction()
                             }
                         }
                     }
-                    else
+                    /*else
                     {
                         alert("Limit reached");
-                    }
+                    }*/
                 }
                 else
                 {
@@ -993,11 +1020,23 @@ function appFunction()
             {
                 if(checkRank())
                 {
-                    var quotingTextArea = $($('textarea.dynamicQuoteContent1')[index]);
-                    var originalCommentBeforeQuoting = $($('div.commentContentForQuoting')[index]).text();
-                    var textAreaQuotedContent = $($('textarea.quotedTextarea')[index]).val();
+                    //var quotingTextArea = $($('textarea.dynamicQuoteContent1')[index]);
+                    var quotingTextArea = $($('div.dynamicQuoteContent1')[index]);
+                    var originalCommentBeforeQuoting = $($('div.commentContentForQuoting')[index]).html();
                     
-                    var theQuotingText = quotingTextArea.val();
+                    //originalCommentBeforeQuoting = replaceEvery(originalCommentBeforeQuoting, "&lt;", "<");
+                    //originalCommentBeforeQuoting = replaceEvery(originalCommentBeforeQuoting, "&gt;", ">");
+                    
+                    //var textAreaQuotedContent = $($('textarea.quotedTextarea')[index]).val();
+                    var textAreaQuotedContent = $($('div.quotedTextarea')[index]).html();
+                    
+                    //textAreaQuotedContent = replaceEvery(textAreaQuotedContent, "&lt;", "<");
+                    //textAreaQuotedContent = replaceEvery(textAreaQuotedContent, "&gt;", ">");
+                    
+                    //var theQuotingText = quotingTextArea.val();
+                    var theQuotingText = quotingTextArea.html();
+                    theQuotingText = replaceEvery(theQuotingText, "&lt;", "<");
+                    theQuotingText = replaceEvery(theQuotingText, "&gt;", ">");
                     
                     if(!textAreaQuotedContent.match(/^\s*$/))
                     {
@@ -1036,13 +1075,14 @@ function appFunction()
                                                         cache: false,
                                                         timeout: 600000,
                                                         success: function () {
-                                                            quotingTextArea.val("");
+                                                            //quotingTextArea.val("");
+                                                            quotingTextArea.text("");
                                                             $($('div.dynamicQuote')[index]).fadeOut(300);
                                                             enableButtonsY();
                                                             location.reload(true);
                                                         },
                                                         error: function () {
-                                                            quotingTextArea.val(theQuotingText);  //Update the textarea
+                                                            //quotingTextArea.val(theQuotingText);  //Update the textarea
                                                             enableButtonsY();
                                                             alert("Not posted");
                                                         }
@@ -1140,7 +1180,8 @@ function appFunction()
                     cache: false,
                     timeout: 600000,
                     success: function (data) {
-                        $($('textarea.editCommentContent')[index]).val(data);
+                        //$($('textarea.editCommentContent')[index]).val(data);
+                        $($('div.editCommentContent')[index]).text("").append(data);
                         enableButtonsZ();
                     },
                     error: function () {
@@ -1171,9 +1212,10 @@ function appFunction()
         $(this).change(function (){
             if(checkSession())
             {
-                var textArea = $($('textarea.editCommentContent')[index]);
-                var textAreaContent = textArea.val();
-                if(textAreaContent.length < 646) // so 646 in Javascript is html's 700 character length
+                //var textArea = $($('textarea.editCommentContent')[index]);
+                var textArea = $($('div.editCommentContent')[index]);
+                //var textAreaContent = textArea.val();
+                //if(textAreaContent.length < 646) // so 646 in Javascript is html's 700 character length
                 {
                     var fileName = $($('input.editCommentAddimg')[index]).val();
                     var fakePath = 'C:\\fakepath\\';
@@ -1211,12 +1253,13 @@ function appFunction()
                                         success: function (data) {
                                             if(data)
                                             {
-                                                textArea.val(textAreaContent + file);
+                                                //textArea.val(textAreaContent + file);
+                                                textArea.append(file);
                                             }
                                             enableButtonsZ();
                                         },
                                         error: function () {
-                                            textArea.val(textAreaContent);
+                                            //textArea.val(textAreaContent);
                                             enableButtonsZ();
                                         }
                                     });
@@ -1240,10 +1283,10 @@ function appFunction()
                         }
                     }
                 }
-                else
+                /*else
                 {
                     alert("Limit reached");
-                }
+                }*/
             }
             else
             {
@@ -1259,8 +1302,12 @@ function appFunction()
             $('div.smileyBlockDynamicEditComment').addClass('hidden');
             if(checkSession())
             {
-                var editTextArea = $($('textarea.editCommentContent')[index]);
-                var theEdit = editTextArea.val();
+                //var editTextArea = $($('textarea.editCommentContent')[index]);
+                var editTextArea = $($('div.editCommentContent')[index]);
+                //var theEdit = editTextArea.val();
+                var theEdit = editTextArea.html();
+                theEdit = replaceEvery(theEdit, "&lt;", "<");
+                theEdit = replaceEvery(theEdit, "&gt;", ">");
                     
                 if(!theEdit.match(/^\s*$/))
                 {
@@ -1268,7 +1315,7 @@ function appFunction()
                     {
                         if(checkScript(theEdit))
                         {
-                            if(theEdit.length < 801)
+                            //if(theEdit.length < 801)
                             {
                                 disableButtonsZ();
                                 var sentContent = {
@@ -1289,22 +1336,23 @@ function appFunction()
                                     cache: false,
                                     timeout: 600000,
                                     success: function () {
-                                        editTextArea.val("");
+                                        //editTextArea.val("");
+                                        editTextArea.text("");
                                         $($('div.dynamicEditComment')[index]).fadeOut(300);
                                         enableButtonsZ();
                                         location.reload(true);
                                     },
                                     error: function () {
-                                        editTextArea.val(theEdit);  //Update the textarea
+                                        //editTextArea.val(theEdit);  //Update the textarea
                                         enableButtonsZ();
                                         alert("Not posted");
                                     }
                                 });
                             }
-                            else
+                            /*else
                             {
                                 alert("Limit reached");
-                            }
+                            }*/
                         }
                         else
                         {
@@ -1364,7 +1412,8 @@ function appFunction()
                     cache: false,
                     timeout: 600000,
                     success: function (data) {
-                        $($('textarea.editSubCommentContent')[index]).val(data);
+                        //$($('textarea.editSubCommentContent')[index]).val(data);
+                        $($('div.editSubCommentContent')[index]).text("").append(data);
                         enableButtonsP();
                     },
                     error: function () {
@@ -1378,7 +1427,8 @@ function appFunction()
                         var otherQuoteOnTheGoDivs = $('div.dynamicEditSubComment')[e];
                         if($(otherQuoteOnTheGoDivs).is(':visible'))
                         {
-                            $($('textarea.editSubCommentContent')[e]).val('');
+                            //$($('textarea.editSubCommentContent')[e]).val('');
+                            $($('div.editSubCommentContent')[e]).text('');
                             $(otherQuoteOnTheGoDivs).addClass('hidden');
                         }
                     }
@@ -1396,9 +1446,12 @@ function appFunction()
         $(this).change(function (){
             if(checkSession())
             {
-                var textArea = $($('textarea.editSubCommentContent')[index]);
-                var textAreaContent = textArea.val();
-                if(textAreaContent.length < 646) // so 646 in Javascript is html's 700 character length
+                //var textArea = $($('textarea.editSubCommentContent')[index]);
+                var textArea = $($('div.editSubCommentContent')[index]);
+                //var textAreaContent = textArea.val();
+                //var textAreaContent = textArea.text();
+                
+                //if(textAreaContent.length < 646) // so 646 in Javascript is html's 700 character length
                 {
                     var fileName = $($('input.editSubCommentAddimg')[index]).val();
                     var fakePath = 'C:\\fakepath\\';
@@ -1436,12 +1489,13 @@ function appFunction()
                                         success: function (data) {
                                             if(data)
                                             {
-                                                textArea.val(textAreaContent + file);
+                                                //textArea.val(textAreaContent + file);
+                                                textArea.append(file);
                                             }
                                             enableButtonsP();
                                         },
                                         error: function () {
-                                            textArea.val(textAreaContent);
+                                            //textArea.val(textAreaContent);
                                             enableButtonsP();
                                         }
                                     });
@@ -1465,10 +1519,10 @@ function appFunction()
                         }
                     }
                 }
-                else
+                /*else
                 {
                     alert("Limit reached");
-                }
+                }*/
             }
             else
             {
@@ -1484,8 +1538,12 @@ function appFunction()
             $('div.smileyBlockDynamicEditSubComment').addClass('hidden');
             if(checkSession())
             {
-                var editTextArea = $($('textarea.editSubCommentContent')[index]);
-                var theEdit = editTextArea.val();
+                //var editTextArea = $($('textarea.editSubCommentContent')[index]);
+                var editTextArea = $($('div.editSubCommentContent')[index]);
+                //var theEdit = editTextArea.val();
+                var theEdit = editTextArea.html();
+                theEdit = replaceEvery(theEdit, "&lt;", "<");
+                theEdit = replaceEvery(theEdit, "&gt;", ">");
                     
                 if(!theEdit.match(/^\s*$/))
                 {
@@ -1493,7 +1551,7 @@ function appFunction()
                     {
                         if(checkScript(theEdit))
                         {
-                            if(theEdit.length < 801)
+                            //if(theEdit.length < 801)
                             {
                                 disableButtonsP();
                                 var sentContent = {
@@ -1514,22 +1572,23 @@ function appFunction()
                                     cache: false,
                                     timeout: 600000,
                                     success: function () {
-                                        editTextArea.val("");
+                                        //editTextArea.val("");
+                                        editTextArea.text("");
                                         $($('div.dynamicEditSubComment')[index]).fadeOut(300);
                                         enableButtonsP();
                                         location.reload(true);
                                     },
                                     error: function () {
-                                        editTextArea.val(theEdit);  //Update the textarea
+                                        //editTextArea.val(theEdit);  //Update the textarea
                                         enableButtonsP();
                                         alert("Not posted");
                                     }
                                 });
                             }
-                            else
+                            /*else
                             {
                                 alert("Limit reached");
-                            }
+                            }*/
                         }
                         else
                         {
@@ -1560,16 +1619,20 @@ function appFunction()
             $('div.smileyBlockDynamicEditSubComment').addClass('hidden');
             if(checkSession())
             {
-                var editTextArea = $($('textarea.editSubCommentContent')[index]);
-                var theEdit = editTextArea.val();
-                    
+                //var editTextArea = $($('textarea.editSubCommentContent')[index]);
+                var editTextArea = $($('div.editSubCommentContent')[index]);
+                //var theEdit = editTextArea.val();
+                var theEdit = editTextArea.html();
+                theEdit = replaceEvery(theEdit, "&lt;", "<");
+                theEdit = replaceEvery(theEdit, "&gt;", ">");
+                
                 if(!theEdit.match(/^\s*$/))
                 {
                     if(checkTag(theEdit))
                     {
                         if(checkScript(theEdit))
                         {
-                            if(theEdit.length < 801)
+                            //if(theEdit.length < 801)
                             {
                                 disableButtonsP();
                                 var sentContent = {
@@ -1592,22 +1655,23 @@ function appFunction()
                                     cache: false,
                                     timeout: 600000,
                                     success: function () {
-                                        editTextArea.val("");
+                                        //editTextArea.val("");
+                                        editTextArea.text("");
                                         $($('div.dynamicEditSubComment')[index]).fadeOut(300);
                                         enableButtonsP();
                                         location.reload(true);
                                     },
                                     error: function () {
-                                        editTextArea.val(theEdit);  //Update the textarea
+                                        //editTextArea.val(theEdit);  //Update the textarea
                                         enableButtonsP();
                                         alert("Not posted");
                                     }
                                 });
                             }
-                            else
+                            /*else
                             {
                                 alert("Limit reached");
-                            }
+                            }*/
                         }
                         else
                         {
@@ -1753,6 +1817,27 @@ function appFunction()
             });*/
         });
     });
+    
+    function replaceEvery(mainString, searchIt, replaceIt)
+    {
+        return mainString.replace(new RegExp(searchIt, 'g'), replaceIt);
+    }
+    
+    
+    
+    
+    
+    
+    
+    $('#xxd').click(function (){
+        $('#kontent').append('<img class="smileyImgDimension" src="https://cdn.okccdn.com/media/img/emojis/apple/1F60C.png"/>');
+    });
+    
+    $('span.xxd1').each(function(index){
+        $(this).click(function (){
+        $($('div.subCommentContent')[index]).append('<img class="smileyImgDimension" src="https://cdn.okccdn.com/media/img/emojis/apple/1F60C.png"/>');
+    });
+    });
 }
 
 
@@ -1762,4 +1847,13 @@ $('#smileyBlock').addClass('hidden');
         $('div.smileyBlockDynamicQuote').addClass('hidden');
         $('div.smileyBlockDynamicEditComment').addClass('hidden');
         $('div.smileyBlockDynamicEditSubComment').addClass('hidden');
-        */
+
+
+*
+*
+        kontent = replaceEvery(kontent, "&lt;", "<");
+        kontent = replaceEvery(kontent, "&gt;", ">");
+*
+*
+**/
+       
