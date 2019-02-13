@@ -35,11 +35,13 @@ div.col-sm-10
     text-align: justify;
 }
 
+/*
 .justify img
 {
     display: block;
     margin: 0 auto;
 }
+*/
 
 .title
 {
@@ -171,6 +173,7 @@ div.commentBck2 a:hover
 
 .quotedCover
 {
+    margin-bottom: 4px;
     overflow: auto;
     background-color: rgb(255,215,255);
     padding: 13px;
@@ -488,10 +491,21 @@ a.unreadFollow:hover
     border-radius: 50%;
 }
 
+div.authorImgDiv
+{
+    width: 65px;
+    text-align: center;
+}
+
+div.authorImgDiv a div
+{
+    margin-top: 5px;
+}
+
 .readerImageAuthor
 {
-    width: 70px;
-    height: 70px; 
+    width: 60px;
+    height: 60px; 
     border-radius: 50%;
 }
 
@@ -773,6 +787,14 @@ a:hover
     background-color: white;
 }
 
+span.realSmiley
+{
+    width: 33px;
+    height: 33px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
 .smileyButtonClone:focus
 {
     outline: none;
@@ -781,8 +803,8 @@ a:hover
 .smileyButtonClone img
 {
     border-radius: 50%;
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
 }
 
 
@@ -799,7 +821,7 @@ a:hover
 
 a.gimmeChance
 {
-    margin-right: 15px;
+    margin-right: 30px;
     text-decoration: none;
 }
 
@@ -848,17 +870,20 @@ button.noUnderLine:hover
 
 .mainCommentX1
 {
+    overflow-y: auto;
     margin-top: 7px;
-    padding: 3px;
-    border: 2px solid rgb(245, 245, 245);
-    border-radius: 20px;
+    padding: 6px;
+    border: 2px solid rgb(244, 244, 244);
+    border-radius: 3px;
+    text-align: justify;
+    max-height: 100px;
 }
 
 .editableDiv1
 {
-    padding: 10px;
+    padding: 9px;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 10px;
     margin-bottom: 5px;
     min-height: 80px;
     outline: none;
@@ -872,23 +897,11 @@ button.noUnderLine:hover
     box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
 }
 
-.contentImgDimension
-{
-    width: 250px;
-    height: 250px;
-}
-
-img.smileyImgDimension
-{
-    width: 20px;
-    display: inline-block;
-}
-
 .editableDiv2
 {
     padding: 9px;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 10px;
     margin-bottom: 5px;
     min-height: 80px;
     outline: none;
@@ -902,7 +915,55 @@ img.smileyImgDimension
     box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
 }
 
+.contentImgDimension
+{
+    width: 50%;
+    height: 50%;
+    display: block;
+    margin: 0 auto;
+    padding: 5px;
+}
+
+img.smileyImgDimension, span.smileyImgDimension
+{
+    width: 1.6em;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+img.bigSmileyImgDimension
+{
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    margin: 0 0.0665em 0.2em 0.133em;
+    vertical-align: middle;
+}
+
 div.sml span
 {
     cursor: pointer;
+}
+
+.dragndrop
+{
+    margin-top: 0;
+    font-style: italic;
+    padding: 3px;
+    text-align: center;
+    opacity: 0.5;
+    font-weight: bold;
+    font-size: 11px;
+}
+
+img:not([class])
+{
+    width: 30px;
+    height: 30px;
+    margin: 0 0.0665em 0 0.133em;
+}
+
+.akuraku
+{
+    margin-right: 10px;
 }

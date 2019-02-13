@@ -210,8 +210,8 @@ public class UserController
                     return "pages/userpage";
                 }
                 
-                content=content.replaceAll("<_", "<br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
-                content=content.replaceAll("_>", "'/><br/>");
+                content=content.replaceAll("<_", "<br/><img alt='content image' class='contentImgDimension' src='/9jaforum/files/dist_img/");
+                content=content.replaceAll("_>", "'/>");
                 
                 MultipartFile coverFile = pc.getCoverFile();
                 
@@ -834,8 +834,8 @@ public class UserController
                         PostClass poc = new PostClass();
                         String quotedText = ccid.get().getContent();
                     
-                        quotedText = quotedText.replaceAll("<br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/", "<_");
-                        quotedText = quotedText.replaceAll("'/><br/>", "_>");
+                        quotedText = quotedText.replaceAll("<br/><img alt='content image' class='contentImgDimension' src='/9jaforum/files/dist_img/", "<_");
+                        quotedText = quotedText.replaceAll("'/>", "_>");
                     
                         poc.setContent_2(quotedText);
                     
@@ -1092,8 +1092,8 @@ public class UserController
                     Optional<CommentClass> cc = ccr.findById(comment_id.get());
                     String content = cc.get().getContent();
                 
-                    content=content.replaceAll("<br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/", "<_");
-                    content=content.replaceAll("'/><br/>", "_>");
+                    content=content.replaceAll("<br/><img alt='content image' class='contentImgDimension' src='/9jaforum/files/dist_img/", "<_");
+                    content=content.replaceAll("'/>", "_>");
                 
                     if(utc.getUser().getId().equals(cc.get().getUser_id()))
                     {
@@ -1342,8 +1342,8 @@ public class UserController
                 Optional<SubCommentClass> scc = sccr.findById(subcomment_id.get());
                 String content = scc.get().getContent();
                 
-                content=content.replaceAll("<br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/", "<_");
-                content=content.replaceAll("'/><br/>", "_>");
+                content=content.replaceAll("<br/><img alt='content image' class='contentImgDimension' src='/9jaforum/files/dist_img/", "<_");
+                content=content.replaceAll("'/>", "_>");
                 
                 if(utc.getUser().getId().equals(scc.get().getUser_id()))
                 {
@@ -1547,8 +1547,8 @@ public class UserController
                         }
                         else
                         {
-                            content=content.replaceAll("<_", "<br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
-                            content=content.replaceAll("_>", "'/><br/>");
+                            content=content.replaceAll("<_", "<br/><img alt='content image' class='contentImgDimension' src='/9jaforum/files/dist_img/");
+                            content=content.replaceAll("_>", "'/>");
                         
                             if(!content.matches("\\s*"))
                             {
@@ -1682,8 +1682,8 @@ public class UserController
                         }
                         else
                         {
-                            content=content.replaceAll("<_", "<br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
-                            content=content.replaceAll("_>", "'/><br/>");
+                            content=content.replaceAll("<_", "<br/><img alt='content image' class='contentImgDimension' src='/9jaforum/files/dist_img/");
+                            content=content.replaceAll("_>", "'/>");
                 
                             if(!content.matches("\\s*"))
                             {
@@ -1836,8 +1836,8 @@ public class UserController
                         }
                         else
                         {
-                            content=content.replaceAll("<_", "<br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
-                            content=content.replaceAll("_>", "'/><br/>");
+                            content=content.replaceAll("<_", "<br/><img alt='content image' class='contentImgDimension' src='/9jaforum/files/dist_img/");
+                            content=content.replaceAll("_>", "'/>");
                 
                             if(!content.matches("\\s*"))
                             {
@@ -1878,8 +1878,8 @@ public class UserController
                                     }
                                     else
                                     {
-                                        content_2=content_2.replaceAll("<_", "<br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
-                                        content_2=content_2.replaceAll("_>", "'/><br/>");
+                                        content_2=content_2.replaceAll("<_", "<br/><img alt='content image' class='contentImgDimension' src='/9jaforum/files/dist_img/");
+                                        content_2=content_2.replaceAll("_>", "'/>");
                                         
                                         if(main_comment.contains(content_2))
                                         {
@@ -2013,8 +2013,8 @@ public class UserController
                         }
                         else
                         {
-                            content=content.replaceAll("<_", "<br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
-                            content=content.replaceAll("_>", "'/><br/>");
+                            content=content.replaceAll("<_", "<br/><img alt='content image' class='contentImgDimension' src='/9jaforum/files/dist_img/");
+                            content=content.replaceAll("_>", "'/>");
                 
                             if(!content.matches("\\s*"))
                             {
@@ -2129,8 +2129,8 @@ public class UserController
                     {
                         pc.setContent(content);
                 
-                        content=content.replaceAll("<_", "<br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
-                        content=content.replaceAll("_>", "'/><br/>");
+                        content=content.replaceAll("<_", "<br/><img alt='content image' class='contentImgDimension' src='/9jaforum/files/dist_img/");
+                        content=content.replaceAll("_>", "'/>");
                 
                         if(!content.matches("\\s*"))
                         {
@@ -3149,8 +3149,8 @@ public class UserController
         Long comment_id = dc.getCid();
         String title = dc.getTitle();
         
-        content=content.replaceAll("<_", "<br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
-        content=content.replaceAll("_>", "'/><br/>");
+        content=content.replaceAll("<_", "<br/><img alt='content image' class='contentImgDimension' src='/9jaforum/files/dist_img/");
+        content=content.replaceAll("_>", "'/>");
         
         Optional<CommentClass> cc = ccr.findById(comment_id);  //Comment you are subcommenting on
         SubCommentClass scc;
@@ -3337,8 +3337,8 @@ public class UserController
                 {
                     String content = scc.get().getContent();
                 
-                    content=content.replaceAll("<br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/", "<_");
-                    content=content.replaceAll("'/><br/>", "_>");
+                    content=content.replaceAll("<br/><img alt='content image' class='contentImgDimension' src='/9jaforum/files/dist_img/", "<_");
+                    content=content.replaceAll("'/>", "_>");
                     
                     PostClass pClass = new PostClass();
                     pClass.setContent(content);
@@ -3521,8 +3521,8 @@ public class UserController
                     {
                         pc.setContent(content);
                 
-                        content=content.replaceAll("<_", "<br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
-                        content=content.replaceAll("_>", "'/><br/>");
+                        content=content.replaceAll("<_", "<br/><img alt='content image' class='contentImgDimension' src='/9jaforum/files/dist_img/");
+                        content=content.replaceAll("_>", "'/>");
                 
                         if(!content.matches("\\s*"))
                         {
@@ -3574,11 +3574,11 @@ public class UserController
         String title = dc.getTitle();
         String date = utc.getDate();
         
-        content = content.replaceAll("<_", "<br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
-        content = content.replaceAll("_>", "'/><br/>");
+        content = content.replaceAll("<_", "<br/><img alt='content image' class='contentImgDimension' src='/9jaforum/files/dist_img/");
+        content = content.replaceAll("_>", "'/>");
         
-        content2 = content2.replaceAll("<_", "<br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
-        content2 = content2.replaceAll("_>", "'/><br/>");
+        content2 = content2.replaceAll("<_", "<br/><img alt='content image' class='contentImgDimension' src='/9jaforum/files/dist_img/");
+        content2 = content2.replaceAll("_>", "'/>");
         
         Optional<CommentClass> ccid = ccr.findById(comment_id);
         
@@ -3604,8 +3604,8 @@ public class UserController
         Optional<CommentClass> ccid = ccr.findById(comment_id);
         String content = ccid.get().getContent();
         
-        content = content.replaceAll("<br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/", "<_");
-        content = content.replaceAll("'/><br/>", "_>");
+        content = content.replaceAll("<br/><img alt='content image' class='contentImgDimension' src='/9jaforum/files/dist_img/", "<_");
+        content = content.replaceAll("'/>", "_>");
         
         return content;
     }
@@ -3621,8 +3621,8 @@ public class UserController
         Long comment_id = dc.getCid();
         String title = dc.getTitle();
         
-        content = content.replaceAll("<_", "<br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
-        content = content.replaceAll("_>", "'/><br/>");
+        content = content.replaceAll("<_", "<br/><img alt='content image' class='contentImgDimension' src='/9jaforum/files/dist_img/");
+        content = content.replaceAll("_>", "'/>");
         
         Optional<CommentClass> ccid = ccr.findById(comment_id);
         ccid.get().setContent(content);
@@ -3645,8 +3645,8 @@ public class UserController
         Optional<SubCommentClass> scc = sccr.findById(subcomment_id);
         String content = scc.get().getContent();
         
-        content = content.replaceAll("<br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/", "<_");
-        content = content.replaceAll("'/><br/>", "_>");
+        content = content.replaceAll("<br/><img alt='content image' class='contentImgDimension' src='/9jaforum/files/dist_img/", "<_");
+        content = content.replaceAll("'/>", "_>");
         
         return content;
     }
@@ -3662,8 +3662,8 @@ public class UserController
         Long subcomment_id = dc.getSid();
         String title = dc.getTitle();
         
-        content = content.replaceAll("<_", "<br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
-        content = content.replaceAll("_>", "'/><br/>");
+        content = content.replaceAll("<_", "<br/><img alt='content image' class='contentImgDimension' src='/9jaforum/files/dist_img/");
+        content = content.replaceAll("_>", "'/>");
         
         Optional<SubCommentClass> scc = sccr.findById(subcomment_id);
         scc.get().setContent(content);
@@ -3689,8 +3689,8 @@ public class UserController
         Long subcomment_id = dc.getSid();
         String title = dc.getTitle();
         
-        content = content.replaceAll("<_", "<br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
-        content = content.replaceAll("_>", "'/><br/>");
+        content = content.replaceAll("<_", "<br/><img alt='content image' class='contentImgDimension' src='/9jaforum/files/dist_img/");
+        content = content.replaceAll("_>", "'/>");
         
         Optional<SubCommentClass> scc = sccr.findById(subcomment_id);
         scc.get().setContent(content);

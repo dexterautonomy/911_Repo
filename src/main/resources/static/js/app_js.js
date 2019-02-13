@@ -4,9 +4,10 @@ $(document).ready(appFunction);
 
 function appFunction()
 {
-    var1 = false;
-    var2 = false;
-    var3 = false;
+    var var1 = false;
+    var var2 = false;
+    var var3 = false;
+    var globalQuote = null;
     
     function showButton()
     {
@@ -222,6 +223,7 @@ function appFunction()
     
     $('#addimg').click(function (){
         $('#smileyBlock').addClass('hidden');
+        //$('#kontentXCX').val($('div.editableDiv1').html());
     });
     
     $('#addimg').change(function (){
@@ -847,7 +849,6 @@ function appFunction()
             $('#dynamicFormDiv').addClass('hidden');
             $('div.subcommentsOnTheGo').addClass('hidden');
             $('div.dynamicEditComment').addClass('hidden');
-            
             $('#smileyBlock').addClass('hidden');
             $('div.smileyBlockSubCommentOnTheGo').addClass('hidden');
             $('div.smileyBlockDynamicEditComment').addClass('hidden');
@@ -882,6 +883,7 @@ function appFunction()
                         success: function (data) {
                             //$($('textarea.quotedTextarea')[index]).val(data);
                             $($('div.quotedTextarea')[index]).text("").append(data);
+                            globalQuote = data;
                             enableButtonsY();
                         },
                         error: function () {
@@ -1022,7 +1024,7 @@ function appFunction()
                 {
                     //var quotingTextArea = $($('textarea.dynamicQuoteContent1')[index]);
                     var quotingTextArea = $($('div.dynamicQuoteContent1')[index]);
-                    var originalCommentBeforeQuoting = $($('div.commentContentForQuoting')[index]).html();
+                    //var originalCommentBeforeQuoting = $($('div.commentContentForQuoting')[index]).html();
                     
                     //originalCommentBeforeQuoting = replaceEvery(originalCommentBeforeQuoting, "&lt;", "<");
                     //originalCommentBeforeQuoting = replaceEvery(originalCommentBeforeQuoting, "&gt;", ">");
@@ -1030,8 +1032,8 @@ function appFunction()
                     //var textAreaQuotedContent = $($('textarea.quotedTextarea')[index]).val();
                     var textAreaQuotedContent = $($('div.quotedTextarea')[index]).html();
                     
-                    //textAreaQuotedContent = replaceEvery(textAreaQuotedContent, "&lt;", "<");
-                    //textAreaQuotedContent = replaceEvery(textAreaQuotedContent, "&gt;", ">");
+                    textAreaQuotedContent = replaceEvery(textAreaQuotedContent, "&lt;", "<");
+                    textAreaQuotedContent = replaceEvery(textAreaQuotedContent, "&gt;", ">");
                     
                     //var theQuotingText = quotingTextArea.val();
                     var theQuotingText = quotingTextArea.html();
@@ -1040,7 +1042,7 @@ function appFunction()
                     
                     if(!textAreaQuotedContent.match(/^\s*$/))
                     {
-                        //if(originalCommentBeforeQuoting.includes(textAreaQuotedContent))
+                        if(globalQuote.indexOf(textAreaQuotedContent) >= 0)
                         {
                             if(checkTag(textAreaQuotedContent))
                             {
@@ -1118,10 +1120,10 @@ function appFunction()
                                 alert("Malformed text, <_ must be followed by _>");
                             }
                         }
-                        /*else
+                        else
                         {
                             alert("Quote is out of context");
-                        }*/
+                        }
                     }
                     else
                     {
@@ -1144,6 +1146,7 @@ function appFunction()
     
     $('input.editCommentAddimg').click(function(){
         $('div.smileyBlockDynamicEditComment').addClass('hidden');
+        //$('textarea.editCommentContent1').val($($('div.editCommentContent')[5]).html());
     });
     
     $('a.editComOnTheGo').each(function (index){
@@ -1823,21 +1826,77 @@ function appFunction()
         return mainString.replace(new RegExp(searchIt, 'g'), replaceIt);
     }
     
-    
-    
-    
-    
-    
-    
-    $('#xxd').click(function (){
-        $('#kontent').append('<img class="smileyImgDimension" src="https://cdn.okccdn.com/media/img/emojis/apple/1F60C.png"/>');
-    });
-    
-    $('span.xxd1').each(function(index){
+    $('span.aClass').each(function(){
         $(this).click(function (){
-        $($('div.subCommentContent')[index]).append('<img class="smileyImgDimension" src="https://cdn.okccdn.com/media/img/emojis/apple/1F60C.png"/>');
+            var smileyClass = $(this).attr("class");
+            
+            if($('#kontent').is(":visible"))
+            {
+                $('#kontent').append('<span contenteditable="false" class="smileyImgDimension '+smileyClass+'"></span>');
+            }
+            else if($('div.subCommentContent').is(":visible"))
+            {
+                $('div.subCommentContent').append('<span contenteditable="false" class="smileyImgDimension '+smileyClass+'"></span>');
+            }
+            else if($('div.editSubCommentContent').is(":visible"))
+            {
+                $('div.editSubCommentContent').append('<span contenteditable="false" class="smileyImgDimension '+smileyClass+'"></span>');
+            }
+            else if($('div.dynamicQuoteContent1').is(":visible"))
+            {
+                $('div.dynamicQuoteContent1').append('<span contenteditable="false" class="smileyImgDimension '+smileyClass+'"></span>');
+            }
+            else if($('div.editCommentContent').is(":visible"))
+            {
+                $('div.editCommentContent').append('<span contenteditable="false" class="smileyImgDimension '+smileyClass+'"></span>');
+            }
+            else if($('div.editSubCommentContent').is(":visible"))
+            {
+                $('div.editSubCommentContent').append('<span contenteditable="false" class="smileyImgDimension '+smileyClass+'"></span>');
+            }
+            
+            
+            
+            
+            
+            
+            //$('#kontent').append('<span class="smileyImgDimension '+smileyClass+'"></span>');
+        });
     });
+    
+
+    /*
+    $('span.xxd2').each(function(index){
+        $(this).click(function (){
+            $($('div.subCommentContent')[index]).append('<img class="smileyImgDimension" src="https://cdn.okccdn.com/media/img/emojis/apple/1F60C.png"/>');
+        });
     });
+    
+    
+    $('span.xxd3').each(function(index){
+        $(this).click(function (){
+            $($('div.editSubCommentContent')[index]).append('<img class="smileyImgDimension" src="https://cdn.okccdn.com/media/img/emojis/apple/1F60C.png"/>');
+        });
+    });
+    
+    $('span.xxd4').each(function(index){
+        $(this).click(function (){
+            $($('div.dynamicQuoteContent1')[index]).append('<img class="smileyImgDimension" src="https://cdn.okccdn.com/media/img/emojis/apple/1F60C.png"/>');
+        });
+    });
+    
+    $('span.xxd5').each(function(index){
+        $(this).click(function (){
+            $($('div.editCommentContent')[index]).append('<img class="smileyImgDimension" src="https://cdn.okccdn.com/media/img/emojis/apple/1F60C.png"/>');
+        });
+    });
+    
+    $('span.xxd6').each(function(index){
+        $(this).click(function (){
+            $($('div.editSubCommentContent')[index]).append('<img class="smileyImgDimension" src="https://cdn.okccdn.com/media/img/emojis/apple/1F60C.png"/>');
+        });
+    });
+    */
 }
 
 

@@ -33,18 +33,18 @@
                         
                         <div class="justify" th:utext="*{content}"></div><br/>
 
-                        <div>
+                        <div class="authorImgDiv">
                             <a th:href="@{/prf_src(usr=*{userone.id})}" class="postcomment_username smallfont">
                                 <img th:classappend="*{userone.colorclass}" class="readerImageAuthor" src="" th:src="@{'/files/profile_img/' + *{userone.pix}}" th:alt="*{userone.username + ' pic'}" alt=""/><br/>
-                                <span th:text="*{userone.username} == ${session.username} ? 'By me' : *{'@' + userone.username}"></span>
+                                <div th:text="*{userone.username} == ${session.username} ? 'By me' : *{'@' + userone.username}"></div>
                             </a><br/>
                         </div>
                         
                         <div class="centertinz">
                             <a id="commentOnPost" th:if="${session.commentBan != 1}" class="btn gimmeChance" th:href="@{user/cmt(akt=cmt, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg}, cog=${cog})}"><span class="glyphicon glyphicon-comment"></span> <span class="smallfont" th:text="${commentsExt.totalElements}">Comment</span></a>
-                            <a class="btn gimmeChance" th:href="@{user/cmt(akt=lk, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg}, cog=${cog})}"><span style="color: green;" class="glyphicon glyphicon-thumbs-up"></span> <span class="smallfont" th:text="*{likes}"></span></a>
-                            <a class="btn gimmeChance" th:href="@{user/cmt(akt=flg, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg}, cog=${cog})}"><span style="color: red;" class="glyphicon glyphicon-flag"></span> <span class="smallfont" th:text="*{redflag}"></span></a>
-                            <a class="btn gimmeChance" th:href="@{user/cmt(akt=str, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg}, cog=${cog})}"><span style="color: yellow;" class="glyphicon glyphicon-star"></span> <span class="smallfont" th:text="*{star}"></span></a><br/>
+                            <a class="btn gimmeChance" th:href="@{user/cmt(akt=lk, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg}, cog=${cog})}"><span style="color: green;" class="glyphicon glyphicon-thumbs-up"></span> <span class="smallfont" th:text="*{likes} == 0 ? '' : *{likes}"></span></a>
+                            <a class="btn gimmeChance" th:href="@{user/cmt(akt=flg, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg}, cog=${cog})}"><span style="color: red;" class="glyphicon glyphicon-flag"></span> <span class="smallfont" th:text="*{redflag} == 0 ? '' : *{redflag}"></span></a>
+                            <a class="btn gimmeChance" th:href="@{user/cmt(akt=str, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg}, cog=${cog})}"><span style="color: yellow;" class="glyphicon glyphicon-star"></span> <span class="smallfont" th:text="*{star} == 0 ? '' : *{star}"></span></a><br/>
                         </div><br/>
 
                         <div class="hidden">
@@ -56,6 +56,7 @@
                             <span id="pagePaginate" th:text="${pg}"></span>
                         </div>
                         
+                        <!--1st instance-->
                         <div id="dynamicFormDiv" class="hidden mainComment">
                             <form id="dynamicForm" action="" enctype="multipart/form-data" method="POST">
                                 <div>
@@ -68,12 +69,13 @@
                                         <img src='' th:src="@{'/files/system_img/gallery.png'}" alt=""/>
                                     </button>
                                     <button id="smiley" class="btn btn-sm smileyButtonClone" name="smiley">
-                                        <img src='' th:src="@{'/files/system_img/smiley.png'}" alt=""/>
+                                        <span class="realSmiley twa-smiley"/>
+                                        <!--<img src='' th:src="@{'/files/system_img/smiley.png'}" alt=""/>-->
                                     </button>
                                     <button id="dynamicSubmit" class="btn btn-sm btn-success" style="display: inline"> Post</button>
                                 
                                     <div id="smileyBlock" class="hidden mainCommentX1 sml">
-                                        <span id="xxd" class="twa-lg twa-smiling-face"></span>
+                                        <div th:include="pages/adfragments :: smileyOne"/>
                                     </div>
                                 </div>
                             </form>
@@ -137,16 +139,16 @@
                                             <span style="color: pink;" class="glyphicon glyphicon-share-alt smallfont"></span>
                                         </a>
                                         <a class="gimmeChance" th:href="@{user/cmt(akt=lk_s, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg}, cog=${cog})}">
-                                            <span style="color: green;" class="glyphicon glyphicon-thumbs-up smallfont"></span> <span class="smallfont" th:text="${comment.likes}"></span>
+                                            <span style="color: green;" class="glyphicon glyphicon-thumbs-up smallfont"></span> <span class="smallfont" th:text="${comment.likes} == 0 ? '' : ${comment.likes}"></span>
                                         </a>
                                         <a class="gimmeChance" th:href="@{user/cmt(akt=flg_s, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg}, cog=${cog})}">
-                                            <span style="color: red;" class="glyphicon glyphicon-flag smallfont"></span> <span class="smallfont" th:text="${comment.redflag}"></span>
+                                            <span style="color: red;" class="glyphicon glyphicon-flag smallfont"></span> <span class="smallfont" th:text="${comment.redflag} == 0 ? '' : ${comment.redflag}"></span>
                                         </a>
                                         <a class="gimmeChance" th:href="@{user/cmt(akt=str_s, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg}, cog=${cog})}">
-                                            <span style="color: yellow;" class="glyphicon glyphicon-star smallfont"></span> <span class="smallfont" th:text="${comment.star}"></span>
+                                            <span style="color: yellow;" class="glyphicon glyphicon-star smallfont"></span> <span class="smallfont" th:text="${comment.star} == 0 ? '' : ${comment.star}"></span>
                                         </a>
                                         <a class="gimmeChance" th:if="${session.commentBan} != 1" th:href="@{user/cmt(akt=shr_s, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg}, cog=${cog})}">
-                                            <span style="color: blue;" class="glyphicon glyphicon-share smallfont"></span> <span class="smallfont" th:text="${comment.share}"></span>
+                                            <span style="color: blue;" class="glyphicon glyphicon-share smallfont"></span> <span class="smallfont" th:text="${comment.share} == 0 ? '' : ${comment.share}"></span>
                                         </a>
                                         <a class="editComOnTheGo gimmeChance" th:if="${session.commentBan} != 1" th:href="@{user/cmt(akt=edit_s, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg}, cog=${cog})}">
                                             <span style="color: grey;" class="glyphicon glyphicon-pencil smallfont" th:classappend="${comment.usertwo.username} == ${session.username} ? '' : 'hidden'"></span>
@@ -160,6 +162,7 @@
                                         </a>
                                     </div>
                                     
+                                    <!--2nd instance-->
                                     <div class="subcommentsOnTheGo hidden">
                                         <form class="dynamicSubComment mainCommentX" action="" enctype="multipart/form-data">
                                             <div>
@@ -172,12 +175,13 @@
                                                     <img src='' th:src="@{'/files/system_img/gallery.png'}" alt=""/>
                                                 </button>
                                                 <button class="btn btn-sm subCommentSmiley smileyButtonClone" name="smiley">
-                                                    <img src='' th:src="@{'/files/system_img/smiley.png'}" alt=""/>
+                                                    <span class="realSmiley twa-smiley"/>
+                                                    <!--<img src='' th:src="@{'/files/system_img/smiley.png'}" alt=""/>-->
                                                 </button>
                                                 <button class="btn btn-sm btn-success dynamicSubmitSubComment"> Post</button>
                                                 
                                                 <div class="smileyBlockSubCommentOnTheGo mainCommentX1 hidden sml">
-                                                    <span class="xxd1 twa-lg twa-smiling-face"></span>
+                                                    <div th:include="pages/adfragments :: smileyOne"/>
                                                 </div>
                                             </div>
                                         </form>
@@ -204,13 +208,13 @@
                                                 
                                                 <div class="commentBck2">
                                                     <a class="gimmeChance" th:href="@{user/cmt(akt=lk_x, sid=${subcom.id}, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg}, cog=${cog})}">
-                                                        <span style="color: green;" class="glyphicon glyphicon-thumbs-up smallfont"></span> <span class="smallfont" th:text="${subcom.likes}"></span>
+                                                        <span style="color: green;" class="glyphicon glyphicon-thumbs-up smallfont"></span> <span class="smallfont" th:text="${subcom.likes} == 0 ? '' : ${subcom.likes}"></span>
                                                     </a>
                                                     <a class="gimmeChance" th:href="@{user/cmt(akt=flg_x, sid=${subcom.id}, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg}, cog=${cog})}">
-                                                        <span style="color: red;" class="glyphicon glyphicon-flag smallfont"></span> <span class="smallfont" th:text="${subcom.redflag}"></span>
+                                                        <span style="color: red;" class="glyphicon glyphicon-flag smallfont"></span> <span class="smallfont" th:text="${subcom.redflag} == 0 ? '' : ${subcom.redflag}"></span>
                                                     </a>
                                                     <a class="gimmeChance" th:href="@{user/cmt(akt=str_x, sid=${subcom.id}, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg}, cog=${cog})}">
-                                                        <span style="color: yellow;" class="glyphicon glyphicon-star smallfont"></span> <span class="smallfont" th:text="${subcom.star}"></span>
+                                                        <span style="color: yellow;" class="glyphicon glyphicon-star smallfont"></span> <span class="smallfont" th:text="${subcom.star} == 0 ? '' : ${subcom.star}"></span>
                                                     </a>
                                                     <a class="editSubComOnTheGo gimmeChance" th:href="@{user/cmt(akt=edit_x, sid=${subcom.id}, cid=${comment.id}, pos=${pos}, t=${title}, page=${commentsExt.number + 1}, p=${pg}, cog=${cog})}">
                                                         <span style="color: grey;" class="glyphicon glyphicon-pencil smallfont" th:classappend="${subcom.userthree.username} == ${session.username} ? '' : 'hidden'"></span>
@@ -224,6 +228,7 @@
                                                     </a>
                                                 </div>
                                                 
+                                                <!--3rd instance-->
                                                 <div class="dynamicEditSubComment hidden mainCommentX"><br/>
                                                     <form action="" enctype="multipart/form-data">
                                                         <div>
@@ -236,12 +241,13 @@
                                                                 <img src='' th:src="@{'/files/system_img/gallery.png'}" alt=""/>
                                                             </button>
                                                             <button class="btn btn-sm editSubCommentSmiley smileyButtonClone" name="smiley">
-                                                                <img src='' th:src="@{'/files/system_img/smiley.png'}" alt=""/>
+                                                                <span class="realSmiley twa-smiley"/>
+                                                                <!--<img src='' th:src="@{'/files/system_img/smiley.png'}" alt=""/>-->
                                                             </button>
                                                             <button class="btn btn-sm btn-success editDynamicSubmitSubComment"> Post</button>
                                                             
                                                             <div class="smileyBlockDynamicEditSubComment mainCommentX1 hidden sml">
-                                                                <span class="xxd2 twa-lg twa-smiling-face"></span>
+                                                                <div th:include="pages/adfragments :: smileyOne"/>
                                                             </div>
                                                         </div>
                                                     </form>
@@ -264,6 +270,7 @@
                                         </div>
                                     </div>
                                     
+                                    <!--4th instance-->
                                     <div class="dynamicQuote hidden mainCommentX">
                                         <form action="" enctype="multipart/form-data">
                                             <div>
@@ -278,21 +285,23 @@
                                                     <img src='' th:src="@{'/files/system_img/gallery.png'}" alt=""/>
                                                 </button>
                                                 <button class="btn btn-sm quoteCommentSmiley smileyButtonClone" name="smiley">
-                                                    <img src='' th:src="@{'/files/system_img/smiley.png'}" alt=""/>
+                                                    <span class="realSmiley twa-smiley"/>
+                                                    <!--<img src='' th:src="@{'/files/system_img/smiley.png'}" alt=""/>-->
                                                 </button>
                                                 <button class="btn btn-sm btn-success dynamicSubmitQuote"> Post</button>
                                                 
                                                 <div class="smileyBlockDynamicQuote mainCommentX1 hidden sml">
-                                                    <span class="xxd3 twa-lg twa-smiling-face"></span>
+                                                    <div th:include="pages/adfragments :: smileyOne"/>
                                                 </div>
                                             </div>
                                         </form>
                                     </div>
                                     
+                                    <!--5th instance-->
                                     <div class="dynamicEditComment hidden mainCommentX">
                                         <form action="" enctype="multipart/form-data">
                                             <div>
-                                                <!--<textarea class="form-control editCommentContent" name="dynamicFormContent" placeholder="Comment" cols="20" rows="5" required="" maxlength="700"></textarea><br/>-->
+                                                <!--<textarea class="form-control editCommentContent1" name="dynamicFormContent" placeholder="Comment" cols="20" rows="5" required="" maxlength="700"></textarea><br/>-->
                                                 <div class="editableDiv2 editCommentContent" contenteditable="true"></div>
                                             </div>
                                             <div class="uploadbtnwrapper">
@@ -301,12 +310,13 @@
                                                     <img src='' th:src="@{'/files/system_img/gallery.png'}" alt=""/>
                                                 </button>
                                                 <button class="btn btn-sm editCommentSmiley smileyButtonClone" name="smiley">
-                                                    <img src='' th:src="@{'/files/system_img/smiley.png'}" alt=""/>
+                                                    <span class="realSmiley twa-smiley"/>
+                                                    <!--<img src='' th:src="@{'/files/system_img/smiley.png'}" alt=""/>-->
                                                 </button>
                                                 <button class="btn btn-sm btn-success editDynamicSubmitComment"> Post</button>
                                                 
                                                 <div class="smileyBlockDynamicEditComment mainCommentX1 hidden sml">
-                                                    <span class="xxd4 twa-lg twa-smiling-face"></span>
+                                                    <div th:include="pages/adfragments :: smileyOne"/>
                                                 </div>
                                             </div>
                                         </form>

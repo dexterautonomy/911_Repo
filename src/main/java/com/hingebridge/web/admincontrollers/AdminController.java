@@ -267,8 +267,8 @@ public class AdminController
                 PostClass poc = new PostClass();
                 String quotedText = ccid.get().getContent();
                     
-                quotedText = quotedText.replaceAll("<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/", "<_");
-                quotedText = quotedText.replaceAll("'/><br/><br/>", "_>");
+                quotedText = quotedText.replaceAll("<br/><img alt='content image' class='contentImgDimension' src='/9jaforum/files/dist_img/", "<_");
+                quotedText = quotedText.replaceAll("'/>", "_>");
                     
                 poc.setContent_2(quotedText);
                     
@@ -340,8 +340,8 @@ public class AdminController
             {
                 Optional<CommentClass> cc = ccr.findById(comment_id.get());
                 String content = cc.get().getContent();
-                content=content.replaceAll("<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/", "<_");
-                content=content.replaceAll("'/><br/><br/>", "_>");
+                content=content.replaceAll("<br/><img alt='content image' class='contentImgDimension' src='/9jaforum/files/dist_img/", "<_");
+                content=content.replaceAll("'/>", "_>");
                 
                 if(utc.getUser().getId().equals(cc.get().getUser_id()))
                 {
@@ -428,8 +428,8 @@ public class AdminController
             {
                 Optional<SubCommentClass> scc = sccr.findById(subcomment_id.get());
                 String content = scc.get().getContent();
-                content=content.replaceAll("<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/", "<_");
-                content=content.replaceAll("'/><br/><br/>", "_>");
+                content=content.replaceAll("<br/><img alt='content image' class='contentImgDimension' src='/9jaforum/files/dist_img/", "<_");
+                content=content.replaceAll("'/>", "_>");
                 
                 if(utc.getUser().getId().equals(scc.get().getUser_id()))
                 {
@@ -559,8 +559,8 @@ public class AdminController
                     {
                         pc.setContent(content);
                 
-                        content=content.replaceAll("<_", "<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
-                        content=content.replaceAll("_>", "'/><br/><br/>");
+                        content=content.replaceAll("<_", "<br/><img alt='content image' class='contentImgDimension' src='/9jaforum/files/dist_img/");
+                        content=content.replaceAll("_>", "'/>");
                 
                         if(!content.matches("\\s*"))
                         {
@@ -659,8 +659,8 @@ public class AdminController
                     {
                         pc.setContent(content);
                 
-                        content=content.replaceAll("<_", "<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
-                        content=content.replaceAll("_>", "'/><br/><br/>");
+                        content=content.replaceAll("<_", "<br/><img alt='content image' class='contentImgDimension' src='/9jaforum/files/dist_img/");
+                        content=content.replaceAll("_>", "'/>");
                 
                         if(!content.matches("\\s*"))
                         {
@@ -779,11 +779,11 @@ public class AdminController
                         pc.setContent_2(content_2);
                         pc.setContent(content);
                 
-                        content=content.replaceAll("<_", "<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
-                        content=content.replaceAll("_>", "'/><br/><br/>");
+                        content=content.replaceAll("<_", "<br/><img alt='content image' class='contentImgDimension' src='/9jaforum/files/dist_img/");
+                        content=content.replaceAll("_>", "'/>");
                         
-                        content_2=content_2.replaceAll("<_", "<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
-                        content_2=content_2.replaceAll("_>", "'/><br/><br/>");
+                        content_2=content_2.replaceAll("<_", "<br/><img alt='content image' class='contentImgDimension' src='/9jaforum/files/dist_img/");
+                        content_2=content_2.replaceAll("_>", "'/>");
                 
                         if(!content.matches("\\s*"))
                         {
@@ -905,8 +905,8 @@ public class AdminController
                     {
                         pc.setContent(content);
                 
-                        content=content.replaceAll("<_", "<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
-                        content=content.replaceAll("_>", "'/><br/><br/>");
+                        content=content.replaceAll("<_", "<br/><img alt='content image' class='contentImgDimension' src='/9jaforum/files/dist_img/");
+                        content=content.replaceAll("_>", "'/>");
                 
                         if(!content.matches("\\s*"))
                         {
@@ -1008,8 +1008,8 @@ public class AdminController
                     {
                         pc.setContent(content);
                 
-                        content=content.replaceAll("<_", "<br/><br/><img alt='content image' width='250' height='150' src='/9jaforum/files/dist_img/");
-                        content=content.replaceAll("_>", "'/><br/><br/>");
+                        content=content.replaceAll("<_", "<br/><img alt='content image' class='contentImgDimension' src='/9jaforum/files/dist_img/");
+                        content=content.replaceAll("_>", "'/>");
                 
                         if(!content.matches("\\s*"))
                         {
