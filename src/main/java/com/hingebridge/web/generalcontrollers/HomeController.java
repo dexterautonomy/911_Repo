@@ -817,4 +817,21 @@ public class HomeController
         
         return "pages/cat_page";
     }
+    
+    @GetMapping("/checkJQuerySession")
+    @ResponseBody
+    public boolean checkJQuerySession(HttpSession session, HttpServletRequest req)
+    {
+        boolean sessionVal = false;
+        session = req.getSession();
+        String username = (String)session.getAttribute("username");
+        
+        //if(!username.equals(""))
+        if(username != null)
+        {
+            sessionVal = true;
+        }
+        
+        return sessionVal;
+    }
 }

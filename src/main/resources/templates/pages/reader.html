@@ -48,7 +48,7 @@
                         </div><br/>
 
                         <div class="hidden">
-                            <span id="sessionOn" th:text="${session.username} == null ? 'no session' : ${session.username}"></span>
+                            <!--<span id="sessionOn" th:text="${session.username} == null ? 'no session' : ${session.username}"></span>-->
                             <span id="userRank" th:text="${session.myRank}"></span>
                             <span id="postid" th:text="${pos}"></span>
                             <span id="title" th:text="${title}"></span>
@@ -56,9 +56,10 @@
                             <span id="pagePaginate" th:text="${pg}"></span>
                         </div>
                         
-                        <!--1st instance-->
+                        <!--1st instance REMOVE FORM HERE & FROM JAVASCRIPT AS WELL-->
                         <div id="dynamicFormDiv" class="hidden mainComment">
-                            <form id="dynamicForm" action="" enctype="multipart/form-data" method="POST">
+                            <!--<form id="dynamicForm" action="" enctype="multipart/form-data" method="POST">-->
+                            <div id="dynamicForm">
                                 <div>
                                     <!--<textarea id="kontent" class="form-control" name="dynamicFormContent" placeholder="Comment" cols="20" rows="6" required="" maxlength="700"></textarea><br/>-->
                                     <div class="editableDiv1" id="kontent" contenteditable="true"></div>
@@ -78,7 +79,8 @@
                                         <div th:include="pages/adfragments :: smileyOne"/>
                                     </div>
                                 </div>
-                            </form>
+                            </div>
+                            <!--</form>-->
                         </div>
                         
                         <div th:if="${cog} == null">
@@ -162,9 +164,10 @@
                                         </a>
                                     </div>
                                     
-                                    <!--2nd instance-->
+                                    <!--2nd instance REMOVE FORM HERE & FROM JAVASCRIPT AS WELL-->
                                     <div class="subcommentsOnTheGo hidden">
-                                        <form class="dynamicSubComment mainCommentX" action="" enctype="multipart/form-data">
+                                        <!--<form class="dynamicSubComment mainCommentX" action="" enctype="multipart/form-data">-->
+                                        <div class="dynamicSubComment mainCommentX">
                                             <div>
                                                 <!--<textarea class="form-control subCommentContent" name="dynamicFormContent" placeholder="Comment" cols="20" rows="5" required="" maxlength="700"></textarea><br/>-->
                                                 <div class="editableDiv2 subCommentContent" contenteditable="true"></div>
@@ -184,7 +187,8 @@
                                                     <div th:include="pages/adfragments :: smileyOne"/>
                                                 </div>
                                             </div>
-                                        </form>
+                                        </div>
+                                        <!--</form>-->
                                         
                                         <div class="media" th:each="subcom, counter : ${comment.subcomment}" th:if="${counter.index &lt; 10}">
                                             <div class="media-left media-top smallPadding">
@@ -228,29 +232,29 @@
                                                     </a>
                                                 </div>
                                                 
-                                                <!--3rd instance-->
+                                                <!--3rd instance REMOVE FORM HERE & FROM JAVASCRIPT AS WELL-->
                                                 <div class="dynamicEditSubComment hidden mainCommentX"><br/>
-                                                    <form action="" enctype="multipart/form-data">
-                                                        <div>
-                                                            <!--<textarea class="form-control editSubCommentContent" name="dynamicFormContent" placeholder="Comment" cols="20" rows="5" required="" maxlength="700"></textarea><br/>-->
-                                                            <div class="editableDiv2 editSubCommentContent" contenteditable="true"></div>
-                                                        </div>
-                                                        <div class="uploadbtnwrapper">
-                                                            <input class="btn btn-sm btn-default editSubCommentAddimg" name="dynamicFormFile" type="file" style="display: inline"/>
-                                                            <button class="btn btn-sm uploadImgButtonClone" name="doesNothing">
-                                                                <img src='' th:src="@{'/files/system_img/gallery.png'}" alt=""/>
-                                                            </button>
-                                                            <button class="btn btn-sm editSubCommentSmiley smileyButtonClone" name="smiley">
-                                                                <span class="realSmiley twa-smiley"/>
-                                                                <!--<img src='' th:src="@{'/files/system_img/smiley.png'}" alt=""/>-->
-                                                            </button>
-                                                            <button class="btn btn-sm btn-success editDynamicSubmitSubComment"> Post</button>
+                                                    <!--<form action="" enctype="multipart/form-data">-->
+                                                    <div>
+                                                        <!--<textarea class="form-control editSubCommentContent" name="dynamicFormContent" placeholder="Comment" cols="20" rows="5" required="" maxlength="700"></textarea><br/>-->
+                                                        <div class="editableDiv2 editSubCommentContent" contenteditable="true"></div>
+                                                    </div>
+                                                    <div class="uploadbtnwrapper">
+                                                        <input class="btn btn-sm btn-default editSubCommentAddimg" name="dynamicFormFile" type="file" style="display: inline"/>
+                                                        <button class="btn btn-sm uploadImgButtonClone" name="doesNothing">
+                                                            <img src='' th:src="@{'/files/system_img/gallery.png'}" alt=""/>
+                                                        </button>
+                                                        <button class="btn btn-sm editSubCommentSmiley smileyButtonClone" name="smiley">
+                                                            <span class="realSmiley twa-smiley"/>
+                                                            <!--<img src='' th:src="@{'/files/system_img/smiley.png'}" alt=""/>-->
+                                                        </button>
+                                                        <button class="btn btn-sm btn-success editDynamicSubmitSubComment"> Post</button>
                                                             
-                                                            <div class="smileyBlockDynamicEditSubComment mainCommentX1 hidden sml">
-                                                                <div th:include="pages/adfragments :: smileyOne"/>
-                                                            </div>
+                                                        <div class="smileyBlockDynamicEditSubComment mainCommentX1 hidden sml">
+                                                            <div th:include="pages/adfragments :: smileyOne"/>
                                                         </div>
-                                                    </form>
+                                                    </div>
+                                                    <!--</form>-->
                                                 </div>
                                             </div>
                                         </div>
@@ -270,56 +274,56 @@
                                         </div>
                                     </div>
                                     
-                                    <!--4th instance-->
+                                    <!--4th instance REMOVE FORM HERE & FROM JAVASCRIPT AS WELL-->
                                     <div class="dynamicQuote hidden mainCommentX">
-                                        <form action="" enctype="multipart/form-data">
-                                            <div>
-                                                <!--<textarea class="form-control quotedTextarea" name="dynamicFormContent" placeholder="Comment" cols="20" rows="5" required="" maxlength="700"></textarea><br/>-->
-                                                <div class="editableDiv2 quotedTextarea" contenteditable="true"></div>
-                                                <!--<textarea class="form-control dynamicQuoteContent1" name="dynamicFormContent" placeholder="Comment" cols="20" rows="5" required="" maxlength="700"></textarea><br/>-->
-                                                <div class="editableDiv2 dynamicQuoteContent1" contenteditable="true"></div>
-                                            </div>
-                                            <div class="uploadbtnwrapper">
-                                                <input class="btn btn-sm btn-default quoteCommentAddimg" name="dynamicFormFile" type="file" style="display: inline"/>
-                                                <button class="btn btn-sm uploadImgButtonClone" name="doesNothing">
-                                                    <img src='' th:src="@{'/files/system_img/gallery.png'}" alt=""/>
-                                                </button>
-                                                <button class="btn btn-sm quoteCommentSmiley smileyButtonClone" name="smiley">
-                                                    <span class="realSmiley twa-smiley"/>
-                                                    <!--<img src='' th:src="@{'/files/system_img/smiley.png'}" alt=""/>-->
-                                                </button>
-                                                <button class="btn btn-sm btn-success dynamicSubmitQuote"> Post</button>
+                                        <!--<form action="" enctype="multipart/form-data">-->
+                                        <div>
+                                            <!--<textarea class="form-control quotedTextarea" name="dynamicFormContent" placeholder="Comment" cols="20" rows="5" required="" maxlength="700"></textarea><br/>-->
+                                            <div class="editableDiv2 quotedTextarea" contenteditable="true"></div>
+                                            <!--<textarea class="form-control dynamicQuoteContent1" name="dynamicFormContent" placeholder="Comment" cols="20" rows="5" required="" maxlength="700"></textarea><br/>-->
+                                            <div class="editableDiv2 dynamicQuoteContent1" contenteditable="true"></div>
+                                        </div>
+                                        <div class="uploadbtnwrapper">
+                                            <input class="btn btn-sm btn-default quoteCommentAddimg" name="dynamicFormFile" type="file" style="display: inline"/>
+                                            <button class="btn btn-sm uploadImgButtonClone" name="doesNothing">
+                                                <img src='' th:src="@{'/files/system_img/gallery.png'}" alt=""/>
+                                            </button>
+                                            <button class="btn btn-sm quoteCommentSmiley smileyButtonClone" name="smiley">
+                                                <span class="realSmiley twa-smiley"/>
+                                                <!--<img src='' th:src="@{'/files/system_img/smiley.png'}" alt=""/>-->
+                                            </button>
+                                            <button class="btn btn-sm btn-success dynamicSubmitQuote"> Post</button>
                                                 
-                                                <div class="smileyBlockDynamicQuote mainCommentX1 hidden sml">
-                                                    <div th:include="pages/adfragments :: smileyOne"/>
-                                                </div>
+                                            <div class="smileyBlockDynamicQuote mainCommentX1 hidden sml">
+                                                <div th:include="pages/adfragments :: smileyOne"/>
                                             </div>
-                                        </form>
+                                        </div>
+                                        <!--</form>-->
                                     </div>
                                     
-                                    <!--5th instance-->
+                                    <!--5th instance REMOVE FORM HERE & FROM JAVASCRIPT AS WELL-->
                                     <div class="dynamicEditComment hidden mainCommentX">
-                                        <form action="" enctype="multipart/form-data">
-                                            <div>
-                                                <!--<textarea class="form-control editCommentContent1" name="dynamicFormContent" placeholder="Comment" cols="20" rows="5" required="" maxlength="700"></textarea><br/>-->
-                                                <div class="editableDiv2 editCommentContent" contenteditable="true"></div>
-                                            </div>
-                                            <div class="uploadbtnwrapper">
-                                                <input class="btn btn-sm btn-default editCommentAddimg" name="dynamicFormFile" type="file" style="display: inline"/>
-                                                <button class="btn btn-sm uploadImgButtonClone" name="doesNothing">
-                                                    <img src='' th:src="@{'/files/system_img/gallery.png'}" alt=""/>
-                                                </button>
-                                                <button class="btn btn-sm editCommentSmiley smileyButtonClone" name="smiley">
-                                                    <span class="realSmiley twa-smiley"/>
-                                                    <!--<img src='' th:src="@{'/files/system_img/smiley.png'}" alt=""/>-->
-                                                </button>
-                                                <button class="btn btn-sm btn-success editDynamicSubmitComment"> Post</button>
+                                        <!--<form action="" enctype="multipart/form-data">-->
+                                        <div>
+                                            <!--<textarea class="form-control editCommentContent1" name="dynamicFormContent" placeholder="Comment" cols="20" rows="5" required="" maxlength="700"></textarea><br/>-->
+                                            <div class="editableDiv2 editCommentContent" contenteditable="true"></div>
+                                        </div>
+                                        <div class="uploadbtnwrapper">
+                                            <input class="btn btn-sm btn-default editCommentAddimg" name="dynamicFormFile" type="file" style="display: inline"/>
+                                            <button class="btn btn-sm uploadImgButtonClone" name="doesNothing">
+                                                <img src='' th:src="@{'/files/system_img/gallery.png'}" alt=""/>
+                                            </button>
+                                            <button class="btn btn-sm editCommentSmiley smileyButtonClone" name="smiley">
+                                                <span class="realSmiley twa-smiley"/>
+                                                <!--<img src='' th:src="@{'/files/system_img/smiley.png'}" alt=""/>-->
+                                            </button>
+                                             <button class="btn btn-sm btn-success editDynamicSubmitComment"> Post</button>
                                                 
-                                                <div class="smileyBlockDynamicEditComment mainCommentX1 hidden sml">
-                                                    <div th:include="pages/adfragments :: smileyOne"/>
-                                                </div>
-                                            </div>
-                                        </form>
+                                            <div class="smileyBlockDynamicEditComment mainCommentX1 hidden sml">
+                                                <div th:include="pages/adfragments :: smileyOne"/>
+                                             </div>
+                                        </div>
+                                        <!--</form>-->
                                     </div>
                                 </div>
                             </div>
